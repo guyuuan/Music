@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Music</string>
+    <string name="label_home">主页</string>
+    <string name="label_login">登录</string>
+    <string name="text_enter_phone_number">请输入电话号码</string>
+    <string name="text_enter_password">请输入密码</string>
+    <string name="label_found">发现</string>
+    <string name="label_mine">我的</string>
+    <string name="label_message">消息</string>
+
+</resources>
