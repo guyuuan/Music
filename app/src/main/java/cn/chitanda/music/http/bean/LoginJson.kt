@@ -12,9 +12,9 @@ data class LoginJson(
     @Json(name = "code")
     override val code: Int,
     @Json(name = "message")
-    override val message: String,
+    override val message: String?,
     @Json(name = "msg")
-    override val msg: String,
+    override val msg: String?,
     @Json(name = "cookie")
     val cookie: String?,
     @Json(name = "loginType")

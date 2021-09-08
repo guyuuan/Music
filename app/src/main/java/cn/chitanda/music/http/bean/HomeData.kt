@@ -19,7 +19,7 @@ data class HomeData(
         @Json(name = "blockUUIDs")
         val blockUUIDs: Any? = Any(),
         @Json(name = "blocks")
-        val blocks: List<Block?>? = listOf(),
+        val blocks: List<Block>? = listOf(),
         @Json(name = "cursor")
         val cursor: String? = "",
         @Json(name = "guideToast")
@@ -44,7 +44,7 @@ data class HomeData(
             @Json(name = "extInfo")
             val extInfo: Any? = Any(),
             @Json(name = "showType")
-            val showType: String? = "",
+            val showType: RCMDShowType? = RCMDShowType.Unkonw,
             @Json(name = "uiElement")
             val uiElement: UiElement? = UiElement()
         ) {
@@ -689,4 +689,12 @@ data class HomeData(
             val title: Any? = Any()
         )
     }
+}
+
+sealed class RCMDShowType(val type: String) {
+    object Banner : RCMDShowType("BANNER")
+    object PlayList : RCMDShowType("HOMEPAGE_SLIDE_PLAYLIST")
+    object SongList : RCMDShowType("HOMEPAGE_SLIDE_SONGLIST_ALIGN")
+    object PlayableMLog : RCMDShowType("HOMEPAGE_SLIDE_PLAYABLE_MLOG")
+    object Unkonw : RCMDShowType("")
 }

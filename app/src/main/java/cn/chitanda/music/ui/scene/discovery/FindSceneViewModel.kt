@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import cn.chitanda.music.http.StateLiveData
 import cn.chitanda.music.http.bean.HomeData
 import cn.chitanda.music.http.bean.RequestStatus
+import cn.chitanda.music.repository.FindRepository
 import cn.chitanda.music.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +22,7 @@ private const val TAG = "FoundViewModel"
 
 @HiltViewModel
 class DiscoverySceneViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val findRepository: FindRepository
 ) : ViewModel() {
 
 
@@ -31,7 +32,7 @@ class DiscoverySceneViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            userRepository.fetchHomeData(_homeData)
+            findRepository.fetchHomeData(_homeData)
         }
     }
 }

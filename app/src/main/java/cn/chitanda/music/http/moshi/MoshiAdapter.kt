@@ -1,6 +1,7 @@
 package cn.chitanda.music.http.moshi
 
 import cn.chitanda.music.http.bean.HomeBanner
+import cn.chitanda.music.http.bean.RCMDShowType
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
@@ -25,6 +26,7 @@ val moshi: Moshi by lazy {
 //        .add(LongAdapter())
 //        .add(AnyAdapter())
         .add(BannerTagColorAdapter())
+        .add(RCMDShowTypeAdapter())
         .build()
 }
 
@@ -54,6 +56,28 @@ class BannerTagColorAdapter {
     }
 }
 
+class RCMDShowTypeAdapter {
+    @FromJson
+    fun fromJson(reader: JsonReader): RCMDShowType {
+        val showType = if (reader.peek() != JsonReader.Token.NULL) {
+            reader.nextString()
+        } else {
+            ""
+        }
+        return when (showType) {
+            RCMDShowType.Banner.type -> RCMDShowType.Banner
+            RCMDShowType.PlayList.type -> RCMDShowType.PlayList
+            RCMDShowType.SongList.type -> RCMDShowType.SongList
+            RCMDShowType.PlayableMLog.type -> RCMDShowType.PlayableMLog
+            else -> RCMDShowType.Unkonw
+        }
+    }
+
+    @ToJson
+    fun toJson(writer: JsonWriter, value: RCMDShowType?) {
+        writer.value(value?.type)
+    }
+}
 
 class StringAdapter {
     @FromJson

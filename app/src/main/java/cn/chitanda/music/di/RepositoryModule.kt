@@ -1,7 +1,9 @@
 package cn.chitanda.music.di
 
+import cn.chitanda.music.http.api.FindApi
 import cn.chitanda.music.http.api.LoginApi
 import cn.chitanda.music.http.api.UserApi
+import cn.chitanda.music.repository.FindRepository
 import cn.chitanda.music.repository.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -27,4 +29,8 @@ object RepositoryModule {
         loginApi = loginApi,
         userApi = userApi,
     )
+
+    @Provides
+    @Singleton
+    fun provideFindRepository(findApi: FindApi) = FindRepository(findApi)
 }

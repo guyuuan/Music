@@ -1,10 +1,11 @@
 package cn.chitanda.music.di
 
 import android.util.Log
-import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.BuildConfig
+import cn.chitanda.music.http.api.FindApi
 import cn.chitanda.music.http.api.LoginApi
 import cn.chitanda.music.http.api.UserApi
+import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.preference.CookiesPreference
 import dagger.Module
 import dagger.Provides
@@ -33,7 +34,6 @@ object AppModule {
 //            }
             addInterceptor { chain ->
                 val request = chain.request().newBuilder()
-                request.addHeader("Accept", " application/vnd.github.v3+json")
                 cookie.forEach {
                     request.addHeader("Cookie", it)
                 }
@@ -75,4 +75,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideUserApi(retrofit: Retrofit): UserApi = retrofit.create(UserApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideFindApi(retrofit: Retrofit): FindApi = retrofit.create(FindApi::class.java)
 }

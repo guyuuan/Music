@@ -28,10 +28,7 @@ class UserRepository constructor(
             userApi.getUserAccount()
         }
 
-    suspend fun fetchHomeData(stateLiveData: StateLiveData<HomeData>, refresh: Boolean = false) =
-        load(stateLiveData) {
-            userApi.fetchHomeData(refresh)
-        }
+
 
 }
 

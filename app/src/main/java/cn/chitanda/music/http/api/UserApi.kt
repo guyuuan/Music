@@ -16,7 +16,4 @@ interface UserApi {
     suspend fun getUserAccount(
         @Query("timestamp") timestamp: Long = System.currentTimeMillis()
     ): LoginJson
-
-    @GET("/homepage/block/page")
-    suspend fun fetchHomeData(@Query("refresh") refresh: Boolean = true): HomeData
 }
