@@ -283,7 +283,7 @@ fun RecommendPlayList(
                         )
                         Surface(
                             modifier = Modifier
-                                .padding(top = 4.dp, end = 4.dp)
+                                .padding(top = 2.dp, end = 2.dp)
                                 .align(Alignment.TopEnd),
                             shape = RoundedCornerShape(16.dp),
                             color = Color.Black.copy(alpha = 0.3f),
@@ -291,7 +291,7 @@ fun RecommendPlayList(
                         ) {
                             val playCount = resource.resourceExtInfo?.playCount
                             Row(
-                                modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
+                                modifier = Modifier.padding(vertical = 1.dp, horizontal = 4.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
@@ -334,7 +334,12 @@ fun RecommendSongList(
         buttonText = data.uiElement?.button?.text.toString(),
         modifier = modifier,contentPadding = contentPadding
     ) {
-
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(100.dp),contentAlignment = Alignment.Center){
+            Text(text = "相似歌曲推荐,还没搞好")
+        }
     }
 }
 
