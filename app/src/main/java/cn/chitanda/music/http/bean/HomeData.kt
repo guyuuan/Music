@@ -40,7 +40,7 @@ data class HomeData(
             @Json(name = "canClose")
             val canClose: Boolean? = false,
             @Json(name = "creatives")
-            val creatives: List<Creative?>? = listOf(),
+            val creatives: List<Creative>? = listOf(),
             @Json(name = "extInfo")
             val extInfo: Any? = Any(),
             @Json(name = "showType")
@@ -65,7 +65,7 @@ data class HomeData(
                 @Json(name = "position")
                 val position: Int? = 0,
                 @Json(name = "resources")
-                val resources: List<Resource?>? = listOf(),
+                val resources: List<Resource>? = listOf(),
                 @Json(name = "uiElement")
                 val uiElement: UiElement? = UiElement()
             ) {
@@ -588,8 +588,9 @@ data class HomeData(
                         data class SubTitle(
                             @Json(name = "title")
                             val title: String? = "",
+                            //songRcmdTag,songRcmdFromComment
                             @Json(name = "titleType")
-                            val titleType: String? = ""
+                            val titleType: String = ""
                         )
                     }
                 }

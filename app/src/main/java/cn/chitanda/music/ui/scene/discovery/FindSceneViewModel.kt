@@ -1,16 +1,17 @@
 package cn.chitanda.music.ui.scene.discovery
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cn.chitanda.music.http.StateLiveData
+import cn.chitanda.music.http.RequestStatus
 import cn.chitanda.music.http.bean.HomeData
-import cn.chitanda.music.http.bean.RequestStatus
+import cn.chitanda.music.http.bean.HomeRoundIconList
 import cn.chitanda.music.repository.FindRepository
-import cn.chitanda.music.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -25,14 +26,22 @@ class DiscoverySceneViewModel @Inject constructor(
     private val findRepository: FindRepository
 ) : ViewModel() {
 
-
-    private val _homeData = StateLiveData<HomeData>()
-    val homeData: LiveData<RequestStatus<HomeData>>
+    private val _homeData = MutableStateFlow(RequestStatus<HomeData>())
+    val homeData: MutableStateFlow<RequestStatus<HomeData>>
         get() = _homeData
+
+    private val _homeIconList = MutableStateFlow<RequestStatus<HomeRoundIconList>>(RequestStatus())
+    val homeIconList: StateFlow<RequestStatus<HomeRoundIconList>>
+        get() = _homeIconList
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            findRepository.fetchHomeData(_homeData)
+            withContext(Dispatchers.IO) {
+                findRepository.fetchHomeData(_homeData)
+            }
+            withContext(Dispatchers.IO) {
+                findRepository.fetchHomeRoundIconList(_homeIconList)
+            }
         }
     }
 }

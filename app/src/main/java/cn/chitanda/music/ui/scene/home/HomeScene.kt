@@ -6,6 +6,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -43,6 +44,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
  **/
 private const val TAG = "HomeScene"
 
+@ExperimentalMaterialApi
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
 @ExperimentalCoilApi
@@ -79,6 +81,7 @@ fun HomeScene(
                             label = {
                                 Text(text = stringResource(id = scene.label))
                             },
+                            alwaysShowLabel = false,
                             selected = currentPage == scene,
                             onClick = {
                                 currentPage = scene

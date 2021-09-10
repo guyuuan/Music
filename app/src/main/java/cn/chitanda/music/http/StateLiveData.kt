@@ -2,8 +2,6 @@ package cn.chitanda.music.http
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import cn.chitanda.music.http.bean.DataState
-import cn.chitanda.music.http.bean.RequestStatus
 
 class StateLiveData<T> : MutableLiveData<RequestStatus<T>>(RequestStatus())
 

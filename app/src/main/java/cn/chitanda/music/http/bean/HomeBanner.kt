@@ -67,7 +67,7 @@ data class HomeBanner(
         @Json(name = "song")
         val song: Song? = Song(),
         @Json(name = "targetId")
-        val targetId: Int? = 0,
+        val targetId: String ,
         @Json(name = "targetType")
         val targetType: Int? = 0,
         @Json(name = "titleColor")

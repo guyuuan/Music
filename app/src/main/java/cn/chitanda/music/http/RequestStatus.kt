@@ -1,4 +1,4 @@
-package cn.chitanda.music.http.bean
+package cn.chitanda.music.http
 
 import com.squareup.moshi.JsonClass
 
@@ -22,7 +22,7 @@ class RequestStatus<T>(
         msg: String? = null,
         status: DataState = DataState.STATE_CREATE,
         _data: T? = null,
-    ) = RequestStatus(code, error,msg, status, _data)
+    ) = RequestStatus(code, error, msg, status, _data)
 }
 
 enum class DataState {

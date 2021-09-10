@@ -39,6 +39,7 @@ fun <T> Banner(
     looperTime: Long = 5000L,
     isVertical: Boolean = false,
     indicatorPaddingValues: PaddingValues = EmptyPaddingValue,
+    initialOffscreenLimit: Int = 1,
     indicatorItem: @Composable (Boolean) -> Unit = {
         Box(
             modifier = Modifier
@@ -52,7 +53,11 @@ fun <T> Banner(
     contents: @Composable (T) -> Unit
 ) {
     val pagerState =
-        rememberPagerState(pageCount = data.size, initialOffscreenLimit = 3, infiniteLoop = true)
+        rememberPagerState(
+            pageCount = data.size,
+            initialOffscreenLimit = initialOffscreenLimit,
+            infiniteLoop = true
+        )
     Box(modifier = modifier) {
         HorizontalPager(
             state = pagerState,

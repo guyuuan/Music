@@ -34,6 +34,7 @@ fun CoilImage(
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Crop,
     alpha: Float = DefaultAlpha,
+    shape: Shape? = null,
     colorFilter: ColorFilter? = null,
     imageShape: Shape? = null,
     onError: @Composable () -> Unit = {
@@ -45,7 +46,10 @@ fun CoilImage(
 ) {
     Log.d(TAG, "CoilImage: $url")
     val painter = rememberImagePainter(data = url)
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+    Box(
+        modifier = modifier then if (shape != null) Modifier.clip(shape) else Modifier,
+        contentAlignment = Alignment.Center
+    ) {
         val imageModifier =
             Modifier.fillMaxSize() then if (imageShape != null) Modifier.clip(imageShape) else Modifier
         Image(

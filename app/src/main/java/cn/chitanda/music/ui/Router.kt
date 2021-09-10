@@ -2,6 +2,7 @@ package cn.chitanda.music.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,6 +30,7 @@ sealed class Scene(val id: String, @StringRes val label: Int? = null) {
     object Login : Scene(id = "login", label = R.string.label_login)
 }
 
+@ExperimentalMaterialApi
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
 @Composable
@@ -49,6 +51,7 @@ fun Router(navController: NavHostController = rememberAnimatedNavController()) {
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.route() {

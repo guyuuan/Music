@@ -1,6 +1,7 @@
 package cn.chitanda.music.http.moshi
 
 import cn.chitanda.music.http.bean.HomeBanner
+import cn.chitanda.music.http.bean.HomeRoundIcon
 import cn.chitanda.music.http.bean.RCMDShowType
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonReader
@@ -27,6 +28,7 @@ val moshi: Moshi by lazy {
 //        .add(AnyAdapter())
         .add(BannerTagColorAdapter())
         .add(RCMDShowTypeAdapter())
+        .add(HomeIconTypeAdapter())
         .build()
 }
 
@@ -76,6 +78,33 @@ class RCMDShowTypeAdapter {
     @ToJson
     fun toJson(writer: JsonWriter, value: RCMDShowType?) {
         writer.value(value?.type)
+    }
+}
+
+class HomeIconTypeAdapter {
+    @FromJson
+    fun fromJson(reader: JsonReader): HomeRoundIcon.Type {
+        val type = if (reader.peek() != JsonReader.Token.NULL) {
+            reader.nextInt()
+        } else {
+            Int.MIN_VALUE
+        }
+        return when (type) {
+            HomeRoundIcon.Type.DailyRCMD.id -> HomeRoundIcon.Type.DailyRCMD
+            HomeRoundIcon.Type.PersonalFM.id -> HomeRoundIcon.Type.PersonalFM
+            HomeRoundIcon.Type.PlayListCollection.id -> HomeRoundIcon.Type.PlayListCollection
+            HomeRoundIcon.Type.Leaderboard.id -> HomeRoundIcon.Type.Leaderboard
+            HomeRoundIcon.Type.DigitalAlbum.id -> HomeRoundIcon.Type.DigitalAlbum
+            HomeRoundIcon.Type.Meditation.id -> HomeRoundIcon.Type.Meditation
+            HomeRoundIcon.Type.SongRoom.id -> HomeRoundIcon.Type.SongRoom
+            HomeRoundIcon.Type.Game.id -> HomeRoundIcon.Type.Game
+            else -> HomeRoundIcon.Type.Unknown
+        }
+    }
+
+    @ToJson
+    fun toJson(writer: JsonWriter, value: HomeRoundIcon.Type?) {
+        writer.value(value?.id)
     }
 }
 

@@ -13,8 +13,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import cn.chitanda.music.R
-import cn.chitanda.music.http.bean.DataState
+import cn.chitanda.music.http.DataState
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.Scene
@@ -44,7 +44,7 @@ fun LoginScene(
     userViewModel: UserViewModel = LocalUserViewModel.current,
     navController: NavController = LocalNavController.current
 ) {
-    val user by userViewModel.user.observeAsState()
+    val user by userViewModel.user.collectAsState()
     var showLoading by remember {
         mutableStateOf(false)
     }
@@ -94,30 +94,28 @@ fun LoginScene(
         }
     }
 
-    LaunchedEffect(key1 = user){
-        when (user?.status) {
+    LaunchedEffect(key1 = user) {
+        when (user.status) {
             DataState.STATE_LOADING -> {
                 showLoading = true
             }
             DataState.STATE_SUCCESS -> {
                 showLoading = false
                 Toast.makeText(cxt, "login success", Toast.LENGTH_SHORT).show()
-//                user?._data?.cookie?.let {
-//                    userViewModel.saveCookie(it)
-//                }
                 navController.navigate(Scene.Home.id) {
                     popUpTo(Scene.Login.id) { inclusive = true }
                 }
             }
-            DataState.STATE_FAILED->{
+            DataState.STATE_FAILED -> {
                 showLoading = false
-                Toast.makeText(cxt, user?.msg.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(cxt, user.msg.toString(), Toast.LENGTH_SHORT).show()
             }
             DataState.STATE_ERROR -> {
                 showLoading = false
-                Toast.makeText(cxt, user?.error.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(cxt, user.error.toString(), Toast.LENGTH_SHORT).show()
             }
-            else -> {}
+            else -> {
+            }
         }
     }
 }
