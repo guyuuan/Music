@@ -1,4 +1,4 @@
-package cn.chitanda.github.data.preference
+package cn.chitanda.music.preference
 
 import com.tencent.mmkv.MMKV
 import kotlin.reflect.KProperty

@@ -67,10 +67,8 @@ fun CoilImage(
                     onLoading()
                 }
                 is ImagePainter.State.Success -> {
-                    Log.d(TAG, "CoilImage: success")
                 }
                 is ImagePainter.State.Error -> {
-                    Log.d(TAG, "CoilImage: error ${state.throwable}")
                     onError()
                 }
             }

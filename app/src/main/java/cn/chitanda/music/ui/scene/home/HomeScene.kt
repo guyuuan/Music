@@ -26,7 +26,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import cn.chitanda.music.R
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
-import cn.chitanda.music.ui.scene.discovery.FindScene
+import cn.chitanda.music.ui.scene.find.FindScene
 import cn.chitanda.music.ui.scene.login.UserViewModel
 import cn.chitanda.music.ui.scene.message.MessageScene
 import cn.chitanda.music.ui.scene.mine.MineScene

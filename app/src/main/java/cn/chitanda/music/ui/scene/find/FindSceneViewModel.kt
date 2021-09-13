@@ -1,4 +1,4 @@
-package cn.chitanda.music.ui.scene.discovery
+package cn.chitanda.music.ui.scene.find
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +19,7 @@ import javax.inject.Inject
  *@createTime: 2021/9/2 13:47
  *@description:
  **/
-private const val TAG = "FoundViewModel"
+private const val TAG = "FindViewModel"
 
 @HiltViewModel
 class DiscoverySceneViewModel @Inject constructor(

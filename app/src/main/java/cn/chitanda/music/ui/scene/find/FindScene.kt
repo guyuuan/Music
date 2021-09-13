@@ -1,4 +1,4 @@
-package cn.chitanda.music.ui.scene.discovery
+package cn.chitanda.music.ui.scene.find
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -24,7 +24,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -41,16 +40,23 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import cn.chitanda.music.R
@@ -59,11 +65,13 @@ import cn.chitanda.music.http.bean.HomeBanner
 import cn.chitanda.music.http.bean.HomeData
 import cn.chitanda.music.http.bean.HomeRoundIcon
 import cn.chitanda.music.http.bean.RCMDShowType
+import cn.chitanda.music.http.bean.SubTitleType
 import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.banner.Banner
 import cn.chitanda.music.ui.scene.home.CoilImage
 import cn.chitanda.music.ui.theme.PoHeLv
+import cn.chitanda.music.ui.theme.RCMDTagColor
 import cn.chitanda.music.utils.toUnitString
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.statusBarsPadding
@@ -76,7 +84,7 @@ import com.squareup.moshi.Types
  *@createTime: 2021/9/2 10:19
  *@description:
  **/
-private const val TAG = "DiscoveryScene"
+private const val TAG = "FindScene"
 
 @ExperimentalMaterialApi
 @SuppressLint("CheckResult")
@@ -105,7 +113,6 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                 when (data.status) {
                     DataState.STATE_LOADING -> CircularProgressIndicator()
                     DataState.STATE_SUCCESS -> {
-                        Log.d(TAG, "FindScene: ${data.json?.data?.blocks?.size}")
                         LazyColumn(modifier = Modifier.fillMaxSize()) {
                             itemsIndexed(data.json?.data?.blocks ?: emptyList()) { i, block ->
                                 when (block.showType) {
@@ -135,7 +142,7 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                                             contentPadding = PaddingValues(horizontal = 16.dp)
                                         )
                                     }
-                                    RCMDShowType.Unkonw, null -> {
+                                    RCMDShowType.Unknown, null -> {
                                     }
                                 }
                                 if (i == 0) {
@@ -322,6 +329,7 @@ fun RecommendPlayList(
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 fun RecommendSongList(
@@ -332,13 +340,114 @@ fun RecommendSongList(
     TitleColumn(
         title = data.uiElement?.subTitle?.title.toString(),
         buttonText = data.uiElement?.button?.text.toString(),
-        modifier = modifier,contentPadding = contentPadding
+        modifier = modifier, contentPadding = contentPadding
     ) {
-        Box(
+        val songs = data.creatives ?: emptyList()
+        var itemWidth by remember {
+            mutableStateOf(IntSize.Zero.width)
+        }
+        LazyRow(
             Modifier
                 .fillMaxWidth()
-                .height(100.dp),contentAlignment = Alignment.Center){
-            Text(text = "相似歌曲推荐,还没搞好")
+                .onSizeChanged {
+                    itemWidth = it.width
+                }, contentPadding = PaddingValues(horizontal = 16.dp)
+        ) {
+            if (itemWidth > IntSize.Zero.width) {
+                songs.forEach { song ->
+                    item {
+                        Column(Modifier.width(with(LocalDensity.current) { itemWidth.toDp() * 0.9f })) {
+                            song.resources?.forEachIndexed { i, r ->
+                                SongItem(
+                                    song = r,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(end = 16.dp),
+                                    i < song.resources.lastIndex
+                                )
+                                if (i < song.resources.lastIndex) {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@ExperimentalCoilApi
+@Composable
+fun SongItem(
+    song: HomeData.Data.Block.Creative.Resource,
+    modifier: Modifier = Modifier,
+    showSpacer: Boolean
+) {
+    Column(modifier = modifier) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CoilImage(
+                url = song.uiElement?.image?.imageUrl.toString(),
+                contentDescription = null,
+                Modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Column {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = song.uiElement?.mainTitle?.title.toString(),
+                        style = MaterialTheme.typography.body1,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    val artists =
+                        song.resourceExtInfo?.artists?.joinToString(separator = "/") { it.name.toString() }
+                    val style = MaterialTheme.typography.caption
+                    Text(
+                        text = "- $artists",
+                        style = style.copy(style.color.copy(alpha = 0.4f)),
+                        maxLines = 1
+                    )
+                }
+                song.uiElement?.subTitle?.title?.let {
+                    val style = MaterialTheme.typography.subtitle2
+                    when (song.uiElement.subTitle.titleType) {
+                        SubTitleType.FromComment -> {
+                            Text(
+                                text = it,
+                                style = style.copy(style.color.copy(alpha = 0.6f)),
+                                maxLines = 1, overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        SubTitleType.TAG -> {
+                            Text(
+                                text = it,
+                                style = style.copy(color = RCMDTagColor, fontSize = 8.sp),
+                                maxLines = 1, overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.background(
+                                    color = RCMDTagColor.copy(alpha = 0.1f),
+                                    shape = RoundedCornerShape(4.dp)
+                                ).padding(vertical = 2.dp,horizontal = 4.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        if (showSpacer) {
+            Spacer(
+                modifier = Modifier
+                    .padding(start = 60.dp, top = 8.dp)
+                    .fillMaxWidth()
+                    .height(0.5.dp)
+                    .background(Color.LightGray.copy(alpha = 0.5f))
+            )
         }
     }
 }
@@ -370,7 +479,10 @@ fun TitleColumn(
             )
             buttonText?.let {
                 Surface(
-                    border = BorderStroke(0.5.dp,MaterialTheme.colors.onSurface.copy(alpha = 0.12f)),
+                    border = BorderStroke(
+                        0.5.dp,
+                        MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+                    ),
                     shape = RoundedCornerShape(16.dp),
                     onClick = {},
                     role = Role.Button,

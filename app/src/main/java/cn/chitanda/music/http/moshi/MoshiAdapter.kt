@@ -3,6 +3,7 @@ package cn.chitanda.music.http.moshi
 import cn.chitanda.music.http.bean.HomeBanner
 import cn.chitanda.music.http.bean.HomeRoundIcon
 import cn.chitanda.music.http.bean.RCMDShowType
+import cn.chitanda.music.http.bean.SubTitleType
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
@@ -29,6 +30,7 @@ val moshi: Moshi by lazy {
         .add(BannerTagColorAdapter())
         .add(RCMDShowTypeAdapter())
         .add(HomeIconTypeAdapter())
+        .add(SubTitleTypeAdapter())
         .build()
 }
 
@@ -71,12 +73,32 @@ class RCMDShowTypeAdapter {
             RCMDShowType.PlayList.type -> RCMDShowType.PlayList
             RCMDShowType.SongList.type -> RCMDShowType.SongList
             RCMDShowType.PlayableMLog.type -> RCMDShowType.PlayableMLog
-            else -> RCMDShowType.Unkonw
+            else -> RCMDShowType.Unknown
         }
     }
 
     @ToJson
     fun toJson(writer: JsonWriter, value: RCMDShowType?) {
+        writer.value(value?.type)
+    }
+}
+
+class SubTitleTypeAdapter {
+    @FromJson
+    fun fromJson(reader: JsonReader): SubTitleType {
+        val showType = if (reader.peek() != JsonReader.Token.NULL) {
+            reader.nextString()
+        } else {
+            ""
+        }
+        return when (showType) {
+            SubTitleType.FromComment.type -> SubTitleType.FromComment
+            else -> SubTitleType.TAG
+        }
+    }
+
+    @ToJson
+    fun toJson(writer: JsonWriter, value: SubTitleType?) {
         writer.value(value?.type)
     }
 }

@@ -44,7 +44,7 @@ data class HomeData(
             @Json(name = "extInfo")
             val extInfo: Any? = Any(),
             @Json(name = "showType")
-            val showType: RCMDShowType? = RCMDShowType.Unkonw,
+            val showType: RCMDShowType? = RCMDShowType.Unknown,
             @Json(name = "uiElement")
             val uiElement: UiElement? = UiElement()
         ) {
@@ -95,7 +95,7 @@ data class HomeData(
                     @JsonClass(generateAdapter = true)
                     data class ResourceExtInfo(
                         @Json(name = "artists")
-                        val artists: List<Artist?>? = listOf(),
+                        val artists: List<Artist>? = listOf(),
                         @Json(name = "commentSimpleData")
                         val commentSimpleData: CommentSimpleData? = CommentSimpleData(),
                         @Json(name = "highQuality")
@@ -587,10 +587,10 @@ data class HomeData(
                         @JsonClass(generateAdapter = true)
                         data class SubTitle(
                             @Json(name = "title")
-                            val title: String? = "",
+                            val title: String? = null,
                             //songRcmdTag,songRcmdFromComment
                             @Json(name = "titleType")
-                            val titleType: String = ""
+                            val titleType: SubTitleType = SubTitleType.FromComment
                         )
                     }
                 }
@@ -697,5 +697,10 @@ sealed class RCMDShowType(val type: String) {
     object PlayList : RCMDShowType("HOMEPAGE_SLIDE_PLAYLIST")
     object SongList : RCMDShowType("HOMEPAGE_SLIDE_SONGLIST_ALIGN")
     object PlayableMLog : RCMDShowType("HOMEPAGE_SLIDE_PLAYABLE_MLOG")
-    object Unkonw : RCMDShowType("")
+    object Unknown : RCMDShowType("")
+}
+
+sealed class SubTitleType(val type: String) {
+    object FromComment : SubTitleType("songRcmdFromComment")
+    object TAG : SubTitleType("songRcmdTag")
 }

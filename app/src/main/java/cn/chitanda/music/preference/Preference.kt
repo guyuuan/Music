@@ -1,6 +1,5 @@
 package cn.chitanda.music.preference
 
-import cn.chitanda.github.data.preference.MMKVPreference
 import com.tencent.mmkv.MMKV
 
 /**
