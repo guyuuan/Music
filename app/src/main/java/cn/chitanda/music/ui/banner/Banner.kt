@@ -23,6 +23,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
+import kotlin.math.abs
 
 /**
  *@author: Chen
@@ -37,9 +38,8 @@ fun <T> Banner(
     itemPaddingValues: PaddingValues = EmptyPaddingValue,
     autoLooper: Boolean = true,
     looperTime: Long = 5000L,
-    isVertical: Boolean = false,
+    isVertical: Boolean = false, infiniteLoop: Boolean = true,
     indicatorPaddingValues: PaddingValues = EmptyPaddingValue,
-    initialOffscreenLimit: Int = 1,
     indicatorItem: @Composable (Boolean) -> Unit = {
         Box(
             modifier = Modifier
@@ -52,14 +52,17 @@ fun <T> Banner(
     indicatorAlignment: Alignment = Alignment.BottomCenter,
     contents: @Composable (T) -> Unit
 ) {
+    val pageCount = data.size
+    val startIndex = Int.MAX_VALUE / 2
     val pagerState =
-        rememberPagerState()
+        rememberPagerState(initialPage = if (infiniteLoop) startIndex else 0)
     Box(modifier = modifier) {
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
-                .fillMaxSize(), count = data.size
-        ) { page ->
+                .fillMaxSize(), count = if (infiniteLoop) Int.MAX_VALUE else data.size
+        ) { index ->
+            val page = if (infiniteLoop) (index - startIndex).floorMod(pageCount) else index
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -77,7 +80,11 @@ fun <T> Banner(
                 verticalArrangement = Arrangement.Center
             ) {
                 repeat(data.size) {
-                    indicatorItem(it == pagerState.currentPage)
+                    indicatorItem(
+                        it == if (infiniteLoop) (pagerState.currentPage - startIndex).floorMod(
+                            pageCount
+                        ) else pagerState.currentPage
+                    )
                 }
             }
         } else {
@@ -89,7 +96,11 @@ fun <T> Banner(
                 horizontalArrangement = Arrangement.Center
             ) {
                 repeat(data.size) {
-                    indicatorItem(it == pagerState.currentPage)
+                    indicatorItem(
+                        it == if (infiniteLoop) (pagerState.currentPage - startIndex).floorMod(
+                            pageCount
+                        ) else pagerState.currentPage
+                    )
                 }
             }
         }
@@ -97,9 +108,14 @@ fun <T> Banner(
     if (autoLooper) {
         LaunchedEffect(key1 = pagerState.currentPage) {
             delay(looperTime)
-            pagerState.animateScrollToPage((pagerState.currentPage + 1)%data.size)
+            pagerState.animateScrollToPage((pagerState.currentPage + 1) % if (infiniteLoop) Int.MAX_VALUE else pageCount)
         }
     }
+}
+
+private fun Int.floorMod(other: Int): Int = when (other) {
+    0 -> this
+    else -> this - floorDiv(other) * other
 }
 
 private val EmptyPaddingValue = PaddingValues(0.dp)
