@@ -53,16 +53,12 @@ fun <T> Banner(
     contents: @Composable (T) -> Unit
 ) {
     val pagerState =
-        rememberPagerState(
-            pageCount = data.size,
-            initialOffscreenLimit = initialOffscreenLimit,
-            infiniteLoop = true
-        )
+        rememberPagerState()
     Box(modifier = modifier) {
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize(), count = data.size
         ) { page ->
             Box(
                 modifier = Modifier
@@ -101,7 +97,7 @@ fun <T> Banner(
     if (autoLooper) {
         LaunchedEffect(key1 = pagerState.currentPage) {
             delay(looperTime)
-            pagerState.animateScrollToPage((pagerState.currentPage + 1))
+            pagerState.animateScrollToPage((pagerState.currentPage + 1)%data.size)
         }
     }
 }
