@@ -41,11 +41,11 @@ open class BaseRemoteRepository {
     }
 
     protected suspend fun <T : BaseJson> httpRequest(
-        stateLiveData: MutableStateFlow<RequestStatus<T>>,
+        stateLiveData: MutableStateFlow<RequestStatus<T>>?,
         block: suspend () -> T?
     ) {
         try {
-            stateLiveData.emit(RequestStatus(status = DataState.STATE_LOADING))
+            stateLiveData?.emit(RequestStatus(status = DataState.STATE_LOADING))
             val data = block()
             val response = if (data != null) {
                 RequestStatus(
@@ -61,10 +61,10 @@ open class BaseRemoteRepository {
             } else {
                 RequestStatus(status = DataState.STATE_EMPTY)
             }
-            stateLiveData.emit(response)
+            stateLiveData?.emit(response)
         } catch (e: Exception) {
             e.printStackTrace()
-            stateLiveData.emit(RequestStatus(status = DataState.STATE_ERROR, error = e))
+            stateLiveData?.emit(RequestStatus(status = DataState.STATE_ERROR, error = e))
         }
     }
 }

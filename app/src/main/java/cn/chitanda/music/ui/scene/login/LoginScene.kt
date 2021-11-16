@@ -13,7 +13,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,12 +26,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import cn.chitanda.music.R
 import cn.chitanda.music.http.DataState
 import cn.chitanda.music.ui.LocalNavController
-import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.Scene
+import androidx.compose.runtime.collectAsState
 
 /**
  *@author: Chen
@@ -41,10 +41,10 @@ import cn.chitanda.music.ui.Scene
  **/
 @Composable
 fun LoginScene(
-    userViewModel: UserViewModel = LocalUserViewModel.current,
+    viewModel: LoginViewModel = hiltViewModel(),
     navController: NavController = LocalNavController.current
 ) {
-    val user by userViewModel.user.collectAsState()
+    val login by viewModel.login.collectAsState()
     var showLoading by remember {
         mutableStateOf(false)
     }
@@ -79,7 +79,7 @@ fun LoginScene(
             Spacer(modifier = Modifier.size(16.dp))
             TextButton(onClick = {
                 if (accountName.isNotEmpty() && password.isNotEmpty()) {
-                    userViewModel.login(username = accountName, password = password)
+                    viewModel.login(username = accountName, password = password)
                 }
             }) {
                 Text(text = "Login", fontSize = 18.sp)
@@ -94,25 +94,25 @@ fun LoginScene(
         }
     }
 
-    LaunchedEffect(key1 = user) {
-        when (user.status) {
+    LaunchedEffect(key1 = login) {
+        when (login.status) {
             DataState.STATE_LOADING -> {
                 showLoading = true
             }
             DataState.STATE_SUCCESS -> {
                 showLoading = false
                 Toast.makeText(cxt, "login success", Toast.LENGTH_SHORT).show()
-                navController.navigate(Scene.Home.id) {
-                    popUpTo(Scene.Login.id) { inclusive = true }
-                }
+//                navController.navigate(Scene.Home.id) {
+//                    popUpTo(Scene.Login.id) { inclusive = true }
+//                }
             }
             DataState.STATE_FAILED -> {
                 showLoading = false
-                Toast.makeText(cxt, user.msg.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(cxt, login.msg.toString(), Toast.LENGTH_SHORT).show()
             }
             DataState.STATE_ERROR -> {
                 showLoading = false
-                Toast.makeText(cxt, user.error.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(cxt, login.error.toString(), Toast.LENGTH_SHORT).show()
             }
             else -> {
             }

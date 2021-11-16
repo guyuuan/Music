@@ -3,7 +3,7 @@ package cn.chitanda.music.ui
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation.NavHostController
-import cn.chitanda.music.ui.scene.login.UserViewModel
+import cn.chitanda.music.ui.scene.UserViewModel
 
 /**
  *@author: Chen

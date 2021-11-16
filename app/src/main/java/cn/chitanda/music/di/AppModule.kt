@@ -34,9 +34,11 @@ object AppModule {
 //            }
             addInterceptor { chain ->
                 val request = chain.request().newBuilder()
-                cookie.forEach {
-                    request.addHeader("Cookie", it)
-                }
+//                cookie.forEach {
+                request.addHeader("Cookie", cookie.joinToString { str -> "$str;" }.also{
+                    Log.d("SetCookie", "local cookie: $it")
+                })
+//                }
                 chain.proceed(request.build())
             }
             addInterceptor { chain ->
@@ -44,8 +46,14 @@ object AppModule {
                 val originalResponse = chain.proceed(chain.request())
                 //打印cookie信息
                 val cookieSet = originalResponse.headers("Set-Cookie").toSet()
+                Log.d("SetCookie", "set cookie: $cookieSet")
                 if (cookieSet.isNotEmpty()) {
-                    cookie = cookieSet
+                    for(s in cookieSet){
+                        if(s.startsWith("MUSIC_U=")){
+                            cookie = cookieSet
+                            break
+                        }
+                    }
                 }
                 originalResponse
             }

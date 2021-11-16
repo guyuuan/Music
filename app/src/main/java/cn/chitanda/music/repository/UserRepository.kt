@@ -5,6 +5,7 @@ import cn.chitanda.music.http.api.LoginApi
 import cn.chitanda.music.http.StateLiveData
 import cn.chitanda.music.http.api.UserApi
 import cn.chitanda.music.http.bean.LoginJson
+import cn.chitanda.music.http.bean.UserInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -19,12 +20,12 @@ class UserRepository constructor(
     suspend fun loginWithPassword(
         phone: String,
         pw: String,
-        stateFlow: MutableStateFlow<RequestStatus<LoginJson>>
+        stateFlow: MutableStateFlow<RequestStatus<LoginJson>>?=null
     ) = httpRequest(stateFlow) {
         loginApi.cellphoneLoginWithPassword(phone = phone, password = pw)
     }
 
-    suspend fun fetchUserInfo( stateFlow: MutableStateFlow<RequestStatus<LoginJson>>) =
+    suspend fun fetchUserInfo( stateFlow: MutableStateFlow<RequestStatus<UserInfo>>) =
         httpRequest(stateLiveData = stateFlow) {
             userApi.getUserAccount()
         }

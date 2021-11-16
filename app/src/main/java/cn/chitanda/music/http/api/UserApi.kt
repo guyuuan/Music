@@ -1,8 +1,6 @@
 package cn.chitanda.music.http.api
 
-import cn.chitanda.music.http.bean.HomeData
-import cn.chitanda.music.http.bean.LoginJson
-import retrofit2.http.GET
+import cn.chitanda.music.http.bean.UserInfo
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -15,5 +13,5 @@ interface UserApi {
     @POST("/user/account")
     suspend fun getUserAccount(
         @Query("timestamp") timestamp: Long = System.currentTimeMillis()
-    ): LoginJson
+    ): UserInfo
 }

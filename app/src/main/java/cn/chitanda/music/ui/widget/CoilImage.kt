@@ -1,4 +1,4 @@
-package cn.chitanda.music.ui.scene.home
+package cn.chitanda.music.ui.widget
 
 import android.util.Log
 import androidx.compose.animation.Crossfade
@@ -44,7 +44,6 @@ fun CoilImage(
     }
 
 ) {
-    Log.d(TAG, "CoilImage: $url")
     val painter = rememberImagePainter(data = url)
     Box(
         modifier = modifier then if (shape != null) Modifier.clip(shape) else Modifier,

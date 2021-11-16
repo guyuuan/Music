@@ -68,8 +68,8 @@ import cn.chitanda.music.http.bean.RCMDShowType
 import cn.chitanda.music.http.bean.SubTitleType
 import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.ui.LocalNavController
-import cn.chitanda.music.ui.banner.Banner
-import cn.chitanda.music.ui.scene.home.CoilImage
+import cn.chitanda.music.ui.widget.banner.Banner
+import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.theme.PoHeLv
 import cn.chitanda.music.ui.theme.RCMDTagColor
 import cn.chitanda.music.utils.toUnitString

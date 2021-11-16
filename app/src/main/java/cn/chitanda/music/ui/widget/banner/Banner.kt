@@ -1,4 +1,4 @@
-package cn.chitanda.music.ui.banner
+package cn.chitanda.music.ui.widget.banner
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +23,6 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
-import kotlin.math.abs
 
 /**
  *@author: Chen

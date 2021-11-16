@@ -9,10 +9,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import cn.chitanda.music.R
+import cn.chitanda.music.ui.scene.UserViewModel
 import cn.chitanda.music.ui.scene.home.HomeScene
 import cn.chitanda.music.ui.scene.login.LoginScene
-import cn.chitanda.music.ui.scene.login.UserViewModel
 import cn.chitanda.music.ui.scene.splash.SplashScene
+import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -30,6 +31,7 @@ sealed class Scene(val id: String, @StringRes val label: Int? = null) {
     object Login : Scene(id = "login", label = R.string.label_login)
 }
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
@@ -51,6 +53,7 @@ fun Router(navController: NavHostController = rememberAnimatedNavController()) {
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @ExperimentalPagerApi
 @ExperimentalAnimationApi

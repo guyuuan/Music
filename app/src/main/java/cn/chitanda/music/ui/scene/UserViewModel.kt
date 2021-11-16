@@ -1,9 +1,10 @@
-package cn.chitanda.music.ui.scene.login
+package cn.chitanda.music.ui.scene
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.chitanda.music.http.RequestStatus
 import cn.chitanda.music.http.bean.LoginJson
+import cn.chitanda.music.http.bean.UserInfo
 import cn.chitanda.music.preference.CookiesPreference
 import cn.chitanda.music.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,22 +24,16 @@ private const val TAG = "UserViewModel"
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    cookiesPreference: CookiesPreference
 ) : ViewModel() {
-    var cookies by cookiesPreference
 
-    private val _user = MutableStateFlow<RequestStatus<LoginJson>>(RequestStatus())
-    val user: StateFlow<RequestStatus<LoginJson>>
+    private val _user = MutableStateFlow<RequestStatus<UserInfo>>(RequestStatus())
+    val user: StateFlow<RequestStatus<UserInfo>>
         get() = _user
 
     fun login(username: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            userRepository.loginWithPassword(username, password, _user)
+            userRepository.loginWithPassword(username, password)
         }
-    }
-
-    fun saveCookie(cookies: String) {
-//        this.cookies = cookies
     }
 
     fun fetchUserInfo() {
