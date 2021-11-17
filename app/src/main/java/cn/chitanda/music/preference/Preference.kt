@@ -7,4 +7,4 @@ import com.tencent.mmkv.MMKV
  *@createTime: 2021/8/13 17:54
  *@description:
  **/
-class CookiesPreference(mmkv: MMKV) : MMKVPreference<Set<String>>(mmkv, "cookies", emptySet())
+class CookiesPreference(mmkv: MMKV) : MMKVPreference<String>(mmkv, "cookies", "")

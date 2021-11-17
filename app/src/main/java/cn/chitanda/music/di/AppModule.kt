@@ -7,6 +7,7 @@ import cn.chitanda.music.http.api.LoginApi
 import cn.chitanda.music.http.api.UserApi
 import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.preference.CookiesPreference
+import cn.chitanda.music.utils.MyCookieJar
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,37 +27,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
     private fun getOkHttpClient(cookiesPreference: CookiesPreference): OkHttpClient {
-        var cookie by cookiesPreference
         return OkHttpClient.Builder().apply {
-//            authenticator { _, response ->
-//                val token by accessTokenPreference
-//                response.request.newBuilder().header("Authorization", "token $token").build()
-//            }
-            addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-//                cookie.forEach {
-                request.addHeader("Cookie", cookie.joinToString { str -> "$str;" }.also{
-                    Log.d("SetCookie", "local cookie: $it")
-                })
-//                }
-                chain.proceed(request.build())
-            }
-            addInterceptor { chain ->
-                //拦截的cookie保存在originalResponse中
-                val originalResponse = chain.proceed(chain.request())
-                //打印cookie信息
-                val cookieSet = originalResponse.headers("Set-Cookie").toSet()
-                Log.d("SetCookie", "set cookie: $cookieSet")
-                if (cookieSet.isNotEmpty()) {
-                    for(s in cookieSet){
-                        if(s.startsWith("MUSIC_U=")){
-                            cookie = cookieSet
-                            break
-                        }
-                    }
-                }
-                originalResponse
-            }
+            cookieJar(MyCookieJar(cookiesPreference))
             if (BuildConfig.DEBUG) {
                 addInterceptor(HttpLoggingInterceptor {
                     Log.d("Retrofit", "log: $it")

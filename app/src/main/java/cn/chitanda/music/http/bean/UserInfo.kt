@@ -45,78 +45,78 @@ data class UserInfo(
     @JsonClass(generateAdapter = true)
     data class Profile(
         @Json(name = "accountStatus")
-        val accountStatus: Int,
+        val accountStatus: Int?,
         @Json(name = "accountType")
-        val accountType: Int,
+        val accountType: Int?,
         @Json(name = "anchor")
-        val anchor: Boolean,
+        val anchor: Boolean?,
         @Json(name = "authStatus")
-        val authStatus: Int,
+        val authStatus: Int?,
         @Json(name = "authenticated")
-        val authenticated: Boolean,
+        val authenticated: Boolean?,
         @Json(name = "authenticationTypes")
-        val authenticationTypes: Int,
+        val authenticationTypes: Int?,
         @Json(name = "authority")
-        val authority: Int,
+        val authority: Int?,
         @Json(name = "avatarDetail")
-        val avatarDetail: Any,
+        val avatarDetail: Any?,
         @Json(name = "avatarImgId")
-        val avatarImgId: Long,
+        val avatarImgId: Long?,
         @Json(name = "avatarUrl")
-        val avatarUrl: String,
+        val avatarUrl: String?,
         @Json(name = "backgroundImgId")
-        val backgroundImgId: Long,
+        val backgroundImgId: Long?,
         @Json(name = "backgroundUrl")
-        val backgroundUrl: String,
+        val backgroundUrl: String?,
         @Json(name = "birthday")
-        val birthday: Int,
+        val birthday: Long?,
         @Json(name = "city")
-        val city: Int,
+        val city: Int?,
         @Json(name = "createTime")
-        val createTime: Long,
+        val createTime: Long?,
         @Json(name = "defaultAvatar")
-        val defaultAvatar: Boolean,
+        val defaultAvatar: Boolean?,
         @Json(name = "description")
-        val description: Any,
+        val description: Any?,
         @Json(name = "detailDescription")
-        val detailDescription: Any,
+        val detailDescription: Any?,
         @Json(name = "djStatus")
-        val djStatus: Int,
+        val djStatus: Int?,
         @Json(name = "expertTags")
-        val expertTags: Any,
+        val expertTags: Any?,
         @Json(name = "experts")
-        val experts: Any,
+        val experts: Any?,
         @Json(name = "followed")
-        val followed: Boolean,
+        val followed: Boolean?,
         @Json(name = "gender")
-        val gender: Int,
+        val gender: Int?,
         @Json(name = "lastLoginIP")
-        val lastLoginIP: String,
+        val lastLoginIP: String?,
         @Json(name = "lastLoginTime")
-        val lastLoginTime: Long,
+        val lastLoginTime: Long?,
         @Json(name = "locationStatus")
-        val locationStatus: Int,
+        val locationStatus: Int?,
         @Json(name = "mutual")
-        val mutual: Boolean,
+        val mutual: Boolean?,
         @Json(name = "nickname")
-        val nickname: String,
+        val nickname: String?,
         @Json(name = "province")
-        val province: Int,
+        val province: Int?,
         @Json(name = "remarkName")
-        val remarkName: Any,
+        val remarkName: Any?,
         @Json(name = "shortUserName")
-        val shortUserName: String,
+        val shortUserName: String?,
         @Json(name = "signature")
-        val signature: String,
+        val signature: String?,
         @Json(name = "userId")
-        val userId: Int,
+        val userId: Int?,
         @Json(name = "userName")
-        val userName: String,
+        val userName: String?,
         @Json(name = "userType")
-        val userType: Int,
+        val userType: Int?,
         @Json(name = "vipType")
-        val vipType: Int,
+        val vipType: Int?,
         @Json(name = "viptypeVersion")
-        val viptypeVersion: Long
+        val viptypeVersion: Long?
     )
 }
