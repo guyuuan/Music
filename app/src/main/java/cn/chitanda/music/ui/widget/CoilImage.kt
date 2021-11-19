@@ -1,6 +1,5 @@
 package cn.chitanda.music.ui.widget
 
-import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -29,8 +28,8 @@ private const val TAG = "CoilImage"
 @Composable
 fun CoilImage(
     url: String,
-    contentDescription: String?,
     modifier: Modifier = Modifier,
+    contentDescription: String?=null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Crop,
     alpha: Float = DefaultAlpha,
@@ -49,13 +48,14 @@ fun CoilImage(
         modifier = modifier then if (shape != null) Modifier.clip(shape) else Modifier,
         contentAlignment = Alignment.Center
     ) {
-        val imageModifier =
-            Modifier.fillMaxSize() then if (imageShape != null) Modifier.clip(imageShape) else Modifier
+//        val imageModifier =
+//            Modifier.fillMaxSize() then if (imageShape != null) Modifier.clip(imageShape) else Modifier
         Image(
             painter = painter, contentDescription = contentDescription,
-            modifier = imageModifier,
-            alignment, contentScale,
-            alpha, colorFilter
+            modifier = Modifier.fillMaxSize(),
+            alignment = alignment,
+            contentScale = contentScale,
+            alpha = alpha, colorFilter = colorFilter
         )
         Crossfade(targetState = painter.state) { state ->
             when (state) {

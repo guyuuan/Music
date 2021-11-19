@@ -392,7 +392,7 @@ fun SongItem(
             CoilImage(
                 url = song.uiElement?.image?.imageUrl.toString(),
                 contentDescription = null,
-                Modifier
+                modifier = Modifier
                     .size(50.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
