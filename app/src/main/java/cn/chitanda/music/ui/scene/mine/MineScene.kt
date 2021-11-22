@@ -9,13 +9,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -26,6 +22,8 @@ import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.scene.UserViewModel
 import cn.chitanda.music.ui.widget.CoilImage
+import cn.chitanda.music.ui.widget.nestedscroll.rememberNestedScrollAppBarConnection
+import cn.chitanda.music.ui.widget.nestedscroll.rememberNestedScrollAppBarState
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.statusBarsPadding
@@ -54,38 +52,51 @@ fun MineScene(
 @ExperimentalCoilApi
 @Composable
 private fun NestedScrollBody(user: UserInfo) {
-    val maxHeightPx = remember { Resources.getSystem().displayMetrics.widthPixels / 5 * 4 }
-    val minHeightPx = with(LocalDensity.current) {
+    val max = remember{ Resources.getSystem().displayMetrics.widthPixels / 5 * 4 }
+    val min = with(LocalDensity.current) {
         with(LocalWindowInsets.current) {
-            (statusBars.top - statusBars.bottom) + 56.dp.toPx().roundToInt()
-        }
+            (statusBars.top - statusBars.bottom) + 56.dp.toPx()
+        }.roundToInt()
     }
-    var imageHeight by rememberSaveable { mutableStateOf(maxHeightPx) }
-    Box(
+    val appBarState = rememberNestedScrollAppBarState(
+        appBarHeight = max,
+        minHeight = min,
+        maxHeight = max
+    )
+    val nestedScrollConnection = rememberNestedScrollAppBarConnection(appBarState)
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(connection = object : NestedScrollConnection {
-                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                    val delta = available.y
-                    imageHeight = (imageHeight + delta)
-                        .roundToInt()
-                        .coerceIn(
-                            minimumValue = minHeightPx,
-                            maximumValue = maxHeightPx
-                        )
-                    return Offset.Zero
-                }
-            })
+            .nestedScroll(connection = nestedScrollConnection)
     ) {
-
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(with(LocalDensity.current) { appBarState.height.toDp() })
+        ) {
+            CoilImage(
+                url = user.profile?.backgroundUrl
+                    ?: ""
+            )
+            val appBarColor by animateColorAsState(targetValue = if (appBarState.height > appBarState.minHeight) Color.Transparent else MaterialTheme.colors.primary)
+            Box(
+                modifier = Modifier
+                    .background(color = appBarColor)
+                    .padding(horizontal = 18.dp)
+                    .fillMaxWidth()
+                    .height(with(LocalDensity.current) { appBarState.minHeight.toDp() })
+                    .statusBarsPadding(), contentAlignment = Alignment.CenterStart
+            ) {
+                Text(user.profile?.nickname.toString(), color = Color.White, fontSize = 18.sp)
+            }
+        }
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.White),
-            contentPadding = PaddingValues(top = with(LocalDensity.current) { maxHeightPx.toDp() })
+                .background(color = Color.White)
         ) {
             item {
-                Row(modifier = Modifier.padding(  24.dp))
+                Row(modifier = Modifier.padding(24.dp))
                 {
                     CoilImage(
                         url = user.profile?.avatarUrl ?: "",
@@ -98,28 +109,5 @@ private fun NestedScrollBody(user: UserInfo) {
                 Text(text = i.toString(), modifier = Modifier.padding(16.dp))
             }
         }
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(with(LocalDensity.current) { imageHeight.toDp() })
-        ) {
-            CoilImage(
-                url = user.profile?.backgroundUrl
-                    ?: ""
-            )
-            val appBarColor by animateColorAsState(targetValue = if (imageHeight > minHeightPx) Color.Transparent else MaterialTheme.colors.primary)
-            Box(
-                modifier = Modifier
-                    .background(color = appBarColor)
-                    .padding(horizontal = 18.dp)
-                    .fillMaxWidth()
-                    .height(with(LocalDensity.current) { minHeightPx.toDp() })
-                    .statusBarsPadding(), contentAlignment = Alignment.CenterStart
-            ) {
-                Text(user.profile?.nickname.toString(), color = Color.White, fontSize = 18.sp)
-            }
-        }
-
     }
 }
