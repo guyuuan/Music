@@ -3,6 +3,7 @@ package cn.chitanda.music.di
 import cn.chitanda.music.http.api.FindApi
 import cn.chitanda.music.http.api.LoginApi
 import cn.chitanda.music.http.api.UserApi
+import cn.chitanda.music.preference.PreferenceManager
 import cn.chitanda.music.repository.FindRepository
 import cn.chitanda.music.repository.UserRepository
 import dagger.Module
@@ -25,9 +26,11 @@ object RepositoryModule {
     fun provideUserRepository(
         loginApi: LoginApi,
         userApi: UserApi,
+        preferenceManager:PreferenceManager
     ) = UserRepository(
         loginApi = loginApi,
         userApi = userApi,
+        preferenceManager = preferenceManager
     )
 
     @Provides

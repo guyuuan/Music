@@ -2,12 +2,12 @@ package cn.chitanda.music.di
 
 import android.util.Log
 import cn.chitanda.music.BuildConfig
+import cn.chitanda.music.http.MyCookieJar
 import cn.chitanda.music.http.api.FindApi
 import cn.chitanda.music.http.api.LoginApi
 import cn.chitanda.music.http.api.UserApi
 import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.preference.CookiesPreference
-import cn.chitanda.music.utils.MyCookieJar
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

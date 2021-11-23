@@ -4,7 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import cn.chitanda.music.http.DataState
@@ -31,19 +34,19 @@ fun SplashScene(
     )
     LaunchedEffect(key1 = user) {
         when (user.status) {
-            DataState.STATE_CREATE->{
+            DataState.STATE_CREATE -> {
                 userViewModel.fetchUserInfo()
             }
             DataState.STATE_LOADING -> {
 
             }
             DataState.STATE_SUCCESS -> {
-
-                if (user.json?.profile == null || user.json?.account == null) {
+                if (user.json?.profile == null) {
                     navController.navigate(Scene.Login.id) {
                         popUpTo(Scene.Splash.id) { inclusive = true }
                     }
                 } else {
+                    userViewModel.refreshLoginStatus()
                     navController.navigate(Scene.Home.id) {
                         popUpTo(Scene.Splash.id) { inclusive = true }
                     }

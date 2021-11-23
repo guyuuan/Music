@@ -1,4 +1,4 @@
-package cn.chitanda.music.utils
+package cn.chitanda.music.http
 
 import android.util.Log
 import cn.chitanda.music.http.moshi.moshi
@@ -20,7 +20,6 @@ class MyCookieJar(cookiesPreference: CookiesPreference) : CookieJar {
             val cookie = try {
                 jsonAdapter.fromJson(cookies)
             } catch (e: Exception) {
-                Log.e(TAG, "loadForRequest: ", e)
                 null
             }
             return cookie?.let { listOf(it) } ?: emptyList()

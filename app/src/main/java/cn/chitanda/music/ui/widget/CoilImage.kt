@@ -27,7 +27,7 @@ private const val TAG = "CoilImage"
 @ExperimentalCoilApi
 @Composable
 fun CoilImage(
-    url: String,
+    url: String?,
     modifier: Modifier = Modifier,
     contentDescription: String?=null,
     alignment: Alignment = Alignment.Center,
@@ -35,7 +35,6 @@ fun CoilImage(
     alpha: Float = DefaultAlpha,
     shape: Shape? = null,
     colorFilter: ColorFilter? = null,
-    imageShape: Shape? = null,
     onError: @Composable () -> Unit = {
     },
     onLoading: @Composable () -> Unit = {

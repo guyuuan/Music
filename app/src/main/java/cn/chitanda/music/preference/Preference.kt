@@ -8,3 +8,4 @@ import com.tencent.mmkv.MMKV
  *@description:
  **/
 class CookiesPreference(mmkv: MMKV) : MMKVPreference<String>(mmkv, "cookies", "")
+class UidPreference(mmkv: MMKV) : MMKVPreference<String>(mmkv, "uid", "")

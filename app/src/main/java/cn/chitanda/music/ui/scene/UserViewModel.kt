@@ -3,9 +3,8 @@ package cn.chitanda.music.ui.scene
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.chitanda.music.http.RequestStatus
-import cn.chitanda.music.http.bean.LoginJson
-import cn.chitanda.music.http.bean.UserInfo
-import cn.chitanda.music.preference.CookiesPreference
+import cn.chitanda.music.http.bean.UserAccount
+import cn.chitanda.music.http.bean.UserProfile
 import cn.chitanda.music.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,8 +25,8 @@ class UserViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ) : ViewModel() {
 
-    private val _user = MutableStateFlow<RequestStatus<UserInfo>>(RequestStatus())
-    val user: StateFlow<RequestStatus<UserInfo>>
+    private val _user = MutableStateFlow<RequestStatus<UserProfile>>(RequestStatus())
+    val user: StateFlow<RequestStatus<UserProfile>>
         get() = _user
 
     fun login(username: String, password: String) {
@@ -39,6 +38,12 @@ class UserViewModel @Inject constructor(
     fun fetchUserInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             userRepository.fetchUserInfo(_user)
+        }
+    }
+
+    fun refreshLoginStatus() {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.refreshLoginStatus()
         }
     }
 }

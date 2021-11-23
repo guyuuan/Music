@@ -185,10 +185,10 @@ private fun HomeBanners(data: HomeData.Data.Block, modifier: Modifier = Modifier
                 contentAlignment = Alignment.BottomEnd
             ) {
                 CoilImage(
-                    url = item.pic.toString(),
+                    url = item.pic,
                     modifier = Modifier
                         .fillMaxSize(),
-                    imageShape = RoundedCornerShape(8.dp),
+                    shape = RoundedCornerShape(8.dp),
                     contentDescription = null
                 )
                 Surface(
@@ -283,7 +283,7 @@ fun RecommendPlayList(
                             .aspectRatio(1f)
                     ) {
                         CoilImage(
-                            url = resource.uiElement?.image?.imageUrl.toString(),
+                            url = resource.uiElement?.image?.imageUrl,
                             contentDescription = resource.resourceType,
                             modifier = Modifier.fillMaxSize(),
                             shape = RoundedCornerShape(8.dp)
@@ -390,7 +390,7 @@ fun SongItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             CoilImage(
-                url = song.uiElement?.image?.imageUrl.toString(),
+                url = song.uiElement?.image?.imageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .size(50.dp)
