@@ -25,6 +25,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import cn.chitanda.music.http.DataState
 import cn.chitanda.music.http.bean.UserProfile
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
@@ -67,6 +69,11 @@ fun MineScene(
     val user by viewModel.user.collectAsState()
     user.json?.let {
         NestedScrollBody(it)
+    }
+    LaunchedEffect(key1 = user) {
+        if (user.status == DataState.STATE_CREATE) {
+            viewModel.fetchUserInfo()
+        }
     }
 }
 
