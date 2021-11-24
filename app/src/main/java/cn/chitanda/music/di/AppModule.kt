@@ -33,7 +33,7 @@ object AppModule {
             if (BuildConfig.DEBUG) {
                 addInterceptor(HttpLoggingInterceptor {
                     Log.d("Retrofit", "log: $it")
-                }.also { it.level = HttpLoggingInterceptor.Level.BODY })
+                }.apply { level = HttpLoggingInterceptor.Level.BODY })
             }
         }.build()
     }

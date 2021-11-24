@@ -35,7 +35,10 @@ fun SplashScene(
     LaunchedEffect(key1 = user) {
         when (user.status) {
             DataState.STATE_CREATE -> {
-                userViewModel.fetchUserInfo()
+                if (userViewModel.uid.isNotEmpty()) userViewModel.fetchUserInfo()
+                else navController.navigate(Scene.Login.id) {
+                    popUpTo(Scene.Splash.id) { inclusive = true }
+                }
             }
             DataState.STATE_LOADING -> {
 

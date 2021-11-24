@@ -3,8 +3,8 @@ package cn.chitanda.music.ui.scene
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.chitanda.music.http.RequestStatus
-import cn.chitanda.music.http.bean.UserAccount
 import cn.chitanda.music.http.bean.UserProfile
+import cn.chitanda.music.preference.PreferenceManager
 import cn.chitanda.music.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,8 +23,9 @@ private const val TAG = "UserViewModel"
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val userRepository: UserRepository,
+    preferenceManager: PreferenceManager
 ) : ViewModel() {
-
+    val uid = preferenceManager.uid
     private val _user = MutableStateFlow<RequestStatus<UserProfile>>(RequestStatus())
     val user: StateFlow<RequestStatus<UserProfile>>
         get() = _user
