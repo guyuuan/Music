@@ -6,6 +6,7 @@ import cn.chitanda.music.http.MyCookieJar
 import cn.chitanda.music.http.api.FindApi
 import cn.chitanda.music.http.api.LoginApi
 import cn.chitanda.music.http.api.UserApi
+import cn.chitanda.music.http.api.VideoApi
 import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.preference.CookiesPreference
 import dagger.Module
@@ -59,4 +60,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFindApi(retrofit: Retrofit): FindApi = retrofit.create(FindApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideVideoApi(retrofit: Retrofit): VideoApi = retrofit.create(VideoApi::class.java)
 }

@@ -3,9 +3,11 @@ package cn.chitanda.music.di
 import cn.chitanda.music.http.api.FindApi
 import cn.chitanda.music.http.api.LoginApi
 import cn.chitanda.music.http.api.UserApi
+import cn.chitanda.music.http.api.VideoApi
 import cn.chitanda.music.preference.PreferenceManager
 import cn.chitanda.music.repository.FindRepository
 import cn.chitanda.music.repository.UserRepository
+import cn.chitanda.music.repository.VideoRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +28,7 @@ object RepositoryModule {
     fun provideUserRepository(
         loginApi: LoginApi,
         userApi: UserApi,
-        preferenceManager:PreferenceManager
+        preferenceManager: PreferenceManager
     ) = UserRepository(
         loginApi = loginApi,
         userApi = userApi,
@@ -36,4 +38,8 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideFindRepository(findApi: FindApi) = FindRepository(findApi)
+
+    @Provides
+    @Singleton
+    fun provideVideoRepository(videoApi: VideoApi) = VideoRepository(videoApi)
 }
