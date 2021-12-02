@@ -1,5 +1,9 @@
 package cn.chitanda.music.ui.widget.nestedscroll
 
+import androidx.compose.animation.core.Easing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -36,7 +40,7 @@ class NestedScrollAppBarState(
     val maxHeight: Int,
 ) {
     var height by mutableStateOf(appBarHeight)
-    var scrollPercent by mutableStateOf(appBarHeight / maxHeight.toFloat())
+    val scrollPercent get() = height / maxHeight.toFloat()
 }
 
 class NestedScrollAppBarConnection(
@@ -53,6 +57,15 @@ class NestedScrollAppBarConnection(
         available
     else Offset.Zero).also {
         state.height = (state.height + available.y).roundToInt().coerceIn(minHeight, maxHeight)
-        state.scrollPercent = state.height/maxHeight.toFloat()
+    }
+
+    suspend fun scrollToTop() {
+        animate(
+            initialValue = state.height.toFloat(),
+            targetValue = minHeight.toFloat(),
+            animationSpec = tween(600,easing = FastOutSlowInEasing)
+        ) { value, _ ->
+            state.height = value.roundToInt().coerceIn(minHeight, maxHeight)
+        }
     }
 }
