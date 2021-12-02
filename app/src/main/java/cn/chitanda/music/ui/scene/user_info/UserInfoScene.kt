@@ -20,10 +20,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -46,6 +46,7 @@ import cn.chitanda.music.http.bean.UserProfile
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.scene.UserViewModel
+import cn.chitanda.music.ui.theme.Shapes
 import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.widget.nestedscroll.rememberNestedScrollAppBarConnection
 import cn.chitanda.music.ui.widget.nestedscroll.rememberNestedScrollAppBarState
@@ -113,7 +114,7 @@ private fun NestedScrollBody(user: UserProfile) {
             CoilImage(
                 url = user.profile?.backgroundUrl
             )
-            val appBarColor by animateColorAsState(targetValue = if (appBarState.height > appBarState.minHeight) Color.Transparent else MaterialTheme.colors.primary)
+            val appBarColor by animateColorAsState(targetValue = if (appBarState.height > appBarState.minHeight) Color.Transparent else MaterialTheme.colorScheme.primary)
             Box(
                 modifier = Modifier
                     .background(color = appBarColor)
@@ -145,7 +146,7 @@ private fun NestedScrollBody(user: UserProfile) {
                 Surface(
                     modifier = Modifier.padding(16.dp),
                     elevation = 8.dp,
-                    shape = MaterialTheme.shapes.medium
+                    shape = Shapes.medium
                 ) {
                     Row(
                         modifier = Modifier
@@ -208,7 +209,7 @@ private fun NestedScrollBody(user: UserProfile) {
 @Composable
 private fun UserInfoItem(top: String?, bottom: String) {
     Column {
-        Text(text = top.toString(), style = MaterialTheme.typography.body1, color = Color.Black)
-        Text(text = bottom, style = MaterialTheme.typography.subtitle2)
+        Text(text = top.toString(), style = MaterialTheme.typography.titleMedium, color = Color.Black)
+        Text(text = bottom, style = MaterialTheme.typography.titleSmall)
     }
 }

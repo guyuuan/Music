@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -27,7 +28,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -35,8 +35,8 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.primarySurface
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -52,6 +52,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
@@ -68,13 +69,13 @@ import cn.chitanda.music.http.bean.RCMDShowType
 import cn.chitanda.music.http.bean.SubTitleType
 import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.ui.LocalNavController
-import cn.chitanda.music.ui.widget.banner.Banner
-import cn.chitanda.music.ui.widget.CoilImage
-import cn.chitanda.music.ui.theme.PoHeLv
 import cn.chitanda.music.ui.theme.RCMDTagColor
+import cn.chitanda.music.ui.widget.CoilImage
+import cn.chitanda.music.ui.widget.banner.Banner
 import cn.chitanda.music.utils.toUnitString
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.insets.statusBarsPadding
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Types
@@ -95,12 +96,22 @@ fun FindScene(navController: NavController = LocalNavController.current) {
     val viewModel: DiscoverySceneViewModel = hiltViewModel()
     val data by viewModel.homeData.collectAsState()
     val iconList by viewModel.homeIconList.collectAsState()
-    Surface(color = MaterialTheme.colors.primarySurface) {
-        Scaffold(topBar = {
-            TopAppBar(contentPadding = PaddingValues(horizontal = 8.dp)) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                contentPadding = rememberInsetsPaddingValues(
+                    insets = LocalWindowInsets.current.systemBars,
+                    applyTop = true,
+                    applyStart = true,
+                    applyEnd = true
+                ),
+                backgroundColor = MaterialTheme.colorScheme.primary
+            ) {
                 Icon(Icons.Default.Menu, contentDescription = "")
                 BasicTextField(
-                    value = "", onValueChange = {}, modifier = Modifier
+                    value = "",
+                    onValueChange = {},
+                    modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight(0.5f)
                         .padding(horizontal = 16.dp)
@@ -108,61 +119,63 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                 )
                 Icon(painter = painterResource(id = R.drawable.ic_mic), contentDescription = "")
             }
-        }, modifier = Modifier.statusBarsPadding()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                when (data.status) {
-                    DataState.STATE_LOADING -> CircularProgressIndicator()
-                    DataState.STATE_SUCCESS -> {
-                        LazyColumn(modifier = Modifier.fillMaxSize()) {
-                            itemsIndexed(data.json?.data?.blocks ?: emptyList()) { i, block ->
-                                when (block.showType) {
-                                    RCMDShowType.Banner -> HomeBanners(
-                                        data = block, modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(200.dp)
-                                            .align(Alignment.TopCenter)
-                                    )
-                                    RCMDShowType.PlayList -> {
-                                        RecommendPlayList(
-                                            data = block,
-                                            modifier = Modifier
-                                                .padding(vertical = 16.dp)
-                                                .fillMaxWidth(),
-                                            contentPadding = PaddingValues(horizontal = 16.dp)
-                                        )
-                                    }
-                                    RCMDShowType.PlayableMLog -> {
-                                    }
-                                    RCMDShowType.SongList -> {
-                                        RecommendSongList(
-                                            data = block,
-                                            modifier = Modifier
-                                                .padding(vertical = 16.dp)
-                                                .fillMaxWidth(),
-                                            contentPadding = PaddingValues(horizontal = 16.dp)
-                                        )
-                                    }
-                                    RCMDShowType.Unknown, null -> {
-                                    }
-                                }
-                                if (i == 0) {
-                                    HomeRoundIconList(
-                                        data = iconList.json?.data ?: emptyList(),
+        },
+        backgroundColor = MaterialTheme.colorScheme.surface
+    ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            when (data.status) {
+                DataState.STATE_LOADING -> CircularProgressIndicator()
+                DataState.STATE_SUCCESS -> {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        itemsIndexed(data.json?.data?.blocks ?: emptyList()) { i, block ->
+                            when (block.showType) {
+                                RCMDShowType.Banner -> HomeBanners(
+                                    data = block, modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(200.dp)
+                                        .align(Alignment.TopCenter)
+                                )
+                                RCMDShowType.PlayList -> {
+                                    RecommendPlayList(
+                                        data = block,
                                         modifier = Modifier
+                                            .padding(vertical = 16.dp)
                                             .fillMaxWidth(),
                                         contentPadding = PaddingValues(horizontal = 16.dp)
                                     )
-
                                 }
+                                RCMDShowType.PlayableMLog -> {
+                                }
+                                RCMDShowType.SongList -> {
+                                    RecommendSongList(
+                                        data = block,
+                                        modifier = Modifier
+                                            .padding(vertical = 16.dp)
+                                            .fillMaxWidth(),
+                                        contentPadding = PaddingValues(horizontal = 16.dp)
+                                    )
+                                }
+                                RCMDShowType.Unknown, null -> {
+                                }
+                            }
+                            if (i == 0) {
+                                HomeRoundIconList(
+                                    data = iconList.json?.data ?: emptyList(),
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    contentPadding = PaddingValues(horizontal = 16.dp)
+                                )
+
                             }
                         }
                     }
-                    else -> {
-                    }
+                }
+                else -> {
                 }
             }
         }
     }
+//    }
 }
 
 
@@ -198,7 +211,7 @@ private fun HomeBanners(data: HomeData.Data.Block, modifier: Modifier = Modifier
                 ) {
                     Text(
                         text = item.typeTitle.toString(),
-                        style = MaterialTheme.typography.overline,
+                        style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
                     )
                 }
@@ -243,14 +256,15 @@ fun HomeRoundIconList(
                     modifier = Modifier
                         .size(45.dp)
                         .background(
-                            MaterialTheme.colors.primary.copy(alpha = 0.2f),
+                            MaterialTheme.colorScheme.primary,
                             shape = CircleShape
                         ),
                     contentDescription = item.name,
-                    colorFilter = ColorFilter.tint(PoHeLv), onLoading = {}
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primaryContainer),
+                    onLoading = {}
                 )
                 Spacer(modifier = Modifier.size(4.dp))
-                Text(text = item.name, style = MaterialTheme.typography.caption)
+                Text(text = item.name, style = MaterialTheme.typography.labelSmall)
             }
         }
     }
@@ -309,7 +323,7 @@ fun RecommendPlayList(
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = playCount?.toUnitString() ?: playCount.toString(),
-                                    style = MaterialTheme.typography.overline
+                                    style = MaterialTheme.typography.displaySmall
                                 )
                             }
                         }
@@ -320,7 +334,7 @@ fun RecommendPlayList(
                     )
                     Text(
                         text = resource.uiElement?.mainTitle?.title.toString(),
-                        style = MaterialTheme.typography.body2, maxLines = 2,
+                        style = MaterialTheme.typography.titleMedium, maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
@@ -401,14 +415,14 @@ fun SongItem(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = song.uiElement?.mainTitle?.title.toString(),
-                        style = MaterialTheme.typography.body1,
+                        style = MaterialTheme.typography.titleLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     val artists =
                         song.resourceExtInfo?.artists?.joinToString(separator = "/") { it.name.toString() }
-                    val style = MaterialTheme.typography.caption
+                    val style = MaterialTheme.typography.displaySmall
                     Text(
                         text = "- $artists",
                         style = style.copy(style.color.copy(alpha = 0.4f)),
@@ -416,7 +430,7 @@ fun SongItem(
                     )
                 }
                 song.uiElement?.subTitle?.title?.let {
-                    val style = MaterialTheme.typography.subtitle2
+                    val style = MaterialTheme.typography.titleSmall
                     when (song.uiElement.subTitle.titleType) {
                         SubTitleType.FromComment -> {
                             Text(
@@ -430,10 +444,12 @@ fun SongItem(
                                 text = it,
                                 style = style.copy(color = RCMDTagColor, fontSize = 8.sp),
                                 maxLines = 1, overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.background(
-                                    color = RCMDTagColor.copy(alpha = 0.1f),
-                                    shape = RoundedCornerShape(4.dp)
-                                ).padding(vertical = 2.dp,horizontal = 4.dp)
+                                modifier = Modifier
+                                    .background(
+                                        color = RCMDTagColor.copy(alpha = 0.1f),
+                                        shape = RoundedCornerShape(4.dp)
+                                    )
+                                    .padding(vertical = 2.dp, horizontal = 4.dp)
                             )
                         }
                     }
@@ -475,13 +491,13 @@ fun TitleColumn(
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.headlineMedium
             )
             buttonText?.let {
                 Surface(
                     border = BorderStroke(
                         0.5.dp,
-                        MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
                     ),
                     shape = RoundedCornerShape(16.dp),
                     onClick = {},
@@ -490,7 +506,7 @@ fun TitleColumn(
                 ) {
                     Text(
                         text = it,
-                        style = MaterialTheme.typography.button,
+                        style = MaterialTheme.typography.displayMedium,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                     )
 

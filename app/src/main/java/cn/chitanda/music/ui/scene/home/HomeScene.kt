@@ -9,7 +9,7 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -57,7 +57,7 @@ fun HomeScene(
 ) {
     val list = listOf(HomePageItem.Find, HomePageItem.Message, HomePageItem.Mine)
     val homeNavController = rememberAnimatedNavController()
-    Surface(color = MaterialTheme.colors.primarySurface) {
+    Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(modifier = Modifier
             .fillMaxSize()
             .navigationBarsPadding(),
@@ -65,7 +65,9 @@ fun HomeScene(
                 var currentPage by remember {
                     mutableStateOf<HomePageItem>(HomePageItem.Find)
                 }
-                BottomNavigation {
+                BottomNavigation (
+                    backgroundColor = MaterialTheme.colorScheme.primary
+                ){
                     list.forEach { scene ->
                         BottomNavigationItem(
                             icon = {
