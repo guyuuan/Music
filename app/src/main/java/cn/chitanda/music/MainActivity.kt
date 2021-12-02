@@ -1,7 +1,6 @@
 package cn.chitanda.music
 
 import android.os.Bundle
-import android.view.animation.LinearInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi

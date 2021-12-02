@@ -35,10 +35,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import cn.chitanda.music.R
 import cn.chitanda.music.http.DataState
 import cn.chitanda.music.http.bean.UserProfile
 import cn.chitanda.music.ui.LocalNavController
@@ -170,12 +172,20 @@ private fun NestedScrollBody(user: UserProfile) {
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceAround
                             ) {
-                                UserInfoItem(top = user.profile?.follows.toString(), bottom = "粉丝")
+                                UserInfoItem(
+                                    top = user.profile?.follows.toString(), bottom = stringResource(
+                                        R.string.text_fans
+                                    )
+                                )
                                 UserInfoItem(
                                     top = user.profile?.followeds.toString(),
-                                    bottom = "关注"
+                                    bottom = stringResource(R.string.text_followeds)
                                 )
-                                UserInfoItem(top = user.profile?.vipType.toString(), bottom = "等级")
+                                UserInfoItem(
+                                    top = user.profile?.vipType.toString(), bottom = stringResource(
+                                        R.string.text_levels
+                                    )
+                                )
                             }
 
                             TextButton(
@@ -186,25 +196,10 @@ private fun NestedScrollBody(user: UserProfile) {
                                 contentPadding = PaddingValues(0.dp),
                                 border = BorderStroke(0.8.dp, color = Color.Gray)
                             ) {
-                                Text(text = "编辑信息")
+                                Text(text = stringResource(R.string.text_edit_user_info))
                             }
                         }
                     }
-                }
-            }
-            items(7) { i ->
-                Surface(
-                    modifier = Modifier.padding(16.dp),
-                    elevation = 8.dp,
-                    shape = MaterialTheme.shapes.medium
-                ) {
-                    Text(
-                        text = i.toString(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        textAlign = TextAlign.Center
-                    )
                 }
             }
         }
