@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -52,7 +52,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
@@ -211,7 +210,7 @@ private fun HomeBanners(data: HomeData.Data.Block, modifier: Modifier = Modifier
                 ) {
                     Text(
                         text = item.typeTitle.toString(),
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
                     )
                 }
@@ -323,7 +322,7 @@ fun RecommendPlayList(
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = playCount?.toUnitString() ?: playCount.toString(),
-                                    style = MaterialTheme.typography.displaySmall
+                                    style = MaterialTheme.typography.labelSmall
                                 )
                             }
                         }
@@ -334,7 +333,7 @@ fun RecommendPlayList(
                     )
                     Text(
                         text = resource.uiElement?.mainTitle?.title.toString(),
-                        style = MaterialTheme.typography.titleMedium, maxLines = 2,
+                        style = MaterialTheme.typography.labelMedium, maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
@@ -411,18 +410,18 @@ fun SongItem(
                     .clip(RoundedCornerShape(8.dp))
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Column {
+            Column(verticalArrangement = Arrangement.SpaceAround, modifier = Modifier.height(50.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = song.uiElement?.mainTitle?.title.toString(),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.labelLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     val artists =
                         song.resourceExtInfo?.artists?.joinToString(separator = "/") { it.name.toString() }
-                    val style = MaterialTheme.typography.displaySmall
+                    val style = MaterialTheme.typography.labelSmall
                     Text(
                         text = "- $artists",
                         style = style.copy(style.color.copy(alpha = 0.4f)),
@@ -430,7 +429,7 @@ fun SongItem(
                     )
                 }
                 song.uiElement?.subTitle?.title?.let {
-                    val style = MaterialTheme.typography.titleSmall
+                    val style = MaterialTheme.typography.labelMedium
                     when (song.uiElement.subTitle.titleType) {
                         SubTitleType.FromComment -> {
                             Text(
@@ -487,11 +486,12 @@ fun TitleColumn(
                     start = contentPadding.calculateLeftPadding(LayoutDirection.Ltr),
                     end = contentPadding.calculateRightPadding(LayoutDirection.Ltr)
                 ),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineSmall
             )
             buttonText?.let {
                 Surface(
@@ -506,7 +506,7 @@ fun TitleColumn(
                 ) {
                     Text(
                         text = it,
-                        style = MaterialTheme.typography.displayMedium,
+                        style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                     )
 
