@@ -4,7 +4,10 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -30,7 +33,7 @@ import cn.chitanda.music.ui.scene.find.FindScene
 import cn.chitanda.music.ui.scene.message.MessageScene
 import cn.chitanda.music.ui.scene.mine.MineScene
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -53,44 +56,10 @@ fun HomeScene(
     userViewModel: UserViewModel = LocalUserViewModel.current,
     navController: NavController = LocalNavController.current
 ) {
-    val list = listOf(HomePageItem.Find, HomePageItem.Message, HomePageItem.Mine)
     val homeNavController = rememberAnimatedNavController()
-    var currentPage by remember {
-        mutableStateOf<HomePageItem>(HomePageItem.Find)
-    }
-    Scaffold(modifier = Modifier
-        .fillMaxSize()
-        .navigationBarsPadding(),
+    Scaffold(
         bottomBar = {
-            BottomNavigation(
-                backgroundColor = MaterialTheme.colorScheme.surfaceVariant
-            ) {
-                list.forEach { scene ->
-                    BottomNavigationItem(
-                        selectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = scene.icon),
-                                contentDescription = null
-                            )
-                        },
-                        label = {
-                            Text(text = stringResource(id = scene.label))
-                        },
-                        alwaysShowLabel = false,
-                        selected = currentPage == scene,
-                        onClick = {
-                            currentPage = scene
-                            homeNavController.navigate(scene.route) {
-                                popUpTo(homeNavController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        })
-                }
-            }
+            BottomBar(homeNavController)
         }) {
         AnimatedNavHost(
             navController = homeNavController,
@@ -106,6 +75,51 @@ fun HomeScene(
                 MineScene()
             }
         }
+    }
+}
+
+@Composable
+private fun BottomBar(homeNavController: NavController) {
+    val list = remember { listOf(HomePageItem.Find, HomePageItem.Message, HomePageItem.Mine) }
+    var currentPage by remember {
+        mutableStateOf<HomePageItem>(HomePageItem.Find)
+    }
+    Column {
+        BottomNavigation(
+            backgroundColor = MaterialTheme.colorScheme.surfaceVariant
+        ) {
+            list.forEach { scene ->
+                BottomNavigationItem(
+                    selectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = scene.icon),
+                            contentDescription = null
+                        )
+                    },
+                    label = {
+                        Text(text = stringResource(id = scene.label))
+                    },
+                    alwaysShowLabel = false,
+                    selected = currentPage == scene,
+                    onClick = {
+                        currentPage = scene
+                        homeNavController.navigate(scene.route) {
+                            popUpTo(homeNavController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    })
+            }
+        }
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsHeight()
+                .background(color = MaterialTheme.colorScheme.surfaceVariant)
+        )
     }
 }
 

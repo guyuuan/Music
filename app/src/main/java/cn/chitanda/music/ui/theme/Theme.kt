@@ -20,7 +20,7 @@ private val LightColorPalette = lightColorScheme()
 @SuppressLint("NewApi")
 @Composable
 fun MusicTheme(
-    customColor: Color?,
+    customColor: Color? = null,
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable() () -> Unit
 ) {
