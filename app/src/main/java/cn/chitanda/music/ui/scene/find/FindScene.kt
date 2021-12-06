@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +33,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -510,11 +511,12 @@ fun TitleColumn(
     ) {
         Row(
             Modifier
+                .fillMaxWidth()
                 .padding(
-                    start = contentPadding.calculateStartPadding(LocalLayoutDirection.current),
-                    end = contentPadding.calculateEndPadding(LocalLayoutDirection.current)
-                )
-                .fillMaxWidth(),
+                    horizontal = contentPadding.calculateStartPadding(
+                        LocalLayoutDirection.current
+                    )
+                ),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -523,22 +525,20 @@ fun TitleColumn(
                 style = MaterialTheme.typography.headlineSmall
             )
             buttonText?.let {
-                Surface(
+                TextButton(
+                   modifier =  Modifier.defaultMinSize(48.dp,20.dp),
+                    onClick = { },
                     border = BorderStroke(
                         0.5.dp,
                         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.12f)
                     ),
                     shape = RoundedCornerShape(16.dp),
-                    onClick = {},
-                    role = Role.Button,
-                    indication = rememberRipple()
+//                    contentPadding = PaddingValues(vertical = 2.dp, horizontal = 4.dp)
                 ) {
                     Text(
                         text = it,
                         style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                     )
-
                 }
             }
         }
