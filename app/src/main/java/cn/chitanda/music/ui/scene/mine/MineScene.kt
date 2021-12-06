@@ -1,6 +1,8 @@
 package cn.chitanda.music.ui.scene.mine
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
@@ -21,5 +23,6 @@ fun MineScene(
     navController: NavController = LocalNavController.current,
     viewModel: UserViewModel = LocalUserViewModel.current
 ) {
-//    val user by viewModel.user.collectAsState()
+    val user by viewModel.user.collectAsState()
+
 }

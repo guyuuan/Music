@@ -9,11 +9,9 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.primarySurface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,62 +55,65 @@ fun HomeScene(
 ) {
     val list = listOf(HomePageItem.Find, HomePageItem.Message, HomePageItem.Mine)
     val homeNavController = rememberAnimatedNavController()
-    Surface(color = MaterialTheme.colorScheme.background) {
-        Scaffold(modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding(),
-            bottomBar = {
-                var currentPage by remember {
-                    mutableStateOf<HomePageItem>(HomePageItem.Find)
-                }
-                BottomNavigation (
-                    backgroundColor = MaterialTheme.colorScheme.primary
-                ){
-                    list.forEach { scene ->
-                        BottomNavigationItem(
-                            icon = {
-                                Icon(
-                                    painter = painterResource(id = scene.icon),
-                                    contentDescription = null
-                                )
-                            },
-                            label = {
-                                Text(text = stringResource(id = scene.label))
-                            },
-                            alwaysShowLabel = false,
-                            selected = currentPage == scene,
-                            onClick = {
-                                currentPage = scene
-                                homeNavController.navigate(scene.route) {
-                                    popUpTo(homeNavController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            })
-                    }
-                }
-            }) {
-            AnimatedNavHost(
-                navController = homeNavController,
-                startDestination = HomePageItem.Find.route
+    var currentPage by remember {
+        mutableStateOf<HomePageItem>(HomePageItem.Find)
+    }
+    Scaffold(modifier = Modifier
+        .fillMaxSize()
+        .navigationBarsPadding(),
+        bottomBar = {
+            BottomNavigation(
+                backgroundColor = MaterialTheme.colorScheme.surfaceVariant
             ) {
-                composable(HomePageItem.Find.route) {
-                    FindScene()
+                list.forEach { scene ->
+                    BottomNavigationItem(
+                        selectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = scene.icon),
+                                contentDescription = null
+                            )
+                        },
+                        label = {
+                            Text(text = stringResource(id = scene.label))
+                        },
+                        alwaysShowLabel = false,
+                        selected = currentPage == scene,
+                        onClick = {
+                            currentPage = scene
+                            homeNavController.navigate(scene.route) {
+                                popUpTo(homeNavController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        })
                 }
-                composable(HomePageItem.Message.route) {
-                    MessageScene()
-                }
-                composable(HomePageItem.Mine.route) {
-                    MineScene()
-                }
+            }
+        }) {
+        AnimatedNavHost(
+            navController = homeNavController,
+            startDestination = HomePageItem.Find.route
+        ) {
+            composable(HomePageItem.Find.route) {
+                FindScene()
+            }
+            composable(HomePageItem.Message.route) {
+                MessageScene()
+            }
+            composable(HomePageItem.Mine.route) {
+                MineScene()
             }
         }
     }
 }
 
-sealed class HomePageItem(val route: String, @StringRes val label: Int, @DrawableRes val icon: Int) {
+sealed class HomePageItem(
+    val route: String,
+    @StringRes val label: Int,
+    @DrawableRes val icon: Int
+) {
     object Find : HomePageItem("found", R.string.label_found, R.drawable.ic_found)
     object Mine : HomePageItem("mine", R.string.label_mine, R.drawable.ic_me)
     object Message : HomePageItem("message", R.string.label_message, R.drawable.ic_chat)

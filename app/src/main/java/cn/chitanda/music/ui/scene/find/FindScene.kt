@@ -7,11 +7,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +26,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -50,11 +52,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -104,9 +106,14 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                     applyStart = true,
                     applyEnd = true
                 ),
-                backgroundColor = MaterialTheme.colorScheme.primary
+                backgroundColor = MaterialTheme.colorScheme.surfaceVariant
             ) {
-                Icon(Icons.Default.Menu, contentDescription = "")
+                Spacer(modifier = Modifier.width(16.dp))
+                Icon(
+                    Icons.Default.Menu,
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 BasicTextField(
                     value = "",
                     onValueChange = {},
@@ -116,7 +123,12 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                         .padding(horizontal = 16.dp)
                         .background(Color.White, shape = RoundedCornerShape(16.dp))
                 )
-                Icon(painter = painterResource(id = R.drawable.ic_mic), contentDescription = "")
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_mic),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.width(16.dp))
             }
         },
         backgroundColor = MaterialTheme.colorScheme.surface
@@ -138,9 +150,9 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                                     RecommendPlayList(
                                         data = block,
                                         modifier = Modifier
-                                            .padding(vertical = 16.dp)
+                                            .padding(16.dp)
                                             .fillMaxWidth(),
-                                        contentPadding = PaddingValues(horizontal = 16.dp)
+                                        contentPadding = PaddingValues(16.dp)
                                     )
                                 }
                                 RCMDShowType.PlayableMLog -> {
@@ -149,9 +161,9 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                                     RecommendSongList(
                                         data = block,
                                         modifier = Modifier
-                                            .padding(vertical = 16.dp)
+                                            .padding(16.dp)
                                             .fillMaxWidth(),
-                                        contentPadding = PaddingValues(horizontal = 16.dp)
+                                        contentPadding = PaddingValues(16.dp)
                                     )
                                 }
                                 RCMDShowType.Unknown, null -> {
@@ -255,11 +267,11 @@ fun HomeRoundIconList(
                     modifier = Modifier
                         .size(45.dp)
                         .background(
-                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.primaryContainer,
                             shape = CircleShape
                         ),
                     contentDescription = item.name,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primaryContainer),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
                     onLoading = {}
                 )
                 Spacer(modifier = Modifier.size(4.dp))
@@ -277,65 +289,72 @@ fun RecommendPlayList(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    TitleColumn(
-        title = data.uiElement?.subTitle?.title.toString(),
-        buttonText = data.uiElement?.button?.text,
-        modifier = modifier, contentPadding = contentPadding
+    Card(
+        backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
+        elevation = 0.dp,
+        modifier = modifier
     ) {
-        LazyRow(modifier = Modifier.fillMaxWidth(), contentPadding = contentPadding) {
-            val list = data.creatives?.map { it.resources ?: emptyList() }?.flatten() ?: emptyList()
-            itemsIndexed(list) { i, resource ->
-                Column(
-                    Modifier
-                        .padding(end = if (i != list.lastIndex) 16.dp else 0.dp)
-                        .width(110.dp), horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
+        TitleColumn(
+            title = data.uiElement?.subTitle?.title.toString(),
+            buttonText = data.uiElement?.button?.text,
+            contentPadding = contentPadding
+        ) { padding ->
+            LazyRow(modifier = Modifier.fillMaxWidth(), contentPadding = padding) {
+                val list =
+                    data.creatives?.map { it.resources ?: emptyList() }?.flatten() ?: emptyList()
+                itemsIndexed(list) { i, resource ->
+                    Column(
+                        Modifier
+                            .padding(end = if (i != list.lastIndex) 16.dp else 0.dp)
+                            .width(110.dp), horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        CoilImage(
-                            url = resource.uiElement?.image?.imageUrl,
-                            contentDescription = resource.resourceType,
-                            modifier = Modifier.fillMaxSize(),
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        Surface(
+                        Box(
                             modifier = Modifier
-                                .padding(top = 2.dp, end = 2.dp)
-                                .align(Alignment.TopEnd),
-                            shape = RoundedCornerShape(16.dp),
-                            color = Color.Black.copy(alpha = 0.3f),
-                            contentColor = Color.White,
+                                .fillMaxWidth()
+                                .aspectRatio(1f)
                         ) {
-                            val playCount = resource.resourceExtInfo?.playCount
-                            Row(
-                                modifier = Modifier.padding(vertical = 1.dp, horizontal = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                            CoilImage(
+                                url = resource.uiElement?.image?.imageUrl,
+                                contentDescription = resource.resourceType,
+                                modifier = Modifier.fillMaxSize(),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            Surface(
+                                modifier = Modifier
+                                    .padding(top = 2.dp, end = 2.dp)
+                                    .align(Alignment.TopEnd),
+                                shape = RoundedCornerShape(16.dp),
+                                color = Color.Black.copy(alpha = 0.3f),
+                                contentColor = Color.White,
                             ) {
-                                Icon(
-                                    Icons.Default.PlayArrow,
-                                    contentDescription = null,
-                                    Modifier.size(16.dp)
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    text = playCount?.toUnitString() ?: playCount.toString(),
-                                    style = MaterialTheme.typography.labelSmall
-                                )
+                                val playCount = resource.resourceExtInfo?.playCount
+                                Row(
+                                    modifier = Modifier.padding(vertical = 1.dp, horizontal = 4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        Icons.Default.PlayArrow,
+                                        contentDescription = null,
+                                        Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = playCount?.toUnitString() ?: playCount.toString(),
+                                        style = MaterialTheme.typography.labelSmall
+                                    )
+                                }
                             }
                         }
+                        Spacer(
+                            modifier = Modifier
+                                .size(8.dp)
+                        )
+                        Text(
+                            text = resource.uiElement?.mainTitle?.title.toString(),
+                            style = MaterialTheme.typography.labelMedium, maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
-                    Spacer(
-                        modifier = Modifier
-                            .size(8.dp)
-                    )
-                    Text(
-                        text = resource.uiElement?.mainTitle?.title.toString(),
-                        style = MaterialTheme.typography.labelMedium, maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
                 }
             }
         }
@@ -350,36 +369,43 @@ fun RecommendSongList(
     modifier: Modifier,
     contentPadding: PaddingValues
 ) {
-    TitleColumn(
-        title = data.uiElement?.subTitle?.title.toString(),
-        buttonText = data.uiElement?.button?.text.toString(),
-        modifier = modifier, contentPadding = contentPadding
+    Card(
+        backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
+        elevation = 0.dp,
+        modifier = modifier
     ) {
-        val songs = data.creatives ?: emptyList()
-        var itemWidth by remember {
-            mutableStateOf(IntSize.Zero.width)
-        }
-        LazyRow(
-            Modifier
-                .fillMaxWidth()
-                .onSizeChanged {
-                    itemWidth = it.width
-                }, contentPadding = PaddingValues(horizontal = 16.dp)
-        ) {
-            if (itemWidth > IntSize.Zero.width) {
-                songs.forEach { song ->
-                    item {
-                        Column(Modifier.width(with(LocalDensity.current) { itemWidth.toDp() * 0.9f })) {
-                            song.resources?.forEachIndexed { i, r ->
-                                SongItem(
-                                    song = r,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(end = 16.dp),
-                                    i < song.resources.lastIndex
-                                )
-                                if (i < song.resources.lastIndex) {
-                                    Spacer(modifier = Modifier.height(8.dp))
+        TitleColumn(
+            title = data.uiElement?.subTitle?.title.toString(),
+            buttonText = data.uiElement?.button?.text.toString(),
+            contentPadding = contentPadding
+        ) { padding ->
+            val songs = data.creatives ?: emptyList()
+            var itemWidth by remember {
+                mutableStateOf(IntSize.Zero.width)
+            }
+            LazyRow(
+                Modifier
+                    .fillMaxWidth()
+                    .onSizeChanged {
+                        itemWidth = it.width
+                    },
+                contentPadding = padding
+            ) {
+                if (itemWidth > IntSize.Zero.width) {
+                    songs.forEach { song ->
+                        item {
+                            Column(Modifier.width(with(LocalDensity.current) { itemWidth.toDp() * 0.9f })) {
+                                song.resources?.forEachIndexed { i, r ->
+                                    SongItem(
+                                        song = r,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(end = 16.dp),
+                                        i < song.resources.lastIndex
+                                    )
+                                    if (i < song.resources.lastIndex) {
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                    }
                                 }
                             }
                         }
@@ -410,7 +436,10 @@ fun SongItem(
                     .clip(RoundedCornerShape(8.dp))
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Column(verticalArrangement = Arrangement.SpaceAround, modifier = Modifier.height(50.dp)) {
+            Column(
+                verticalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier.height(50.dp)
+            ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = song.uiElement?.mainTitle?.title.toString(),
@@ -474,18 +503,18 @@ fun TitleColumn(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     title: String,
     buttonText: String?,
-    content: @Composable () -> Unit
+    content: @Composable (PaddingValues) -> Unit
 ) {
     Column(
         modifier = modifier
     ) {
         Row(
             Modifier
-                .fillMaxWidth()
                 .padding(
-                    start = contentPadding.calculateLeftPadding(LayoutDirection.Ltr),
-                    end = contentPadding.calculateRightPadding(LayoutDirection.Ltr)
-                ),
+                    start = contentPadding.calculateStartPadding(LocalLayoutDirection.current),
+                    end = contentPadding.calculateEndPadding(LocalLayoutDirection.current)
+                )
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -497,7 +526,7 @@ fun TitleColumn(
                 Surface(
                     border = BorderStroke(
                         0.5.dp,
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.12f)
                     ),
                     shape = RoundedCornerShape(16.dp),
                     onClick = {},
@@ -513,7 +542,6 @@ fun TitleColumn(
                 }
             }
         }
-        Spacer(modifier = Modifier.size(16.dp))
-        content()
+        content(contentPadding)
     }
 }
