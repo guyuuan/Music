@@ -102,10 +102,7 @@ fun FindScene(navController: NavController = LocalNavController.current) {
         topBar = {
             TopAppBar(
                 contentPadding = rememberInsetsPaddingValues(
-                    insets = LocalWindowInsets.current.systemBars,
-                    applyTop = true,
-                    applyStart = true,
-                    applyEnd = true
+                    insets = LocalWindowInsets.current.statusBars,
                 ),
                 backgroundColor = MaterialTheme.colorScheme.surfaceVariant
             ) {
