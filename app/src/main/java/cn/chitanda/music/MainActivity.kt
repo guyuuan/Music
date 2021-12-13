@@ -1,6 +1,7 @@
 package cn.chitanda.music
 
 import android.os.Bundle
+import android.view.ViewTreeObserver
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -18,7 +19,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), ViewTreeObserver.OnPreDrawListener {
 
     private val themeViewModel by viewModels<ThemeViewModel>()
 
@@ -36,10 +37,20 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(
                 LocalThemeViewModel provides themeViewModel
             ) {
-                MusicTheme {
+                MusicTheme(themeViewModel.monetColor.value) {
                     Router()
                 }
             }
+        }
+        window.decorView.viewTreeObserver.addOnPreDrawListener(this)
+    }
+
+    override fun onPreDraw(): Boolean {
+        return if (themeViewModel.isReady) {
+            window.decorView.viewTreeObserver.removeOnPreDrawListener(this)
+            true
+        } else {
+            false
         }
     }
 }

@@ -2,6 +2,7 @@ package cn.chitanda.music.di
 
 import cn.chitanda.music.preference.CookiesPreference
 import cn.chitanda.music.preference.PreferenceManager
+import cn.chitanda.music.preference.ThemeColorPreference
 import cn.chitanda.music.preference.UidPreference
 import com.tencent.mmkv.MMKV
 import dagger.Module
@@ -32,8 +33,13 @@ object PreferenceModule {
 
     @Provides
     @Singleton
+    fun provideThemeColorPreference(mmkv: MMKV) = ThemeColorPreference(mmkv)
+
+    @Provides
+    @Singleton
     fun providePreferenceManager(
         cookiesPreference: CookiesPreference,
-        uidPreference: UidPreference
-    ) = PreferenceManager(cookiesPreference, uidPreference)
+        uidPreference: UidPreference,
+        themeColorPreference: ThemeColorPreference
+    ) = PreferenceManager(cookiesPreference, uidPreference, themeColorPreference)
 }

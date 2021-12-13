@@ -1,6 +1,5 @@
 package cn.chitanda.music.ui.scene.mine
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +14,7 @@ import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Slider
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -27,7 +27,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalThemeViewModel
@@ -55,12 +57,12 @@ fun MineScene(
     navController: NavController = LocalNavController.current,
     viewModel: UserViewModel = LocalUserViewModel.current
 ) {
-    val themeViewModel = LocalThemeViewModel.current
+    val themeViewModel = hiltViewModel<ThemeViewModel>()
     val primary by themeViewModel.monetColor
     Scaffold(Modifier.fillMaxSize(), backgroundColor = MaterialTheme.colorScheme.surfaceVariant) {
         Column(Modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.statusBarsHeight(18.dp))
-            ColorPicker(themeViewModel)
+            ColorPicker(themeViewModel, MaterialTheme.colorScheme.primary)
             Box(
                 modifier = Modifier.weight(1f)
             ) {
@@ -68,10 +70,6 @@ fun MineScene(
             }
         }
     }
-//    val themeColor = MaterialTheme.colorScheme.primary
-//    LaunchedEffect(key1 = primary) {
-//        if (primary == null) themeViewModel.getMonetColor(themeColor)
-//    }
 }
 
 @Composable
@@ -81,9 +79,9 @@ fun ThemePreview(color: MonetColor?) {
             Modifier
                 .fillMaxSize()
                 .scale(0.5f),
-            backgroundColor = MaterialTheme.colorScheme.background,
+            backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
             topBar = {
-                TopAppBar(backgroundColor = MaterialTheme.colorScheme.primary) {}
+                TopAppBar(backgroundColor = MaterialTheme.colorScheme.inversePrimary) {}
             },
             floatingActionButton = {
                 FloatingActionButton(
@@ -93,7 +91,7 @@ fun ThemePreview(color: MonetColor?) {
                 }
             },
             bottomBar = {
-                BottomNavigation(backgroundColor = MaterialTheme.colorScheme.primary) {
+                BottomNavigation(backgroundColor = MaterialTheme.colorScheme.inversePrimary) {
 
                 }
             }
@@ -103,16 +101,16 @@ fun ThemePreview(color: MonetColor?) {
 }
 
 @Composable
-fun ColorPicker(themeViewModel: ThemeViewModel) {
-    val themeColor = MaterialTheme.colorScheme.primary
+fun ColorPicker(themeViewModel: ThemeViewModel, themeColor: Color) {
+    val globalThemeViewModel = LocalThemeViewModel.current
     var red by remember {
-        mutableStateOf(themeColor.red.roundToInt())
+        mutableStateOf((255 * themeColor.red).roundToInt())
     }
     var green by remember {
-        mutableStateOf(themeColor.green.roundToInt())
+        mutableStateOf((255 * themeColor.green).roundToInt())
     }
     var blue by remember {
-        mutableStateOf(themeColor.blue.roundToInt())
+        mutableStateOf((255 * themeColor.blue).roundToInt())
     }
     val color = Color(red, green, blue)
     Column(
@@ -170,7 +168,17 @@ fun ColorPicker(themeViewModel: ThemeViewModel) {
                 .height(40.dp)
                 .background(color = color)
         )
-
+        Spacer(modifier = Modifier.height(24.dp))
+        TextButton(onClick = {
+            globalThemeViewModel.setCustomThemeColor(color.toArgb())
+        }) {
+            Text(text = "确认")
+        }
+        TextButton(onClick = {
+            globalThemeViewModel.closeCustomThemeColor()
+        }) {
+            Text(text = "取消自定义主题色")
+        }
     }
     LaunchedEffect(key1 = color) {
         delay(500)

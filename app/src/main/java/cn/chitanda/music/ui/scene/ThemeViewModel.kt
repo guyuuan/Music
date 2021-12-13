@@ -1,15 +1,18 @@
 package cn.chitanda.music.ui.scene
 
+import androidx.annotation.ColorInt
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cn.chitanda.music.preference.PreferenceManager
 import cn.chitanda.music.ui.monet.Monet
 import cn.chitanda.music.ui.monet.theme.MonetColor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,14 +22,41 @@ import javax.inject.Inject
  * @description:
  **/
 @HiltViewModel
-class ThemeViewModel @Inject constructor() : ViewModel() {
+class ThemeViewModel @Inject constructor(
+    private val preferenceManager: PreferenceManager
+) : ViewModel() {
+    var isReady = false
+        private set
     private val _color = mutableStateOf<MonetColor?>(null)
     val monetColor: State<MonetColor?> get() = _color
+    val themeColor = preferenceManager.themeColor
+
+    init {
+        viewModelScope.launch {
+            delay(200)
+            if (preferenceManager.themeColor != Int.MIN_VALUE) {
+                getMonetColor(Color(preferenceManager.themeColor))
+            } else {
+                isReady = true
+            }
+        }
+    }
 
     fun getMonetColor(seed: Color) {
         viewModelScope.launch(Dispatchers.Default) {
             val new = Monet.getMonetColor(seed.toArgb())
             _color.value = new
+            isReady = true
         }
+    }
+
+    fun setCustomThemeColor(@ColorInt color: Int) {
+        preferenceManager.themeColor = color
+        getMonetColor(Color(preferenceManager.themeColor))
+    }
+
+    fun closeCustomThemeColor() {
+        preferenceManager.themeColor = Int.MIN_VALUE
+        _color.value = null
     }
 }

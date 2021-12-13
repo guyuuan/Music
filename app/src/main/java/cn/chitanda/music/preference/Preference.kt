@@ -9,3 +9,4 @@ import com.tencent.mmkv.MMKV
  **/
 class CookiesPreference(mmkv: MMKV) : MMKVPreference<String>(mmkv, "cookies", "")
 class UidPreference(mmkv: MMKV) : MMKVPreference<String>(mmkv, "uid", "")
+class ThemeColorPreference(mmkv: MMKV) : MMKVPreference<Int>(mmkv, "theme_color", Int.MIN_VALUE)
