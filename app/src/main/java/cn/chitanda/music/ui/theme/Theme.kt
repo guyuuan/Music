@@ -3,6 +3,8 @@ package cn.chitanda.music.ui.theme
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.IntRange
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material3.ColorScheme
@@ -38,7 +40,7 @@ fun MusicTheme(
     }
 
     MaterialTheme(
-        colorScheme = colors,
+        colorScheme = colors.anim(),
         typography = Typography,
     ) {
         androidx.compose.material.MaterialTheme(
@@ -59,6 +61,48 @@ fun MusicTheme(
         )
     }
 }
+
+@Composable
+fun ColorScheme.anim() = ColorScheme(
+    primary = animateColorAsState(targetValue = this.primary, tween(600)).value,
+    onPrimary = animateColorAsState(targetValue = this.onPrimary, tween(600)).value,
+    primaryContainer = animateColorAsState(targetValue = this.primaryContainer, tween(600)).value,
+    onPrimaryContainer = animateColorAsState(
+        targetValue = this.onPrimaryContainer,
+        tween(600)
+    ).value,
+    inversePrimary = animateColorAsState(targetValue = this.inversePrimary, tween(600)).value,
+    secondary = animateColorAsState(targetValue = this.secondary, tween(600)).value,
+    onSecondary = animateColorAsState(targetValue = this.onSecondary, tween(600)).value,
+    secondaryContainer = animateColorAsState(
+        targetValue = this.secondaryContainer,
+        tween(600)
+    ).value,
+    onSecondaryContainer = animateColorAsState(
+        targetValue = this.onSecondaryContainer,
+        tween(600)
+    ).value,
+    tertiary = animateColorAsState(targetValue = this.tertiary, tween(600)).value,
+    onTertiary = animateColorAsState(targetValue = this.onTertiary, tween(600)).value,
+    tertiaryContainer = animateColorAsState(targetValue = this.tertiaryContainer, tween(600)).value,
+    onTertiaryContainer = animateColorAsState(
+        targetValue = this.onTertiaryContainer,
+        tween(600)
+    ).value,
+    background = animateColorAsState(targetValue = this.background, tween(600)).value,
+    onBackground = animateColorAsState(targetValue = this.onBackground, tween(600)).value,
+    surface = animateColorAsState(targetValue = this.surface, tween(600)).value,
+    onSurface = animateColorAsState(targetValue = this.onSurface, tween(600)).value,
+    surfaceVariant = animateColorAsState(targetValue = this.surfaceVariant, tween(600)).value,
+    onSurfaceVariant = animateColorAsState(targetValue = this.onSurfaceVariant, tween(600)).value,
+    inverseSurface = animateColorAsState(targetValue = this.inverseSurface, tween(600)).value,
+    inverseOnSurface = animateColorAsState(targetValue = this.inverseOnSurface, tween(600)).value,
+    error = animateColorAsState(targetValue = this.error, tween(600)).value,
+    onError = animateColorAsState(targetValue = this.onError, tween(600)).value,
+    errorContainer = animateColorAsState(targetValue = this.errorContainer, tween(600)).value,
+    onErrorContainer = animateColorAsState(targetValue = this.onErrorContainer, tween(600)).value,
+    outline = animateColorAsState(targetValue = this.outline, tween(600)).value,
+)
 
 private fun MonetColor.getMonetNeutralColor(
     @IntRange(from = 1, to = 2) type: Int,
@@ -108,7 +152,7 @@ fun MonetColor.lightMonetColorScheme(
     inverseOnSurface: Color = getMonetNeutralColor(2, 50),
     outline: Color = getMonetAccentColor(2, 500),
 ): ColorScheme =
-   lightColorScheme(
+    lightColorScheme(
         primary = primary,
         onPrimary = onPrimary,
         primaryContainer = primaryContainer,
@@ -162,7 +206,7 @@ fun MonetColor.darkMonetColorScheme(
     inverseOnSurface: Color = getMonetNeutralColor(1, 800),
     outline: Color = getMonetNeutralColor(2, 500),
 ): ColorScheme =
-   darkColorScheme(
+    darkColorScheme(
         primary = primary,
         onPrimary = onPrimary,
         primaryContainer = primaryContainer,
