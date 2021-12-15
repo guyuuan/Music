@@ -27,7 +27,7 @@ interface LoginApi {
     @POST("/login/cellphone")
     suspend fun cellphoneLoginWithPassword(
         @Query("phone") phone: String,
-        @Query("password") password: String,
+        @Query("md5_password") password: String,
         @Query("countrycode") countryCode: Int? = null
     ): LoginJson
 }

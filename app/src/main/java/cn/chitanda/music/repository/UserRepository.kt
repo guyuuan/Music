@@ -4,9 +4,9 @@ import cn.chitanda.music.http.RequestStatus
 import cn.chitanda.music.http.api.LoginApi
 import cn.chitanda.music.http.api.UserApi
 import cn.chitanda.music.http.bean.LoginJson
-import cn.chitanda.music.http.bean.UserAccount
 import cn.chitanda.music.http.bean.UserProfile
 import cn.chitanda.music.preference.PreferenceManager
+import cn.chitanda.music.utils.md5
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -24,7 +24,7 @@ class UserRepository constructor(
         pw: String,
         stateFlow: MutableStateFlow<RequestStatus<LoginJson>>? = null
     ) = httpRequest(stateFlow) {
-        loginApi.cellphoneLoginWithPassword(phone = phone, password = pw).also {
+        loginApi.cellphoneLoginWithPassword(phone = phone, password = pw.md5()).also {
             it.account?.id?.let { id ->
                 preferenceManager.uid = id.toString()
             }
@@ -36,7 +36,7 @@ class UserRepository constructor(
             userApi.getUserInfo(id = preferenceManager.uid)
         }
 
-    suspend fun refreshLoginStatus() = httpRequest{
+    suspend fun refreshLoginStatus() = httpRequest {
         userApi.refreshLoginStatus()
     }
 }
