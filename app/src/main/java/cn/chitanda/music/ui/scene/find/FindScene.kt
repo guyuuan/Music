@@ -38,7 +38,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -55,15 +54,14 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import cn.chitanda.music.R
 import cn.chitanda.music.http.DataState
+import cn.chitanda.music.http.bean.MLogExtInfo
 import cn.chitanda.music.http.bean.HomeBanner
 import cn.chitanda.music.http.bean.HomeData
 import cn.chitanda.music.http.bean.HomeRoundIcon
@@ -71,7 +69,6 @@ import cn.chitanda.music.http.bean.RCMDShowType
 import cn.chitanda.music.http.bean.SubTitleType
 import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.ui.LocalNavController
-import cn.chitanda.music.ui.theme.RCMDTagColor
 import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.widget.banner.Banner
 import cn.chitanda.music.utils.toUnitString
@@ -135,7 +132,10 @@ fun FindScene(navController: NavController = LocalNavController.current) {
             when (data.status) {
                 DataState.STATE_LOADING -> CircularProgressIndicator()
                 DataState.STATE_SUCCESS -> {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(bottom = 56.dp)
+                    ) {
                         itemsIndexed(data.json?.data?.blocks ?: emptyList()) { i, block ->
                             when (block.showType) {
                                 RCMDShowType.Banner -> HomeBanners(
@@ -154,6 +154,11 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                                     )
                                 }
                                 RCMDShowType.PlayableMLog -> {
+                                    MLogList(
+                                        data = block, modifier = Modifier
+                                            .padding(16.dp)
+                                            .fillMaxWidth(), contentPadding = PaddingValues(16.dp)
+                                    )
                                 }
                                 RCMDShowType.SongList -> {
                                     RecommendSongList(
@@ -192,7 +197,7 @@ fun FindScene(navController: NavController = LocalNavController.current) {
 @ExperimentalPagerApi
 @Composable
 private fun HomeBanners(data: HomeData.Data.Block, modifier: Modifier = Modifier) {
-    val banners = getBannerData(data.extInfo)
+    val banners = remember { getBannerData(data.extInfo) }
     if (banners != null) {
         Banner(
             data = banners,
@@ -230,6 +235,22 @@ private fun HomeBanners(data: HomeData.Data.Block, modifier: Modifier = Modifier
 
 }
 
+private fun getMLogData(extInfo: Any?) = try {
+    val type = Types.newParameterizedType(
+        List::class.java,
+        Any::class.java
+    )
+    val adapter: JsonAdapter<List<Any>> =
+        moshi.adapter(type)
+    val str = adapter.toJson(extInfo as List<Any>)
+    val extInfoAdapter: JsonAdapter<List<MLogExtInfo>> =
+        moshi.adapter(Types.newParameterizedType(List::class.java, MLogExtInfo::class.java))
+    extInfoAdapter.fromJson(str)
+} catch (e: Exception) {
+    Log.e(TAG, "getMLogData: ", e)
+    null
+}
+
 private fun getBannerData(extInfo: Any?) = try {
     val type = Types.newParameterizedType(
         Map::class.java,
@@ -240,7 +261,7 @@ private fun getBannerData(extInfo: Any?) = try {
     val str = adapter.toJson(extInfo as Map<*, *>)
     moshi.adapter(HomeBanner::class.java).fromJson(str)?.banners
 } catch (e: Exception) {
-    Log.e(TAG, "DiscoveryScene: ", e)
+    Log.e(TAG, "getBannerData: ", e)
     null
 }
 
@@ -317,31 +338,12 @@ fun RecommendPlayList(
                                 modifier = Modifier.fillMaxSize(),
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            Surface(
+                            PlayCount(
                                 modifier = Modifier
-                                    .padding(top = 2.dp, end = 2.dp)
+                                    .padding(top = 4.dp, end = 4.dp)
                                     .align(Alignment.TopEnd),
-                                shape = RoundedCornerShape(16.dp),
-                                color = Color.Black.copy(alpha = 0.3f),
-                                contentColor = Color.White,
-                            ) {
-                                val playCount = resource.resourceExtInfo?.playCount
-                                Row(
-                                    modifier = Modifier.padding(vertical = 1.dp, horizontal = 4.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        Icons.Default.PlayArrow,
-                                        contentDescription = null,
-                                        Modifier.size(16.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
-                                        text = playCount?.toUnitString() ?: playCount.toString(),
-                                        style = MaterialTheme.typography.labelSmall
-                                    )
-                                }
-                            }
+                                playCount = resource.resourceExtInfo?.playCount ?: 0
+                            )
                         }
                         Spacer(
                             modifier = Modifier
@@ -355,6 +357,32 @@ fun RecommendPlayList(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun PlayCount(modifier: Modifier, playCount: Long) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+        contentColor = Color.White,
+    ) {
+        Row(
+            modifier = Modifier.padding(vertical = 1.dp, horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                Icons.Default.PlayArrow,
+                contentDescription = null,
+                Modifier.size(16.dp)
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = playCount.toUnitString(),
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }
@@ -414,6 +442,73 @@ fun RecommendSongList(
     }
 }
 
+
+@ExperimentalCoilApi
+@ExperimentalMaterialApi
+@Composable
+fun MLogList(
+    data: HomeData.Data.Block,
+    modifier: Modifier,
+    contentPadding: PaddingValues
+) {
+    Card(
+        backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
+        elevation = 0.dp,
+        modifier = modifier
+    ) {
+        TitleColumn(
+            title = data.uiElement?.subTitle?.title.toString(),
+            buttonText = data.uiElement?.button?.text.toString(),
+            contentPadding = contentPadding
+        ) { padding ->
+            val mLogs = remember {
+                getMLogData(data.extInfo) ?: emptyList()
+            }
+            LazyRow(modifier = Modifier.fillMaxWidth(), contentPadding = padding) {
+                itemsIndexed(mLogs) { i, mLog ->
+                    MLogItem(
+                        modifier = Modifier
+                            .padding(end = if (i < mLogs.lastIndex) 16.dp else 0.dp)
+                            .width(120.dp),
+                        data = mLog.resource
+                    )
+                }
+            }
+        }
+    }
+}
+
+@ExperimentalCoilApi
+@Composable
+fun MLogItem(
+    modifier: Modifier = Modifier,
+    data: MLogExtInfo.Resource,
+) {
+    Column(modifier = modifier) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(0.75f)
+        ) {
+            CoilImage(url = data.mlogBaseData?.coverUrl, shape = RoundedCornerShape(8.dp))
+            PlayCount(
+                modifier = Modifier
+                    .padding(top = 4.dp, end = 4.dp)
+                    .align(Alignment.TopEnd),
+                playCount = data.mlogExtVO?.playCount ?: 0
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = data.mlogBaseData?.text.toString(),
+            style = MaterialTheme.typography.labelMedium,
+            maxLines = if (data.mlogExtVO?.specialTag.isNullOrEmpty()) 2 else 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        data.mlogExtVO?.specialTag?.let { TagText(tag = it) }
+    }
+}
+
 @ExperimentalCoilApi
 @Composable
 fun SongItem(
@@ -466,17 +561,7 @@ fun SongItem(
                             )
                         }
                         SubTitleType.TAG -> {
-                            Text(
-                                text = it,
-                                style = style.copy(color = RCMDTagColor, fontSize = 8.sp),
-                                maxLines = 1, overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier
-                                    .background(
-                                        color = RCMDTagColor.copy(alpha = 0.1f),
-                                        shape = RoundedCornerShape(4.dp)
-                                    )
-                                    .padding(vertical = 2.dp, horizontal = 4.dp)
-                            )
+                            TagText(tag = it)
                         }
                     }
                 }
@@ -492,6 +577,23 @@ fun SongItem(
             )
         }
     }
+}
+
+@Composable
+fun TagText(modifier: Modifier = Modifier, tag: String) {
+    Text(
+        text = tag,
+        style = MaterialTheme.typography.labelSmall.copy(
+            color = MaterialTheme.colorScheme.tertiary
+        ),
+        maxLines = 1, overflow = TextOverflow.Ellipsis,
+        modifier = modifier then Modifier
+            .background(
+                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
+                shape = RoundedCornerShape(4.dp)
+            )
+            .padding(vertical = 2.dp, horizontal = 4.dp)
+    )
 }
 
 @ExperimentalMaterialApi
@@ -523,7 +625,7 @@ fun TitleColumn(
             )
             buttonText?.let {
                 TextButton(
-                   modifier =  Modifier.defaultMinSize(48.dp,20.dp),
+                    modifier = Modifier.defaultMinSize(48.dp, 20.dp),
                     onClick = { },
                     border = BorderStroke(
                         0.5.dp,

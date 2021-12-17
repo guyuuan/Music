@@ -29,7 +29,6 @@ class ThemeViewModel @Inject constructor(
         private set
     private val _color = mutableStateOf<MonetColor?>(null)
     val monetColor: State<MonetColor?> get() = _color
-    val themeColor = preferenceManager.themeColor
 
     init {
         viewModelScope.launch {
