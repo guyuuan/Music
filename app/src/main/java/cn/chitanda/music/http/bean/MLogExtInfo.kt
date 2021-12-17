@@ -149,7 +149,7 @@ data class MLogExtInfo(
             @Json(name = "nickname")
             val nickname: String?,
             @Json(name = "userId")
-            val userId: Int?,
+            val userId: Any?,
             @Json(name = "userType")
             val userType: Int?
         ) {
