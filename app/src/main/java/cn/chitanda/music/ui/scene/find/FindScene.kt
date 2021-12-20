@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,10 +62,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import cn.chitanda.music.R
 import cn.chitanda.music.http.DataState
-import cn.chitanda.music.http.bean.MLogExtInfo
 import cn.chitanda.music.http.bean.HomeBanner
 import cn.chitanda.music.http.bean.HomeData
 import cn.chitanda.music.http.bean.HomeRoundIcon
+import cn.chitanda.music.http.bean.MLogExtInfo
 import cn.chitanda.music.http.bean.RCMDShowType
 import cn.chitanda.music.http.bean.SubTitleType
 import cn.chitanda.music.http.moshi.moshi
@@ -197,8 +198,8 @@ fun FindScene(navController: NavController = LocalNavController.current) {
 @ExperimentalPagerApi
 @Composable
 private fun HomeBanners(data: HomeData.Data.Block, modifier: Modifier = Modifier) {
-    val banners = remember { getBannerData(data.extInfo) }
-    if (banners != null) {
+    val banners by remember { derivedStateOf { getBannerData(data.extInfo) } }
+    if (banners.isNotEmpty()) {
         Banner(
             data = banners,
             modifier = modifier,
@@ -236,33 +237,41 @@ private fun HomeBanners(data: HomeData.Data.Block, modifier: Modifier = Modifier
 }
 
 private fun getMLogData(extInfo: Any?) = try {
-    val type = Types.newParameterizedType(
-        List::class.java,
-        Any::class.java
-    )
-    val adapter: JsonAdapter<List<Any>> =
-        moshi.adapter(type)
-    val str = adapter.toJson(extInfo as List<Any>)
-    val extInfoAdapter: JsonAdapter<List<MLogExtInfo>> =
-        moshi.adapter(Types.newParameterizedType(List::class.java, MLogExtInfo::class.java))
-    extInfoAdapter.fromJson(str)
+    if (null == extInfo) {
+        emptyList()
+    } else {
+        val type = Types.newParameterizedType(
+            List::class.java,
+            Any::class.java
+        )
+        val adapter: JsonAdapter<List<Any>> =
+            moshi.adapter(type)
+        val str = adapter.toJson(extInfo as List<Any>)
+        val extInfoAdapter: JsonAdapter<List<MLogExtInfo>> =
+            moshi.adapter(Types.newParameterizedType(List::class.java, MLogExtInfo::class.java))
+        extInfoAdapter.fromJson(str) ?: emptyList()
+    }
 } catch (e: Exception) {
     Log.e(TAG, "getMLogData: ", e)
-    null
+    emptyList()
 }
 
 private fun getBannerData(extInfo: Any?) = try {
-    val type = Types.newParameterizedType(
-        Map::class.java,
-        Any::class.java, Any::class.java
-    )
-    val adapter: JsonAdapter<Map<*, *>> =
-        moshi.adapter(type)
-    val str = adapter.toJson(extInfo as Map<*, *>)
-    moshi.adapter(HomeBanner::class.java).fromJson(str)?.banners
+    if (null == extInfo) {
+        emptyList()
+    } else {
+        val type = Types.newParameterizedType(
+            Map::class.java,
+            Any::class.java, Any::class.java
+        )
+        val adapter: JsonAdapter<Map<*, *>> =
+            moshi.adapter(type)
+        val str = adapter.toJson(extInfo as Map<*, *>)
+        moshi.adapter(HomeBanner::class.java).fromJson(str)?.banners ?: emptyList()
+    }
 } catch (e: Exception) {
     Log.e(TAG, "getBannerData: ", e)
-    null
+    emptyList()
 }
 
 @ExperimentalCoilApi
@@ -451,6 +460,9 @@ fun MLogList(
     modifier: Modifier,
     contentPadding: PaddingValues
 ) {
+    val mLogs by remember {
+        derivedStateOf { getMLogData(data.extInfo) }
+    }
     Card(
         backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
         elevation = 0.dp,
@@ -461,9 +473,6 @@ fun MLogList(
             buttonText = data.uiElement?.button?.text.toString(),
             contentPadding = contentPadding
         ) { padding ->
-            val mLogs = remember {
-                getMLogData(data.extInfo) ?: emptyList()
-            }
             LazyRow(modifier = Modifier.fillMaxWidth(), contentPadding = padding) {
                 itemsIndexed(mLogs) { i, mLog ->
                     MLogItem(
