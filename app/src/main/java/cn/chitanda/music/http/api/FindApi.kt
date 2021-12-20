@@ -14,7 +14,6 @@ interface FindApi {
     @GET("/homepage/block/page")
     suspend fun fetchHomeData(
         @Query("refresh") refresh: Boolean = false,
-//        @Query("timestamp") timestamp: Long = System.currentTimeMillis()
     ): HomeData
 
     @GET("/homepage/dragon/ball")

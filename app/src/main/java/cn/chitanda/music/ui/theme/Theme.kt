@@ -40,7 +40,7 @@ fun MusicTheme(
     }
 
     MaterialTheme(
-        colorScheme = colors.anim(),
+        colorScheme = colors.animateColor(),
         typography = Typography,
     ) {
         androidx.compose.material.MaterialTheme(
@@ -63,7 +63,7 @@ fun MusicTheme(
 }
 
 @Composable
-fun ColorScheme.anim() = ColorScheme(
+fun ColorScheme.animateColor() = ColorScheme(
     primary = animateColorAsState(targetValue = this.primary, tween(600)).value,
     onPrimary = animateColorAsState(targetValue = this.onPrimary, tween(600)).value,
     primaryContainer = animateColorAsState(targetValue = this.primaryContainer, tween(600)).value,
