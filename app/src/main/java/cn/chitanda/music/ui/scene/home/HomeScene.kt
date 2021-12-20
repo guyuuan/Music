@@ -8,6 +8,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -62,6 +64,7 @@ fun HomeScene(
             BottomBar(homeNavController)
         }) {
         AnimatedNavHost(
+            modifier = Modifier.padding(it),
             navController = homeNavController,
             startDestination = HomePageItem.Find.route
         ) {

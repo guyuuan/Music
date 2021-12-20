@@ -13,6 +13,7 @@ import cn.chitanda.music.R
 import cn.chitanda.music.ui.scene.UserViewModel
 import cn.chitanda.music.ui.scene.home.HomeScene
 import cn.chitanda.music.ui.scene.login.LoginScene
+import cn.chitanda.music.ui.scene.other.ThemeScene
 import cn.chitanda.music.ui.scene.splash.SplashScene
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -30,6 +31,7 @@ sealed class Scene(val id: String, @StringRes val label: Int? = null) {
     object Splash : Scene(id = "splash")
     object Home : Scene(id = "home", label = R.string.label_home)
     object Login : Scene(id = "login", label = R.string.label_login)
+    object Theme : Scene(id = "login", label = R.string.text_theme)
 }
 
 @ExperimentalFoundationApi
@@ -71,5 +73,8 @@ private fun NavGraphBuilder.route() {
     }
     composable(Scene.Home.id) {
         HomeScene()
+    }
+    composable(Scene.Theme.id) {
+        ThemeScene()
     }
 }

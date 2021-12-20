@@ -135,7 +135,6 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                 DataState.STATE_SUCCESS -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(bottom = 56.dp)
                     ) {
                         itemsIndexed(data.json?.data?.blocks ?: emptyList()) { i, block ->
                             when (block.showType) {

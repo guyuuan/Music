@@ -8,4 +8,9 @@
     <string name="label_found">Found</string>
     <string name="label_mine">Mine</string>
     <string name="label_message">Message</string>
+    <string name="text_fans">followers</string>
+    <string name="text_followeds">following</string>
+    <string name="text_levels">levele</string>
+    <string name="text_edit_user_info">Edit information</string>
+    <string name="text_theme">Theme</string>
 </resources>
