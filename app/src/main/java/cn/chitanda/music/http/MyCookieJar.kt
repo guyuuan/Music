@@ -1,6 +1,5 @@
 package cn.chitanda.music.http
 
-import android.util.Log
 import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.preference.CookiesPreference
 import okhttp3.Cookie
