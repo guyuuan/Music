@@ -101,13 +101,13 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                 contentPadding = rememberInsetsPaddingValues(
                     insets = LocalWindowInsets.current.statusBars,
                 ),
-                backgroundColor = MaterialTheme.colorScheme.surfaceVariant
+                backgroundColor = MaterialTheme.colorScheme.inversePrimary
             ) {
                 Spacer(modifier = Modifier.width(16.dp))
                 Icon(
                     Icons.Default.Menu,
                     contentDescription = "",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
                 BasicTextField(
                     value = "",
@@ -121,7 +121,7 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_mic),
                     contentDescription = "",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
                 Spacer(modifier = Modifier.width(16.dp))
             }

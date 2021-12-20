@@ -86,11 +86,11 @@ private fun BottomBar(homeNavController: NavController) {
     }
     Column {
         BottomNavigation(
-            backgroundColor = MaterialTheme.colorScheme.surfaceVariant
+            backgroundColor = MaterialTheme.colorScheme.inversePrimary
         ) {
             list.forEach { scene ->
                 BottomNavigationItem(
-                    selectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    selectedContentColor = MaterialTheme.colorScheme.onPrimary,
                     icon = {
                         Icon(
                             painter = painterResource(id = scene.icon),

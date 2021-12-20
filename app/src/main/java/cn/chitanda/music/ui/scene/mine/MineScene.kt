@@ -79,7 +79,7 @@ fun ThemePreview(color: MonetColor?) {
             Modifier
                 .fillMaxSize()
                 .scale(0.5f),
-            backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
+            backgroundColor = MaterialTheme.colorScheme.surface,
             topBar = {
                 TopAppBar(backgroundColor = MaterialTheme.colorScheme.inversePrimary) {}
             },
