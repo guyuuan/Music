@@ -1,16 +1,16 @@
 package cn.chitanda.music.ui
 
+import android.os.Build
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import cn.chitanda.music.R
-import cn.chitanda.music.ui.scene.UserViewModel
 import cn.chitanda.music.ui.scene.home.HomeScene
 import cn.chitanda.music.ui.scene.login.LoginScene
 import cn.chitanda.music.ui.scene.other.ThemeScene
@@ -31,7 +31,7 @@ sealed class Scene(val id: String, @StringRes val label: Int? = null) {
     object Splash : Scene(id = "splash")
     object Home : Scene(id = "home", label = R.string.label_home)
     object Login : Scene(id = "login", label = R.string.label_login)
-    object Theme : Scene(id = "login", label = R.string.text_theme)
+    object Theme : Scene(id = "theme", label = R.string.text_theme)
 }
 
 @ExperimentalFoundationApi
@@ -41,17 +41,28 @@ sealed class Scene(val id: String, @StringRes val label: Int? = null) {
 @ExperimentalAnimationApi
 @Composable
 fun Router(navController: NavHostController = rememberAnimatedNavController()) {
-    val userViewModel = hiltViewModel<UserViewModel>()
+    val userViewModel = LocalUserViewModel.current
+    val themeViewModel = LocalThemeViewModel.current
     CompositionLocalProvider(
-        LocalNavController provides navController,
-        LocalUserViewModel provides userViewModel
+        LocalNavController provides navController
     ) {
-        ProvideWindowInsets {
-            AnimatedNavHost(
-                navController = navController,
-                startDestination = Scene.Splash.id
-            ) {
-                route()
+        if (userViewModel.isReady.value && themeViewModel.isReady.value) {
+            Log.d("Route", "Router: ")
+            ProvideWindowInsets {
+                AnimatedNavHost(
+                    navController = navController,
+                    startDestination = when {
+                        Build.VERSION.SDK_INT < Build.VERSION_CODES.S -> Scene.Splash.id
+                        userViewModel.loginSuccess -> {
+                            Scene.Home.id
+                        }
+                        else -> {
+                            Scene.Login.id
+                        }
+                    }
+                ) {
+                    route()
+                }
             }
         }
     }
@@ -63,11 +74,9 @@ fun Router(navController: NavHostController = rememberAnimatedNavController()) {
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.route() {
-//    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
     composable(Scene.Splash.id) {
         SplashScene()
     }
-//    }
     composable(Scene.Login.id) {
         LoginScene()
     }

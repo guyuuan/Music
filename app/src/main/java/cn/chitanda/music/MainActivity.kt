@@ -1,7 +1,7 @@
 package cn.chitanda.music
 
 import android.os.Bundle
-import android.view.ViewTreeObserver
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -9,19 +9,23 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.core.view.WindowCompat
 import cn.chitanda.music.ui.LocalThemeViewModel
+import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.Router
 import cn.chitanda.music.ui.scene.ThemeViewModel
+import cn.chitanda.music.ui.scene.UserViewModel
 import cn.chitanda.music.ui.theme.MusicTheme
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity(), ViewTreeObserver.OnPreDrawListener {
+class MainActivity : ComponentActivity() {
 
     private val themeViewModel by viewModels<ThemeViewModel>()
+    private val userViewModel by viewModels<UserViewModel>()
 
     @OptIn(
         ExperimentalFoundationApi::class,
@@ -35,22 +39,14 @@ class MainActivity : ComponentActivity(), ViewTreeObserver.OnPreDrawListener {
         super.onCreate(savedInstanceState)
         setContent {
             CompositionLocalProvider(
-                LocalThemeViewModel provides themeViewModel
+                LocalThemeViewModel provides themeViewModel,
+                LocalUserViewModel provides userViewModel
             ) {
                 MusicTheme(themeViewModel.monetColor.value) {
                     Router()
                 }
             }
         }
-        window.decorView.viewTreeObserver.addOnPreDrawListener(this)
     }
 
-    override fun onPreDraw(): Boolean {
-        return if (themeViewModel.isReady) {
-            window.decorView.viewTreeObserver.removeOnPreDrawListener(this)
-            true
-        } else {
-            false
-        }
-    }
 }

@@ -83,14 +83,10 @@ fun ThemePreview(modifier: Modifier = Modifier, color: MonetColor?) {
             floatingActionButton = {
                 FloatingActionButton(
                     backgroundColor = MaterialTheme.colorScheme.secondary,
-                    onClick = { }) {
-
-                }
+                    onClick = { }) {}
             },
             bottomBar = {
-                BottomNavigation(backgroundColor = MaterialTheme.colorScheme.inversePrimary) {
-
-                }
+                BottomNavigation(backgroundColor = MaterialTheme.colorScheme.inversePrimary) {}
             }
         ) {
             val colors = MaterialTheme.colorScheme.toList()

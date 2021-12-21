@@ -1,5 +1,8 @@
 package cn.chitanda.music.ui.scene
 
+import android.os.Build
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.chitanda.music.http.RequestStatus
@@ -29,6 +32,24 @@ class UserViewModel @Inject constructor(
     private val _user = MutableStateFlow<RequestStatus<UserProfile>>(RequestStatus())
     val user: StateFlow<RequestStatus<UserProfile>>
         get() = _user
+    private val _isReady = mutableStateOf(false)
+    val isReady: State<Boolean> get() = _isReady
+    private var _loginSuccess = false
+    val loginSuccess: Boolean
+        get() = _loginSuccess
+
+    init {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            viewModelScope.launch(Dispatchers.IO) {
+                if (uid.isNotEmpty()) userRepository.fetchUserInfo(_user)?.let {
+                    _loginSuccess = it.code == 200
+                }
+                _isReady.value = true
+            }
+        } else {
+            _isReady.value = true
+        }
+    }
 
     fun login(username: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {

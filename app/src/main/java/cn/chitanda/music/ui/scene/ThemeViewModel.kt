@@ -25,8 +25,8 @@ import javax.inject.Inject
 class ThemeViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager
 ) : ViewModel() {
-    var isReady = false
-        private set
+    private val _isReady = mutableStateOf(false)
+    val isReady: State<Boolean> get() = _isReady
     private val _color = mutableStateOf<MonetColor?>(null)
     val monetColor: State<MonetColor?> get() = _color
 
@@ -36,7 +36,7 @@ class ThemeViewModel @Inject constructor(
             if (preferenceManager.themeColor != Int.MIN_VALUE) {
                 getMonetColor(Color(preferenceManager.themeColor))
             } else {
-                isReady = true
+                _isReady.value = true
             }
         }
     }
@@ -45,7 +45,7 @@ class ThemeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Default) {
             val new = Monet.getMonetColor(seed.toArgb())
             _color.value = new
-            isReady = true
+            _isReady.value = true
         }
     }
 
