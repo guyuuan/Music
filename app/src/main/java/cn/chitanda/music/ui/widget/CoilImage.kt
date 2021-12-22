@@ -2,8 +2,7 @@ package cn.chitanda.music.ui.widget
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,7 +28,7 @@ private const val TAG = "CoilImage"
 fun CoilImage(
     url: String?,
     modifier: Modifier = Modifier,
-    contentDescription: String?=null,
+    contentDescription: String? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Crop,
     alpha: Float = DefaultAlpha,
@@ -47,11 +46,9 @@ fun CoilImage(
         modifier = modifier then if (shape != null) Modifier.clip(shape) else Modifier,
         contentAlignment = Alignment.Center
     ) {
-//        val imageModifier =
-//            Modifier.fillMaxSize() then if (imageShape != null) Modifier.clip(imageShape) else Modifier
         Image(
             painter = painter, contentDescription = contentDescription,
-//            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             alignment = alignment,
             contentScale = contentScale,
             alpha = alpha, colorFilter = colorFilter
