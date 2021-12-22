@@ -2,29 +2,21 @@ package cn.chitanda.music.ui.scene.home
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import cn.chitanda.music.R
@@ -68,17 +60,39 @@ fun HomeScene(
             navController = homeNavController,
             startDestination = HomePageItem.Find.route
         ) {
-            composable(HomePageItem.Find.route) {
+            composable(
+                HomePageItem.Find.route,
+                enterTransition = enterTransition,
+                exitTransition = exitTransition
+            ) {
                 FindScene()
             }
-            composable(HomePageItem.Message.route) {
+            composable(
+                HomePageItem.Message.route,
+                enterTransition = enterTransition,
+                exitTransition = exitTransition
+            ) {
                 MessageScene()
             }
-            composable(HomePageItem.Mine.route) {
+            composable(
+                HomePageItem.Mine.route,
+                enterTransition = enterTransition,
+                exitTransition = exitTransition
+            ) {
                 MineScene()
             }
         }
     }
+}
+
+@ExperimentalAnimationApi
+private val exitTransition: (AnimatedContentScope<NavBackStackEntry>.() -> ExitTransition) = {
+    fadeOut()
+}
+
+@ExperimentalAnimationApi
+private val enterTransition: (AnimatedContentScope<NavBackStackEntry>.() -> EnterTransition) = {
+    fadeIn(tween(500))
 }
 
 @Composable
