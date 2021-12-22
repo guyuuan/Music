@@ -8,12 +8,12 @@ data class HomeData(
     @Json(name = "code")
     override val code: Int = 0,
     @Json(name = "data")
-    val `data`: Data? = Data(),
+    override val data: Data? = Data(),
     @Json(name = "message")
     override val message: String? = "",
     @Json(name = "msg")
     override val msg: String? = "",
-) : BaseJson() {
+) : BaseJson<HomeData.Data?>() {
     @JsonClass(generateAdapter = true)
     data class Data(
         @Json(name = "blockUUIDs")

@@ -14,8 +14,8 @@ data class HomeRoundIconList(
     override val code: Int,
     override val message: String?,
     override val msg: String?,
-    val data: List<HomeRoundIcon>
-) : BaseJson()
+    override val data: List<HomeRoundIcon>
+) : BaseJson<List<HomeRoundIcon>>()
 
 @JsonClass(generateAdapter = true)
 data class HomeRoundIcon(

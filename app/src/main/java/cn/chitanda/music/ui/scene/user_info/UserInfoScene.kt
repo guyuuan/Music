@@ -112,7 +112,7 @@ private fun NestedScrollBody(user: UserProfile) {
                 .height(with(LocalDensity.current) { appBarState.height.toDp() })
         ) {
             CoilImage(
-                url = user.profile?.backgroundUrl
+                url = user.data?.backgroundUrl
             )
             val appBarColor by animateColorAsState(targetValue = if (appBarState.height > appBarState.minHeight) Color.Transparent else MaterialTheme.colorScheme.primary)
             Box(
@@ -124,7 +124,7 @@ private fun NestedScrollBody(user: UserProfile) {
                     .statusBarsPadding(), contentAlignment = Alignment.Center
             ) {
                 Text(
-                    user.profile?.nickname.toString(),
+                    user.data?.nickname.toString(),
                     color = Color.White,
                     fontSize = (18 + 18 * appBarState.scrollPercent).sp,
                     textAlign = TextAlign.Center
@@ -156,7 +156,7 @@ private fun NestedScrollBody(user: UserProfile) {
                     )
                     {
                         CoilImage(
-                            url = user.profile?.avatarUrl,
+                            url = user.data?.avatarUrl,
                             shape = CircleShape,
                             modifier = Modifier
                                 .fillMaxHeight()
@@ -173,16 +173,16 @@ private fun NestedScrollBody(user: UserProfile) {
                                 horizontalArrangement = Arrangement.SpaceAround
                             ) {
                                 UserInfoItem(
-                                    top = user.profile?.follows.toString(), bottom = stringResource(
+                                    top = user.data?.follows.toString(), bottom = stringResource(
                                         R.string.text_fans
                                     )
                                 )
                                 UserInfoItem(
-                                    top = user.profile?.followeds.toString(),
+                                    top = user.data?.followeds.toString(),
                                     bottom = stringResource(R.string.text_followeds)
                                 )
                                 UserInfoItem(
-                                    top = user.profile?.vipType.toString(), bottom = stringResource(
+                                    top = user.data?.vipType.toString(), bottom = stringResource(
                                         R.string.text_levels
                                     )
                                 )

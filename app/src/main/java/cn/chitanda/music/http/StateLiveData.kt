@@ -2,10 +2,11 @@ package cn.chitanda.music.http
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import cn.chitanda.music.http.bean.BaseJson
 
-class StateLiveData<T> : MutableLiveData<RequestStatus<T>>(RequestStatus())
+class StateLiveData<T:BaseJson<*>> : MutableLiveData<RequestStatus<T>>(RequestStatus())
 
-abstract class IStateObserver<T> : Observer<RequestStatus<T>> {
+abstract class IStateObserver<T:BaseJson<*>> : Observer<RequestStatus<T>> {
     override fun onChanged(t: RequestStatus<T>) {
         when (t.status) {
             DataState.STATE_SUCCESS -> {

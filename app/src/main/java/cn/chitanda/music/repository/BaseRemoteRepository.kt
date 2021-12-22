@@ -39,7 +39,7 @@ open class BaseRemoteRepository {
 //        }
 //    }
 
-    protected suspend fun <T : BaseJson> httpRequest(
+    protected suspend fun <T : BaseJson<*>> httpRequest(
         stateFlow: MutableStateFlow<RequestStatus<T>>? = null,
         block: suspend () -> T?
     ): T? {

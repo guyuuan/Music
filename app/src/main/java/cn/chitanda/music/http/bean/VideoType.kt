@@ -3,13 +3,14 @@ package cn.chitanda.music.http.bean
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+
 @JsonClass(generateAdapter = true)
 data class VideoType(
     override val code: Int,
     override val message: String?,
     override val msg: String?,
-    val data: List<Data>?
-) : BaseJson() {
+    override val data: List<Data>?
+) : BaseJson<List<VideoType.Data>>() {
 
     @JsonClass(generateAdapter = true)
     data class Data(

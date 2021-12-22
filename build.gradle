@@ -10,6 +10,7 @@ buildscript {
         hilt_version = '2.40.5'
         moshi_version = '1.13.0'
         lifecycle_version = '2.4.0'
+        paging_version = '3.1.0'
     }
     repositories {
         google()

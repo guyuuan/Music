@@ -4,6 +4,7 @@ import cn.chitanda.music.http.RequestStatus
 import cn.chitanda.music.http.api.LoginApi
 import cn.chitanda.music.http.api.UserApi
 import cn.chitanda.music.http.bean.LoginJson
+import cn.chitanda.music.http.bean.PlaylistJson
 import cn.chitanda.music.http.bean.UserProfile
 import cn.chitanda.music.preference.PreferenceManager
 import cn.chitanda.music.utils.md5
@@ -38,6 +39,10 @@ class UserRepository constructor(
 
     suspend fun refreshLoginStatus() = httpRequest {
         userApi.refreshLoginStatus()
+    }
+
+    suspend fun getUserPlayList(uid: String) = httpRequest {
+        userApi.getUserPlayList(uid = uid)
     }
 }
 

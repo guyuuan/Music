@@ -1,5 +1,6 @@
 package cn.chitanda.music.http
 
+import cn.chitanda.music.http.bean.BaseJson
 import com.squareup.moshi.JsonClass
 
 /**
@@ -8,7 +9,7 @@ import com.squareup.moshi.JsonClass
  *@description:
  **/
 @JsonClass(generateAdapter = true)
-class RequestStatus<T>(
+class RequestStatus<T : BaseJson<*>>(
     var code: Int = 0,
     var error: Throwable? = null,
     var msg: String? = null,
@@ -16,13 +17,15 @@ class RequestStatus<T>(
     var json: T? = null,
 ) {
 
-    fun <T> copy(
+    fun <T : BaseJson<*>> copy(
         code: Int = 0,
         error: Throwable? = null,
         msg: String? = null,
         status: DataState = DataState.STATE_CREATE,
         _data: T? = null,
     ) = RequestStatus(code, error, msg, status, _data)
+
+    fun getData() = json?.data
 }
 
 enum class DataState {

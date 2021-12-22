@@ -10,8 +10,8 @@ data class VideoList(
     override val msg: String?, @Json(name = "hasmore")
     val hasMore: Boolean,
     @Json(name = "datas")
-    val data: List<Data>?
-) : BaseJson() {
+    override val data: List<Data>?
+) : BaseJson<List<VideoList.Data>?>() {
     @JsonClass(generateAdapter = true)
     data class Data(
         @Json(name = "alg")

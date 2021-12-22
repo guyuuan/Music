@@ -6,10 +6,10 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class UserAccount(
     @Json(name = "account")
-    val account: Data?,
+    override val data: Data?,
     override val code: Int,
     override val message: String?, override val msg: String?
-) : BaseJson() {
+) : BaseJson<UserAccount.Data?>() {
     @JsonClass(generateAdapter = true)
     data class Data(
         @Json(name = "anonimousUser")

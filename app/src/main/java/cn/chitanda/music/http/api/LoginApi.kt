@@ -15,7 +15,7 @@ interface LoginApi {
     suspend fun captchaSent(
         @Query("phone") phone: String,
         @Query("ctcode") ctcode: Int? = null
-    ): BaseJson
+    ): BaseJson<Any>
 
     @POST("/login/cellphone")
     suspend fun cellphoneLoginWithCaptcha(

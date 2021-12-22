@@ -44,7 +44,7 @@ fun SplashScene(
 
             }
             DataState.STATE_SUCCESS -> {
-                if (user.json?.profile == null) {
+                if (user.json?.data == null) {
                     navController.navigate(Scene.Login.id) {
                         popUpTo(Scene.Splash.id) { inclusive = true }
                     }

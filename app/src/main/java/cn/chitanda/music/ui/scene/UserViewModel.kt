@@ -68,4 +68,8 @@ class UserViewModel @Inject constructor(
             userRepository.refreshLoginStatus()
         }
     }
+
+    fun getUserPlayList(uid:String = this.uid){
+        userRepository
+    }
 }

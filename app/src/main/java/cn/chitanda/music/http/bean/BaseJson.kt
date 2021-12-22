@@ -6,10 +6,11 @@ package cn.chitanda.music.http.bean
  *@description:
  **/
 
-abstract class BaseJson {
+abstract class BaseJson<T> {
     abstract val code: Int
     abstract val message: String?
     abstract val msg: String?
+    abstract val data: T?
 }
 /*
 *     @Json(name = "code")

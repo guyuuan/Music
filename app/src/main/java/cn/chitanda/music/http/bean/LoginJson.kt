@@ -20,8 +20,8 @@ data class LoginJson(
     @Json(name = "loginType")
     val loginType: Int?,
     @Json(name = "profile")
-    val profile: Profile?,
-) : BaseJson() {
+    override val data: Profile?,
+) : BaseJson<LoginJson.Profile?>() {
     @JsonClass(generateAdapter = true)
     data class Account(
         @Json(name = "anonimousUser")

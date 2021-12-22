@@ -1,8 +1,9 @@
 package cn.chitanda.music.http.api
 
+import cn.chitanda.music.http.bean.PlaylistJson
 import cn.chitanda.music.http.bean.RefreshLogin
-import cn.chitanda.music.http.bean.UserAccount
 import cn.chitanda.music.http.bean.UserProfile
+import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -19,4 +20,10 @@ interface UserApi {
 
     @POST("/login/refresh")
     suspend fun refreshLoginStatus(): RefreshLogin
+
+    @GET("/user/playlist")
+    suspend fun getUserPlayList(
+        @Query("uid") uid: String,
+        @Query("offset") offset: Int = 0
+    ): PlaylistJson
 }
