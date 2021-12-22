@@ -6,6 +6,7 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.NavGraphBuilder
@@ -34,6 +35,7 @@ sealed class Scene(val id: String, @StringRes val label: Int? = null) {
     object Theme : Scene(id = "theme", label = R.string.text_theme)
 }
 
+@ExperimentalMaterial3Api
 @ExperimentalFoundationApi
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
@@ -68,6 +70,7 @@ fun Router(navController: NavHostController = rememberAnimatedNavController()) {
     }
 }
 
+@ExperimentalMaterial3Api
 @ExperimentalFoundationApi
 @ExperimentalCoilApi
 @ExperimentalMaterialApi

@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.chitanda.music.http.RequestStatus
+import cn.chitanda.music.http.bean.PlaylistJson
 import cn.chitanda.music.http.bean.UserProfile
 import cn.chitanda.music.preference.PreferenceManager
 import cn.chitanda.music.repository.UserRepository
@@ -38,6 +39,9 @@ class UserViewModel @Inject constructor(
     val loginSuccess: Boolean
         get() = _loginSuccess
 
+    private val _playlist = MutableStateFlow<RequestStatus<PlaylistJson>>(RequestStatus())
+    val playlist: StateFlow<RequestStatus<PlaylistJson>> get() = _playlist
+
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             viewModelScope.launch(Dispatchers.IO) {
@@ -69,7 +73,7 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun getUserPlayList(uid:String = this.uid){
-        userRepository
+    fun getUserPlayList(uid: String = this.uid) {
+        viewModelScope.launch(Dispatchers.IO){ userRepository.getUserPlayList(uid = uid, _playlist) }
     }
 }

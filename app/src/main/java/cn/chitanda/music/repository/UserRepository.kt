@@ -41,7 +41,10 @@ class UserRepository constructor(
         userApi.refreshLoginStatus()
     }
 
-    suspend fun getUserPlayList(uid: String) = httpRequest {
+    suspend fun getUserPlayList(
+        uid: String,
+        stateFlow: MutableStateFlow<RequestStatus<PlaylistJson>>? = null
+    ) = httpRequest(stateFlow) {
         userApi.getUserPlayList(uid = uid)
     }
 }

@@ -17,15 +17,8 @@ class RequestStatus<T : BaseJson<*>>(
     var json: T? = null,
 ) {
 
-    fun <T : BaseJson<*>> copy(
-        code: Int = 0,
-        error: Throwable? = null,
-        msg: String? = null,
-        status: DataState = DataState.STATE_CREATE,
-        _data: T? = null,
-    ) = RequestStatus(code, error, msg, status, _data)
 
-    fun getData() = json?.data
+    val  data get() = json?.data
 }
 
 enum class DataState {
@@ -38,3 +31,5 @@ enum class DataState {
     STATE_ERROR,//请求失败
     STATE_UNKNOWN//未知
 }
+
+val DataState.isLoading: Boolean get() = this == DataState.STATE_LOADING

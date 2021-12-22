@@ -51,7 +51,7 @@ fun CoilImage(
 //            Modifier.fillMaxSize() then if (imageShape != null) Modifier.clip(imageShape) else Modifier
         Image(
             painter = painter, contentDescription = contentDescription,
-            modifier = Modifier.fillMaxSize(),
+//            modifier = Modifier.fillMaxSize(),
             alignment = alignment,
             contentScale = contentScale,
             alpha = alpha, colorFilter = colorFilter
