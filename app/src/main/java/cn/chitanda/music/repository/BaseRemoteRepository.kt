@@ -46,21 +46,22 @@ open class BaseRemoteRepository {
         return try {
             stateFlow?.emit(RequestStatus(status = DataState.STATE_LOADING))
             val data = block()
-            val response = if (data != null) {
-                RequestStatus(
-                    code = data.code,
-                    status = when (data.code) {
-                        in 200..299 -> DataState.STATE_SUCCESS
-                        in 300..599 -> DataState.STATE_FAILED
-                        else -> DataState.STATE_UNKNOWN
-                    },
-                    msg = data.msg,
-                    json = data
-                )
-            } else {
-                RequestStatus(status = DataState.STATE_EMPTY)
-            }
-            stateFlow?.emit(response)
+            stateFlow?.emit(
+                if (data != null) {
+                    RequestStatus(
+                        code = data.code,
+                        status = when (data.code) {
+                            in 200..299 -> DataState.STATE_SUCCESS
+                            in 300..599 -> DataState.STATE_FAILED
+                            else -> DataState.STATE_UNKNOWN
+                        },
+                        msg = data.msg,
+                        json = data
+                    )
+                } else {
+                    RequestStatus(status = DataState.STATE_EMPTY)
+                }
+            )
             data
         } catch (e: Exception) {
             e.printStackTrace()
