@@ -4,6 +4,7 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
+    id("com.google.devtools.ksp").version("$ksp_version")
 }
 
 android {
@@ -76,11 +77,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3'
 
     //Moshi
-    //noinspection GradleDependency
     implementation "com.squareup.moshi:moshi:$moshi_version"
-    //noinspection GradleDependency
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
 
     //Accompanist
     implementation "com.google.accompanist:accompanist-insets:$accompanist_version"
@@ -107,4 +106,8 @@ dependencies {
     //Paging3
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     implementation "androidx.paging:paging-compose:1.0.0-alpha14"
+
+    //KSP
+//    implementation "com.google.devtools.ksp:symbol-processing-api:1.6.10-1.0.2"
+
 }
