@@ -8,12 +8,12 @@ plugins {
 }
 
 android {
-    compileSdk compileSdk
+    compileSdk rootProject.compileSdkVersion
 
     defaultConfig {
         applicationId "cn.chitanda.music"
-        minSdk minSdk
-        targetSdk targetSdk
+        minSdk rootProject.minSdkVersion
+        targetSdk rootProject.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -108,4 +108,6 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     implementation "androidx.paging:paging-compose:1.0.0-alpha14"
 
+    //StatusBarColor
+    implementation "cn.chitanda:dynamicstatusbar:2.2"
 }
