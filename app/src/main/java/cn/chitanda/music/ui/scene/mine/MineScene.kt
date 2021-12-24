@@ -49,7 +49,7 @@ fun MineScene(
 
     val playlist by viewModel.playlist.collectAsState()
     val user by viewModel.user.collectAsState()
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = playlist.status.isLoading)
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     Scaffold(topBar = {
         TopAppBar(
             contentPadding = rememberInsetsPaddingValues(
@@ -98,6 +98,7 @@ fun MineScene(
         if (playlist.status == DataState.STATE_CREATE) {
             viewModel.getUserPlayList()
         }
+        swipeRefreshState.isRefreshing = playlist.status.isLoading
     }
 }
 
