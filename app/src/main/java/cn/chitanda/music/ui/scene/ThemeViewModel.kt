@@ -1,5 +1,6 @@
 package cn.chitanda.music.ui.scene
 
+import android.os.Build
 import androidx.annotation.ColorInt
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +13,6 @@ import cn.chitanda.music.ui.monet.Monet
 import cn.chitanda.music.ui.monet.theme.MonetColor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,19 +25,16 @@ import javax.inject.Inject
 class ThemeViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager
 ) : ViewModel() {
-    private val _isReady = mutableStateOf(false)
+    private val _isReady = mutableStateOf(Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
     val isReady: State<Boolean> get() = _isReady
     private val _color = mutableStateOf<MonetColor?>(null)
     val monetColor: State<MonetColor?> get() = _color
 
     init {
-        viewModelScope.launch {
-            delay(200)
-            if (preferenceManager.themeColor != Int.MIN_VALUE) {
-                getMonetColor(Color(preferenceManager.themeColor))
-            } else {
-                _isReady.value = true
-            }
+        if (preferenceManager.themeColor != Int.MIN_VALUE) {
+            getMonetColor(Color(preferenceManager.themeColor))
+        } else {
+            _isReady.value = true
         }
     }
 

@@ -2,4 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.chitanda.music.media">
 
+    <application>
+        <service
+            android:name=".MusicService"
+            android:enabled="true"
+            android:exported="false"/>
+    </application>
+
 </manifest>

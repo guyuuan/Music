@@ -1,6 +1,10 @@
 package cn.chitanda.music
 
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.view.ViewTreeObserver
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -19,6 +23,8 @@ import cn.chitanda.music.ui.theme.MusicTheme
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
+
+private const val TAG = "MainActivity"
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -47,6 +53,24 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        //在Android12中添加对等待登录完成后再移除splashScreen
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            keepSplashScreen()
+        }
+    }
+
+    private fun keepSplashScreen() {
+        window.decorView.viewTreeObserver?.addOnPreDrawListener(object :
+            ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                return (themeViewModel.isReady.value && userViewModel.isReady.value).also {
+                    Log.d(TAG, "onPreDraw: $it")
+                    if (it) {
+                        window.decorView.viewTreeObserver?.removeOnPreDrawListener(this)
+                    }
+                }
+            }
+        })
     }
 
 }

@@ -1,7 +1,6 @@
 package cn.chitanda.music.ui
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -48,9 +47,8 @@ fun Router(navController: NavHostController = rememberAnimatedNavController()) {
     CompositionLocalProvider(
         LocalNavController provides navController
     ) {
-        if (userViewModel.isReady.value && themeViewModel.isReady.value) {
-            Log.d("Route", "Router: ")
-            ProvideWindowInsets {
+        ProvideWindowInsets {
+            if (userViewModel.isReady.value && themeViewModel.isReady.value) {
                 AnimatedNavHost(
                     navController = navController,
                     startDestination = when {

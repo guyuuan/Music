@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -33,7 +34,7 @@ class UserViewModel @Inject constructor(
     private val _user = MutableStateFlow<RequestStatus<UserProfile>>(RequestStatus())
     val user: StateFlow<RequestStatus<UserProfile>>
         get() = _user
-    private val _isReady = mutableStateOf(false)
+    private val _isReady = mutableStateOf(Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
     val isReady: State<Boolean> get() = _isReady
     private var _loginSuccess = false
     val loginSuccess: Boolean
@@ -43,15 +44,15 @@ class UserViewModel @Inject constructor(
     val playlist: StateFlow<RequestStatus<PlaylistJson>> get() = _playlist
 
     init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (!isReady.value) {
             viewModelScope.launch(Dispatchers.IO) {
                 if (uid.isNotEmpty()) userRepository.fetchUserInfo(_user)?.let {
                     _loginSuccess = it.code == 200
                 }
-                _isReady.value = true
+                withContext(Dispatchers.Main) {
+                    _isReady.value = true
+                }
             }
-        } else {
-            _isReady.value = true
         }
     }
 
@@ -74,6 +75,10 @@ class UserViewModel @Inject constructor(
     }
 
     fun getUserPlayList(uid: String = this.uid) {
-        viewModelScope.launch(Dispatchers.IO){ userRepository.getUserPlayList(uid = uid, _playlist) }
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.getUserPlayList(
+                uid = uid, _playlist
+            )
+        }
     }
 }
