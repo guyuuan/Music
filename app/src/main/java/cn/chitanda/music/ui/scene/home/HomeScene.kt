@@ -137,7 +137,7 @@ private fun BottomBar(homeNavController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .navigationBarsHeight()
-                .background(color = MaterialTheme.colorScheme.surfaceVariant)
+                .background(color = MaterialTheme.colorScheme.inversePrimary)
         )
     }
 }
