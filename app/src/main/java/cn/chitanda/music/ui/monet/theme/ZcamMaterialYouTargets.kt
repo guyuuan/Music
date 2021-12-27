@@ -77,9 +77,9 @@ class ZcamMaterialYouTargets(
 
         // Accent chroma from Pixel defaults
         // We use the most chromatic color as the reference
-        // A-1 chroma = avg(default Pixel Blue shades 100-900)
+        // cn.chitanda.music.A-1 chroma = avg(default Pixel Blue shades 100-900)
         // Excluding very bright variants (10, 50) to avoid light bias
-        // A-1 > A-3 > A-2
+        // cn.chitanda.music.A-1 > cn.chitanda.music.A-3 > cn.chitanda.music.A-2
         val accent1Chroma = calcAccent1Chroma() * ACCENT1_REF_CHROMA_FACTOR
         val accent2Chroma = accent1Chroma / 3
         val accent3Chroma = accent2Chroma * 2

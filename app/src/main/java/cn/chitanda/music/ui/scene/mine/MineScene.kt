@@ -22,6 +22,7 @@ import cn.chitanda.music.http.bean.UserProfile
 import cn.chitanda.music.http.isLoading
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
+import cn.chitanda.music.ui.Scene
 import cn.chitanda.music.ui.scene.UserViewModel
 import cn.chitanda.music.ui.theme.Shapes
 import cn.chitanda.music.ui.widget.CoilImage
@@ -89,6 +90,11 @@ fun MineScene(
                                 emptyList()
                             }, modifier = Modifier.padding(bottom = 16.dp)
                         )
+                    }
+                    item {
+                        Button(onClick = { navController.navigate(Scene.Theme.id) }) {
+                            Text(text = "Theme")
+                        }
                     }
                 }
             }

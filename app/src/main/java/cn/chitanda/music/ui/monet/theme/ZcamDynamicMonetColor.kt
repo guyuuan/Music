@@ -71,7 +71,7 @@ class ZcamDynamicMonetColor(
         // Keep target lightness.
         val lightness = target.lightness
         // Allow colorless gray and low-chroma colors by clamping.
-        // To preserve chroma ratios, scale chroma by the reference (A-1 / N-1).
+        // To preserve chroma ratios, scale chroma by the reference (cn.chitanda.music.A-1 / N-1).
         val scaleC = if (reference.chroma == 0.0) {
             // Zero reference chroma won't have chroma anyway, so use 0 to avoid a divide-by-zero
             0.0

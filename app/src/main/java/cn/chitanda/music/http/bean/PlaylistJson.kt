@@ -19,13 +19,13 @@ data class PlaylistJson(
     @JsonClass(generateAdapter = true)
     data class Playlist(
         @Json(name = "adType")
-        val adType: Int?,
+        val adType: Long?,
         @Json(name = "anonimous")
         val anonimous: Boolean?,
         @Json(name = "backgroundCoverUrl")
         val backgroundCoverUrl: String?,
         @Json(name = "cloudTrackCount")
-        val cloudTrackCount: Int?,
+        val cloudTrackCount: Long?,
         @Json(name = "commentThreadId")
         val commentThreadId: String?,
         @Json(name = "coverImgId")
@@ -45,7 +45,7 @@ data class PlaylistJson(
         @Json(name = "highQuality")
         val highQuality: Boolean?,
         @Json(name = "id")
-        val id: Int?,
+        val id: Long?,
         @Json(name = "name")
         val name: String?,
         @Json(name = "newImported")
@@ -55,9 +55,9 @@ data class PlaylistJson(
         @Json(name = "ordered")
         val ordered: Boolean?,
         @Json(name = "playCount")
-        val playCount: Int?,
+        val playCount: Long?,
         @Json(name = "privacy")
-        val privacy: Int?,
+        val privacy: Long?,
         @Json(name = "recommendInfo")
         val recommendInfo: Any?,
         @Json(name = "shareStatus")
@@ -65,25 +65,25 @@ data class PlaylistJson(
         @Json(name = "sharedUsers")
         val sharedUsers: Any?,
         @Json(name = "specialType")
-        val specialType: Int?,
+        val specialType: Long?,
         @Json(name = "status")
-        val status: Int?,
+        val status: Long?,
         @Json(name = "subscribed")
         val subscribed: Boolean?,
         @Json(name = "subscribedCount")
-        val subscribedCount: Int?,
+        val subscribedCount: Long?,
         @Json(name = "subscribers")
         val subscribers: List<Any?>?,
         @Json(name = "tags")
         val tags: List<String?>?,
         @Json(name = "titleImage")
-        val titleImage: Int?,
+        val titleImage: Long?,
         @Json(name = "titleImageUrl")
         val titleImageUrl: Any?,
         @Json(name = "totalDuration")
-        val totalDuration: Int?,
+        val totalDuration: Long?,
         @Json(name = "trackCount")
-        val trackCount: Int?,
+        val trackCount: Long?,
         @Json(name = "trackNumberUpdateTime")
         val trackNumberUpdateTime: Long?,
         @Json(name = "trackUpdateTime")
@@ -95,20 +95,20 @@ data class PlaylistJson(
         @Json(name = "updateTime")
         val updateTime: Long?,
         @Json(name = "userId")
-        val userId: Int?
+        val userId: Long?
     ) {
         @JsonClass(generateAdapter = true)
         data class Creator(
             @Json(name = "accountStatus")
-            val accountStatus: Int?,
+            val accountStatus: Long?,
             @Json(name = "anchor")
             val anchor: Boolean?,
             @Json(name = "authStatus")
-            val authStatus: Int?,
+            val authStatus: Long?,
             @Json(name = "authenticationTypes")
-            val authenticationTypes: Int?,
+            val authenticationTypes: Long?,
             @Json(name = "authority")
-            val authority: Int?,
+            val authority: Long?,
             @Json(name = "avatarUrl")
             val avatarUrl: String?,
             @Json(name = "backgroundUrl")
@@ -122,11 +122,11 @@ data class PlaylistJson(
             @Json(name = "signature")
             val signature: String?,
             @Json(name = "userId")
-            val userId: Int?,
+            val userId: Long?,
             @Json(name = "userType")
-            val userType: Int?,
+            val userType: Long?,
             @Json(name = "vipType")
-            val vipType: Int?
+            val vipType: Long?
         )
     }
 }

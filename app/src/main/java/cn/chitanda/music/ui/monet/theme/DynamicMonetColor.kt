@@ -66,7 +66,7 @@ class DynamicMonetColor(
         // Keep target lightness.
         val L = target.L
         // Allow colorless gray and low-chroma colors by clamping.
-        // To preserve chroma ratios, scale chroma by the reference (A-1 / N-1).
+        // To preserve chroma ratios, scale chroma by the reference (cn.chitanda.music.A-1 / N-1).
         val scaleC = if (reference.C == 0.0) {
             // Zero reference C won't have chroma anyway, so use 0 to avoid a divide-by-zero
             0.0

@@ -76,7 +76,7 @@ fun ThemePreview(modifier: Modifier = Modifier, color: MonetColor?) {
             modifier,
             backgroundColor = MaterialTheme.colorScheme.surface,
             topBar = {
-                TopAppBar(backgroundColor = MaterialTheme.colorScheme.inversePrimary) {
+                TopAppBar(backgroundColor = MaterialTheme.colorScheme.primaryContainer) {
                     Text(text = "ThemePreview")
                 }
             },
@@ -86,7 +86,7 @@ fun ThemePreview(modifier: Modifier = Modifier, color: MonetColor?) {
                     onClick = { }) {}
             },
             bottomBar = {
-                BottomNavigation(backgroundColor = MaterialTheme.colorScheme.inversePrimary) {}
+                BottomNavigation(backgroundColor = MaterialTheme.colorScheme.primaryContainer) {}
             }
         ) {
             val colors = MaterialTheme.colorScheme.toList()

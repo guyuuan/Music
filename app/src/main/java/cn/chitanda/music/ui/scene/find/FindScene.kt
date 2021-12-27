@@ -4,48 +4,20 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.calculateStartPadding
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,7 +26,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -62,20 +34,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import cn.chitanda.music.R
 import cn.chitanda.music.http.DataState
-import cn.chitanda.music.http.bean.HomeBanner
-import cn.chitanda.music.http.bean.HomeData
-import cn.chitanda.music.http.bean.HomeRoundIcon
-import cn.chitanda.music.http.bean.MLogExtInfo
-import cn.chitanda.music.http.bean.RCMDShowType
-import cn.chitanda.music.http.bean.SubTitleType
+import cn.chitanda.music.http.bean.*
 import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.widget.banner.Banner
 import cn.chitanda.music.utils.toUnitString
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.statusBarsHeight
+import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Types
@@ -98,34 +65,35 @@ fun FindScene(navController: NavController = LocalNavController.current) {
     val iconList by viewModel.homeIconList.collectAsState()
     Scaffold(
         topBar = {
-            TopAppBar(
-                contentPadding = rememberInsetsPaddingValues(
-                    insets = LocalWindowInsets.current.statusBars,
-                ),
-                backgroundColor = MaterialTheme.colorScheme.inversePrimary
-            ) {
-                Spacer(modifier = Modifier.width(16.dp))
-                Icon(
-                    Icons.Default.Menu,
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-                BasicTextField(
-                    value = "",
-                    onValueChange = {},
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(0.5f)
-                        .padding(horizontal = 16.dp)
-                        .background(Color.White, shape = RoundedCornerShape(16.dp))
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_mic),
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-            }
+            CenterAlignedTopAppBar(modifier = Modifier.wrapContentHeight().statusBarsPadding(), title = {Text(stringResource(id = R.string.app_name))})
+//            TopAppBar(
+//                contentPadding = rememberInsetsPaddingValues(
+//                    insets = LocalWindowInsets.current.statusBars,
+//                ),
+//                backgroundColor = MaterialTheme.colorScheme.secondaryContainer
+//            ) {
+//                Spacer(modifier = Modifier.width(16.dp))
+//                Icon(
+//                    Icons.Default.Menu,
+//                    contentDescription = "",
+//                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+//                )
+//                BasicTextField(
+//                    value = "",
+//                    onValueChange = {},
+//                    modifier = Modifier
+//                        .weight(1f)
+//                        .fillMaxHeight(0.5f)
+//                        .padding(horizontal = 16.dp)
+//                        .background(Color.White, shape = RoundedCornerShape(16.dp))
+//                )
+//                Icon(
+//                    painter = painterResource(id = R.drawable.ic_mic),
+//                    contentDescription = "",
+//                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+//                )
+//                Spacer(modifier = Modifier.width(16.dp))
+//            }
         },
         backgroundColor = MaterialTheme.colorScheme.surface
     ) {
@@ -316,55 +284,52 @@ fun RecommendPlayList(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    Card(
-        backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
-        elevation = 0.dp,
-        modifier = modifier
-    ) {
-        TitleColumn(
-            title = data.uiElement?.subTitle?.title.toString(),
-            buttonText = data.uiElement?.button?.text,
-            contentPadding = contentPadding
-        ) { padding ->
-            LazyRow(modifier = Modifier.fillMaxWidth(), contentPadding = padding) {
-                val list =
-                    data.creatives?.map { it.resources ?: emptyList() }?.flatten() ?: emptyList()
-                itemsIndexed(list) { i, resource ->
-                    Column(
-                        Modifier
-                            .padding(end = if (i != list.lastIndex) 16.dp else 0.dp)
-                            .width(110.dp), horizontalAlignment = Alignment.CenterHorizontally
+
+    TitleColumn(
+        modifier = modifier,
+        title = data.uiElement?.subTitle?.title.toString(),
+        buttonText = data.uiElement?.button?.text,
+        contentPadding = contentPadding
+    ) { padding ->
+        LazyRow(modifier = Modifier.fillMaxWidth(), contentPadding = padding) {
+            val list =
+                data.creatives?.map { it.resources ?: emptyList() }?.flatten() ?: emptyList()
+            itemsIndexed(list) { i, resource ->
+                Column(
+                    Modifier
+                        .padding(end = if (i != list.lastIndex) 16.dp else 0.dp)
+                        .width(110.dp), horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(1f)
-                        ) {
-                            CoilImage(
-                                url = resource.uiElement?.image?.imageUrl,
-                                contentDescription = resource.resourceType,
-                                modifier = Modifier.fillMaxSize(),
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            PlayCount(
-                                modifier = Modifier
-                                    .padding(top = 4.dp, end = 4.dp)
-                                    .align(Alignment.TopEnd),
-                                playCount = resource.resourceExtInfo?.playCount ?: 0
-                            )
-                        }
-                        Spacer(
-                            modifier = Modifier
-                                .size(8.dp)
+                        CoilImage(
+                            url = resource.uiElement?.image?.imageUrl,
+                            contentDescription = resource.resourceType,
+                            modifier = Modifier.fillMaxSize(),
+                            shape = RoundedCornerShape(8.dp)
                         )
-                        Text(
-                            text = resource.uiElement?.mainTitle?.title.toString(),
-                            style = MaterialTheme.typography.labelMedium, maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
+                        PlayCount(
+                            modifier = Modifier
+                                .padding(top = 4.dp, end = 4.dp)
+                                .align(Alignment.TopEnd),
+                            playCount = resource.resourceExtInfo?.playCount ?: 0
                         )
                     }
+                    Spacer(
+                        modifier = Modifier
+                            .size(8.dp)
+                    )
+                    Text(
+                        text = resource.uiElement?.mainTitle?.title.toString(),
+                        style = MaterialTheme.typography.labelMedium, maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
+
         }
     }
 }
@@ -403,43 +368,38 @@ fun RecommendSongList(
     modifier: Modifier,
     contentPadding: PaddingValues
 ) {
-    Card(
-        backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
-        elevation = 0.dp,
-        modifier = modifier
-    ) {
-        TitleColumn(
-            title = data.uiElement?.subTitle?.title.toString(),
-            buttonText = data.uiElement?.button?.text.toString(),
-            contentPadding = contentPadding
-        ) { padding ->
-            val songs = data.creatives ?: emptyList()
-            var itemWidth by remember {
-                mutableStateOf(IntSize.Zero.width)
-            }
-            LazyRow(
-                Modifier
-                    .fillMaxWidth()
-                    .onSizeChanged {
-                        itemWidth = it.width
-                    },
-                contentPadding = padding
-            ) {
-                if (itemWidth > IntSize.Zero.width) {
-                    songs.forEach { song ->
-                        item {
-                            Column(Modifier.width(with(LocalDensity.current) { itemWidth.toDp() * 0.9f })) {
-                                song.resources?.forEachIndexed { i, r ->
-                                    SongItem(
-                                        song = r,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(end = 16.dp),
-                                        i < song.resources.lastIndex
-                                    )
-                                    if (i < song.resources.lastIndex) {
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                    }
+    TitleColumn(
+        modifier = modifier,
+        title = data.uiElement?.subTitle?.title.toString(),
+        buttonText = data.uiElement?.button?.text.toString(),
+        contentPadding = contentPadding
+    ) { padding ->
+        val songs = data.creatives ?: emptyList()
+        var itemWidth by remember {
+            mutableStateOf(IntSize.Zero.width)
+        }
+        LazyRow(
+            Modifier
+                .fillMaxWidth()
+                .onSizeChanged {
+                    itemWidth = it.width
+                },
+            contentPadding = padding
+        ) {
+            if (itemWidth > IntSize.Zero.width) {
+                songs.forEach { song ->
+                    item {
+                        Column(Modifier.width(with(LocalDensity.current) { itemWidth.toDp() * 0.9f })) {
+                            song.resources?.forEachIndexed { i, r ->
+                                SongItem(
+                                    song = r,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(end = 16.dp),
+                                    i < song.resources.lastIndex
+                                )
+                                if (i < song.resources.lastIndex) {
+                                    Spacer(modifier = Modifier.height(8.dp))
                                 }
                             }
                         }
@@ -447,6 +407,7 @@ fun RecommendSongList(
                 }
             }
         }
+
     }
 }
 
@@ -462,27 +423,23 @@ fun MLogList(
     val mLogs by remember {
         derivedStateOf { getMLogData(data.extInfo) }
     }
-    Card(
-        backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
-        elevation = 0.dp,
-        modifier = modifier
-    ) {
-        TitleColumn(
-            title = data.uiElement?.subTitle?.title.toString(),
-            buttonText = data.uiElement?.button?.text.toString(),
-            contentPadding = contentPadding
-        ) { padding ->
-            LazyRow(modifier = Modifier.fillMaxWidth(), contentPadding = padding) {
-                itemsIndexed(mLogs) { i, mLog ->
-                    MLogItem(
-                        modifier = Modifier
-                            .padding(end = if (i < mLogs.lastIndex) 16.dp else 0.dp)
-                            .width(120.dp),
-                        data = mLog.resource
-                    )
-                }
+    TitleColumn(
+        modifier = modifier,
+        title = data.uiElement?.subTitle?.title.toString(),
+        buttonText = data.uiElement?.button?.text.toString(),
+        contentPadding = contentPadding
+    ) { padding ->
+        LazyRow(modifier = Modifier.fillMaxWidth(), contentPadding = padding) {
+            itemsIndexed(mLogs) { i, mLog ->
+                MLogItem(
+                    modifier = Modifier
+                        .padding(end = if (i < mLogs.lastIndex) 16.dp else 0.dp)
+                        .width(120.dp),
+                    data = mLog.resource
+                )
             }
         }
+
     }
 }
 
@@ -613,42 +570,46 @@ fun TitleColumn(
     buttonText: String?,
     content: @Composable (PaddingValues) -> Unit
 ) {
-    Column(
+    Card(
+        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+        elevation = 0.dp,
         modifier = modifier
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = contentPadding.calculateStartPadding(
-                        LocalLayoutDirection.current
-                    )
-                ),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineSmall
-            )
-            buttonText?.let {
-                TextButton(
-                    modifier = Modifier.defaultMinSize(48.dp, 20.dp),
-                    onClick = { },
-                    border = BorderStroke(
-                        0.5.dp,
-                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.12f)
+        Column {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = contentPadding.calculateStartPadding(
+                            LocalLayoutDirection.current
+                        )
                     ),
-                    shape = RoundedCornerShape(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                buttonText?.let {
+                    TextButton(
+                        modifier = Modifier.defaultMinSize(48.dp, 20.dp),
+                        onClick = { },
+                        border = BorderStroke(
+                            0.5.dp,
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.12f)
+                        ),
+                        shape = RoundedCornerShape(16.dp),
 //                    contentPadding = PaddingValues(vertical = 2.dp, horizontal = 4.dp)
-                ) {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.labelMedium,
-                    )
+                    ) {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                    }
                 }
             }
+            content(contentPadding)
         }
-        content(contentPadding)
     }
 }
