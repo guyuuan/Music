@@ -251,11 +251,11 @@ fun HomeRoundIconList(
                     modifier = Modifier
                         .size(45.dp)
                         .background(
-                            MaterialTheme.colorScheme.primaryContainer,
+                            MaterialTheme.colorScheme.surfaceVariant,
                             shape = CircleShape
                         ),
                     contentDescription = item.name,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
                     onLoading = {}
                 )
                 Spacer(modifier = Modifier.size(4.dp))
