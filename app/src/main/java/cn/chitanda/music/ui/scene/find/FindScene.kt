@@ -1,7 +1,9 @@
 package cn.chitanda.music.ui.scene.find
 
+//import androidx.compose.material.icons.Icons
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,19 +12,19 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -37,12 +39,11 @@ import cn.chitanda.music.http.DataState
 import cn.chitanda.music.http.bean.*
 import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.ui.LocalNavController
+import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.widget.banner.Banner
 import cn.chitanda.music.utils.toUnitString
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.insets.statusBarsHeight
-import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Types
@@ -54,48 +55,28 @@ import com.squareup.moshi.Types
  **/
 private const val TAG = "FindScene"
 
-@ExperimentalMaterialApi
+@ExperimentalMaterial3Api
 @SuppressLint("CheckResult")
 @ExperimentalCoilApi
 @ExperimentalPagerApi
 @Composable
 fun FindScene(navController: NavController = LocalNavController.current) {
     val viewModel: DiscoverySceneViewModel = hiltViewModel()
-    val data by viewModel.homeData.collectAsState()
+    val user by LocalUserViewModel.current.user.collectAsState()
+    val data by  viewModel.homeData.collectAsState()
     val iconList by viewModel.homeIconList.collectAsState()
+    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+    val scrollBehavior = remember(decayAnimationSpec) {
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+    }
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            CenterAlignedTopAppBar(modifier = Modifier.wrapContentHeight().statusBarsPadding(), title = {Text(stringResource(id = R.string.app_name))})
-//            TopAppBar(
-//                contentPadding = rememberInsetsPaddingValues(
-//                    insets = LocalWindowInsets.current.statusBars,
-//                ),
-//                backgroundColor = MaterialTheme.colorScheme.secondaryContainer
-//            ) {
-//                Spacer(modifier = Modifier.width(16.dp))
-//                Icon(
-//                    Icons.Default.Menu,
-//                    contentDescription = "",
-//                    tint = MaterialTheme.colorScheme.onSecondaryContainer
-//                )
-//                BasicTextField(
-//                    value = "",
-//                    onValueChange = {},
-//                    modifier = Modifier
-//                        .weight(1f)
-//                        .fillMaxHeight(0.5f)
-//                        .padding(horizontal = 16.dp)
-//                        .background(Color.White, shape = RoundedCornerShape(16.dp))
-//                )
-//                Icon(
-//                    painter = painterResource(id = R.drawable.ic_mic),
-//                    contentDescription = "",
-//                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-//                )
-//                Spacer(modifier = Modifier.width(16.dp))
-//            }
+            SmallTopAppBar(
+                scrollBehavior = scrollBehavior,
+                title = { Text("${stringResource(R.string.text_home_welcome_title)}${user.json?.data?.nickname}") },
+            )
         },
-        backgroundColor = MaterialTheme.colorScheme.surface
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             when (data.status) {
@@ -277,7 +258,6 @@ fun HomeRoundIconList(
 }
 
 @ExperimentalCoilApi
-@ExperimentalMaterialApi
 @Composable
 fun RecommendPlayList(
     data: HomeData.Data.Block,
@@ -361,7 +341,6 @@ fun PlayCount(modifier: Modifier, playCount: Long) {
 }
 
 @ExperimentalCoilApi
-@ExperimentalMaterialApi
 @Composable
 fun RecommendSongList(
     data: HomeData.Data.Block,
@@ -413,7 +392,6 @@ fun RecommendSongList(
 
 
 @ExperimentalCoilApi
-@ExperimentalMaterialApi
 @Composable
 fun MLogList(
     data: HomeData.Data.Block,
@@ -561,7 +539,6 @@ fun TagText(modifier: Modifier = Modifier, tag: String) {
     )
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun TitleColumn(
     modifier: Modifier = Modifier,

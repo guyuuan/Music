@@ -109,5 +109,5 @@ dependencies {
     implementation "androidx.paging:paging-compose:1.0.0-alpha14"
 
     //StatusBarColor
-    implementation "cn.chitanda:dynamicstatusbar:2.2"
+//    implementation "cn.chitanda:dynamicstatusbar:2.2"
 }
