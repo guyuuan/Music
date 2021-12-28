@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
@@ -44,6 +43,8 @@ import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.widget.banner.Banner
 import cn.chitanda.music.utils.toUnitString
 import coil.annotation.ExperimentalCoilApi
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Types
@@ -63,17 +64,24 @@ private const val TAG = "FindScene"
 fun FindScene(navController: NavController = LocalNavController.current) {
     val viewModel: DiscoverySceneViewModel = hiltViewModel()
     val user by LocalUserViewModel.current.user.collectAsState()
-    val data by  viewModel.homeData.collectAsState()
+    val data by viewModel.homeData.collectAsState()
     val iconList by viewModel.homeIconList.collectAsState()
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = remember(decayAnimationSpec) {
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
     }
+    val appBarColors = TopAppBarDefaults.smallTopAppBarColors()
+    val statusBarPadding =
+        rememberInsetsPaddingValues(insets = LocalWindowInsets.current.statusBars, applyTop = true)
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             SmallTopAppBar(
+                modifier = Modifier
+                    .background(color = appBarColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
+                    .padding(top = statusBarPadding.calculateTopPadding() * (1f-scrollBehavior.scrollFraction)),
                 scrollBehavior = scrollBehavior,
+                colors = appBarColors,
                 title = { Text("${stringResource(R.string.text_home_welcome_title)}${user.json?.data?.nickname}") },
             )
         },
@@ -548,7 +556,7 @@ fun TitleColumn(
     content: @Composable (PaddingValues) -> Unit
 ) {
     Card(
-        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+        backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
         elevation = 0.dp,
         modifier = modifier
     ) {
