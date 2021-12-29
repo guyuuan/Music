@@ -4,9 +4,9 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewTreeObserver
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
@@ -26,7 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 private const val TAG = "MainActivity"
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val themeViewModel by viewModels<ThemeViewModel>()
     private val userViewModel by viewModels<UserViewModel>()
