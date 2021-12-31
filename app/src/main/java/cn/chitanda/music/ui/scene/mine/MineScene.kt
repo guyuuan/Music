@@ -3,12 +3,8 @@ package cn.chitanda.music.ui.scene.mine
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.TopAppBar
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,8 +23,6 @@ import cn.chitanda.music.ui.scene.UserViewModel
 import cn.chitanda.music.ui.theme.Shapes
 import cn.chitanda.music.ui.widget.CoilImage
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
@@ -52,12 +46,7 @@ fun MineScene(
     val user by viewModel.user.collectAsState()
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     Scaffold(topBar = {
-        TopAppBar(
-            contentPadding = rememberInsetsPaddingValues(
-                insets = LocalWindowInsets.current.statusBars,
-            ), backgroundColor = MaterialTheme.colorScheme.inversePrimary
-        ) {
-        }
+        SmallTopAppBar(title = {})
     }) { padding ->
         SwipeRefresh(state = swipeRefreshState, onRefresh = { viewModel.getUserPlayList() }) {
             LazyColumn(

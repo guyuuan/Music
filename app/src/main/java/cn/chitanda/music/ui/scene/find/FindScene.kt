@@ -74,7 +74,7 @@ fun FindScene(navController: NavController = LocalNavController.current) {
     val statusBarPadding =
         rememberInsetsPaddingValues(insets = LocalWindowInsets.current.statusBars, applyTop = true)
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+//        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             SmallTopAppBar(
                 modifier = Modifier
