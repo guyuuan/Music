@@ -1,16 +1,7 @@
 package cn.chitanda.music.ui.widget.banner
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,13 +50,14 @@ fun <T> Banner(
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
-                .fillMaxSize(), count = if (infiniteLoop) Int.MAX_VALUE else data.size
+                .fillMaxSize(),
+            count = if (infiniteLoop) Int.MAX_VALUE else data.size,
+            contentPadding = itemPaddingValues
         ) { index ->
             val page = if (infiniteLoop) (index - startIndex).floorMod(pageCount) else index
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(itemPaddingValues)
             ) {
                 contents(data[page])
             }

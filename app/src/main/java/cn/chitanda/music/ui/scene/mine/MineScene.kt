@@ -46,19 +46,18 @@ fun MineScene(
     val playlist by viewModel.playlist.collectAsState()
     val user by viewModel.user.collectAsState()
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
-    Scaffold(topBar = {
-        SmallTopAppBar(title = {})
-    }) { padding ->
+    Scaffold { padding ->
         SwipeRefresh(state = swipeRefreshState, onRefresh = { viewModel.getUserPlayList() }) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp),
-                contentPadding = padding
+                contentPadding = padding,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 user.json?.let {
                     item {
-                        UserInfo(data = it, modifier = Modifier.padding(vertical = 16.dp))
+                        UserInfo(data = it, modifier = Modifier.padding(top = 56.dp))
                     }
                 }
                 playlist.json?.data?.let { list ->
@@ -67,7 +66,6 @@ fun MineScene(
                             MyFavoritePlaylist(
                                 playlist = it,
                                 modifier = Modifier
-                                    .padding(bottom = 16.dp)
                                     .fillMaxWidth()
                             )
                         }

@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -79,7 +78,7 @@ fun FindScene(navController: NavController = LocalNavController.current) {
             SmallTopAppBar(
                 modifier = Modifier
                     .background(color = appBarColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
-                    .padding(top = statusBarPadding.calculateTopPadding() * (1f-scrollBehavior.scrollFraction)),
+                    .padding(top = statusBarPadding.calculateTopPadding() * (1f - scrollBehavior.scrollFraction)),
                 scrollBehavior = scrollBehavior,
                 colors = appBarColors,
                 title = { Text("${stringResource(R.string.text_home_welcome_title)}${user.json?.data?.nickname}") },
@@ -92,20 +91,23 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                 DataState.STATE_SUCCESS -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         itemsIndexed(data.json?.data?.blocks ?: emptyList()) { i, block ->
                             when (block.showType) {
-                                RCMDShowType.Banner -> HomeBanners(
-                                    data = block, modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(200.dp)
-                                        .align(Alignment.TopCenter)
-                                )
+                                RCMDShowType.Banner -> {
+                                    HomeBanners(
+                                        data = block, modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(200.dp)
+//                                            .align(Alignment.TopCenter)
+                                    )
+                                }
                                 RCMDShowType.PlayList -> {
                                     RecommendPlayList(
                                         data = block,
                                         modifier = Modifier
-                                            .padding(16.dp)
                                             .fillMaxWidth(),
                                         contentPadding = PaddingValues(16.dp)
                                     )
@@ -113,7 +115,6 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                                 RCMDShowType.PlayableMLog -> {
                                     MLogList(
                                         data = block, modifier = Modifier
-                                            .padding(16.dp)
                                             .fillMaxWidth(), contentPadding = PaddingValues(16.dp)
                                     )
                                 }
@@ -121,7 +122,6 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                                     RecommendSongList(
                                         data = block,
                                         modifier = Modifier
-                                            .padding(16.dp)
                                             .fillMaxWidth(),
                                         contentPadding = PaddingValues(16.dp)
                                     )
@@ -132,9 +132,9 @@ fun FindScene(navController: NavController = LocalNavController.current) {
                             if (i == 0) {
                                 HomeRoundIconList(
                                     data = iconList.json?.data ?: emptyList(),
-                                    modifier = Modifier
+                                    modifier = Modifier.padding(top = 16.dp)
                                         .fillMaxWidth(),
-                                    contentPadding = PaddingValues(horizontal = 16.dp)
+//                                    contentPadding = PaddingValues(horizontal = 16.dp)
                                 )
 
                             }
@@ -159,7 +159,6 @@ private fun HomeBanners(data: HomeData.Data.Block, modifier: Modifier = Modifier
         Banner(
             data = banners,
             modifier = modifier,
-            itemPaddingValues = PaddingValues(16.dp),
             indicatorPaddingValues = PaddingValues(24.dp)
         ) { item ->
             Box(
@@ -235,9 +234,8 @@ private fun getBannerData(extInfo: Any?) = try {
 fun HomeRoundIconList(
     data: List<HomeRoundIcon>,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    LazyRow(modifier = modifier, contentPadding = contentPadding) {
+    LazyRow(modifier = modifier) {
         itemsIndexed(data) { i, item ->
             Column(
                 Modifier.fillMaxHeight() then if (i == data.lastIndex) Modifier else Modifier.padding(
