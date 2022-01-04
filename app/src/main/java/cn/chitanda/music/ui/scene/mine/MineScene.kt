@@ -1,5 +1,6 @@
 package cn.chitanda.music.ui.scene.mine
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -77,7 +78,9 @@ fun MineScene(
                                 list.subList(fromIndex = 1, toIndex = list.size)
                             } catch (e: Exception) {
                                 emptyList()
-                            }, modifier = Modifier.padding(bottom = 16.dp)
+                            },
+                            modifier = Modifier.padding(bottom = 16.dp),
+                            navController = navController
                         )
                     }
                     item {
@@ -181,7 +184,11 @@ fun MyFavoritePlaylist(modifier: Modifier = Modifier, playlist: PlaylistJson.Pla
 
 @ExperimentalCoilApi
 @Composable
-fun SubscribedPlayList(playlist: List<PlaylistJson.Playlist>, modifier: Modifier = Modifier) {
+fun SubscribedPlayList(
+    modifier: Modifier = Modifier,
+    playlist: List<PlaylistJson.Playlist>,
+    navController: NavController
+) {
     Surface(
         modifier = modifier,
         color = MaterialTheme.colorScheme.surfaceVariant,
@@ -212,7 +219,15 @@ fun SubscribedPlayList(playlist: List<PlaylistJson.Playlist>, modifier: Modifier
                 Row(
                     modifier = Modifier
                         .padding(bottom = if (i == playlist.lastIndex) 0.dp else 16.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .clickable {
+                            navController.navigate(
+                                Scene.Playlist.replaceId(
+                                    "id",
+                                    item.id.toString()
+                                )
+                            )
+                        },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     CoilImage(

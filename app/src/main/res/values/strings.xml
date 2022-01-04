@@ -13,5 +13,6 @@
     <string name="text_edit_user_info">编辑信息</string>
     <string name="text_theme">主题</string>
     <string name="text_home_welcome_title">欢迎回来,</string>
+    <string name="label_playlist">歌单详情</string>
 
 </resources>

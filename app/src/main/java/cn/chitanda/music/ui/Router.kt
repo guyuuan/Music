@@ -11,10 +11,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.navArgument
 import cn.chitanda.music.R
 import cn.chitanda.music.ui.scene.home.HomeScene
 import cn.chitanda.music.ui.scene.login.LoginScene
 import cn.chitanda.music.ui.scene.other.ThemeScene
+import cn.chitanda.music.ui.scene.playlist.PlaylistScene
 import cn.chitanda.music.ui.scene.splash.SplashScene
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -33,6 +35,9 @@ sealed class Scene(val id: String, @StringRes val label: Int? = null) {
     object Home : Scene(id = "home", label = R.string.label_home)
     object Login : Scene(id = "login", label = R.string.label_login)
     object Theme : Scene(id = "theme", label = R.string.text_theme)
+    object Playlist : Scene(id = "playlist/{id}", label = R.string.label_playlist)
+
+    fun replaceId(key: String, value: String) = id.replace("{$key}", value)
 }
 
 @ExperimentalMaterial3Api
@@ -67,7 +72,7 @@ fun Router(navController: NavHostController = rememberAnimatedNavController()) {
             }
         }
     }
-    LaunchedEffect(key1 = themeViewModel.isReady ){
+    LaunchedEffect(key1 = themeViewModel.isReady) {
         if (!themeViewModel.isReady.value) themeViewModel.init()
     }
 }
@@ -90,5 +95,11 @@ private fun NavGraphBuilder.route() {
     }
     composable(Scene.Theme.id) {
         ThemeScene()
+    }
+    composable(
+        Scene.Playlist.id,
+        arguments = listOf(navArgument("id") { defaultValue = "" })
+    ) { backStackEntry ->
+        PlaylistScene(playlist = backStackEntry.arguments?.getString("id"))
     }
 }
