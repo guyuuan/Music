@@ -48,13 +48,11 @@ class HomeRepository(private val api: HomeApi) : BaseRemoteRepository() {
                         }
                 }
                 RCMDShowType.PlayableMLog -> {
-                    Log.d("HomeData", "loadHomeData: PlayableMLog = $block")
                     getMLogData(block.extInfo)?.let {
                         viewState = viewState.copy(mLog = block.uiElement to it)
                     }
                 }
                 RCMDShowType.SongList -> {
-                    Log.d("HomeData", "loadHomeData: SongList = $block")
                     block.creatives?.let {
                         viewState = viewState.copy(songList = block.uiElement to it)
                     }

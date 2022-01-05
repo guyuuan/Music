@@ -91,7 +91,9 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
             )
         },
     ) {
-        SwipeRefresh(state = swiperRefreshState, onRefresh = { viewModel.loadHomeData() }) {
+        SwipeRefresh(state = swiperRefreshState, onRefresh = {
+            viewModel.loadHomeData()
+        }) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(32.dp)
@@ -135,20 +137,21 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
 
             }
         }
-        val cxt = LocalContext.current
-        LaunchedEffect(key1 = viewState) {
-            when (val state = viewState.state) {
-                is PageState.Success -> swiperRefreshState.isRefreshing = false
-                is PageState.Empty -> {
-                    swiperRefreshState.isRefreshing = true
-                    viewModel.loadHomeData()
-                }
-                is PageState.Error -> {
-                    swiperRefreshState.isRefreshing = false
-                    Toast.makeText(cxt, state.tr.toString(), Toast.LENGTH_SHORT).show()
-                }
-                else -> {}
+    }
+    val cxt = LocalContext.current
+    LaunchedEffect(key1 = viewState) {
+        when (val state = viewState.state) {
+            is PageState.Success -> swiperRefreshState.isRefreshing = false
+            is PageState.Loading -> swiperRefreshState.isRefreshing = true
+            is PageState.Empty -> {
+                swiperRefreshState.isRefreshing = true
+                viewModel.loadHomeData()
             }
+            is PageState.Error -> {
+                swiperRefreshState.isRefreshing = false
+                Toast.makeText(cxt, state.tr.toString(), Toast.LENGTH_SHORT).show()
+            }
+            else -> {}
         }
     }
 
