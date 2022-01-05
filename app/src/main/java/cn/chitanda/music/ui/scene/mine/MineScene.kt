@@ -221,8 +221,7 @@ fun SubscribedPlayList(
                         .clickable {
                             navController.navigate(
                                 Scene.Playlist.replaceId(
-                                    "id",
-                                    item.id.toString()
+                                    "id" to item.id.toString()
                                 )
                             )
                         },

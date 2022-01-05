@@ -13,8 +13,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navArgument
 import cn.chitanda.music.R
-import cn.chitanda.music.ui.scene.home.HomeScene
 import cn.chitanda.music.ui.scene.login.LoginScene
+import cn.chitanda.music.ui.scene.main.MainScene
 import cn.chitanda.music.ui.scene.other.ThemeScene
 import cn.chitanda.music.ui.scene.playlist.PlaylistScene
 import cn.chitanda.music.ui.scene.splash.SplashScene
@@ -32,12 +32,18 @@ import com.google.accompanist.pager.ExperimentalPagerApi
  **/
 sealed class Scene(val id: String, @StringRes val label: Int? = null) {
     object Splash : Scene(id = "splash")
-    object Home : Scene(id = "home", label = R.string.label_home)
+    object Main : Scene(id = "home", label = R.string.label_main)
     object Login : Scene(id = "login", label = R.string.label_login)
     object Theme : Scene(id = "theme", label = R.string.text_theme)
     object Playlist : Scene(id = "playlist/{id}", label = R.string.label_playlist)
 
-    fun replaceId(key: String, value: String) = id.replace("{$key}", value)
+    fun replaceId(vararg kv: Pair<String, String>): String {
+        val result = id
+        kv.forEach {
+            result.replace("{${it.first}}",it.second)
+        }
+        return result
+    }
 }
 
 @ExperimentalMaterial3Api
@@ -60,7 +66,7 @@ fun Router(navController: NavHostController = rememberAnimatedNavController()) {
                     startDestination = when {
                         Build.VERSION.SDK_INT < Build.VERSION_CODES.S -> Scene.Splash.id
                         userViewModel.loginSuccess -> {
-                            Scene.Home.id
+                            Scene.Main.id
                         }
                         else -> {
                             Scene.Login.id
@@ -90,8 +96,8 @@ private fun NavGraphBuilder.route() {
     composable(Scene.Login.id) {
         LoginScene()
     }
-    composable(Scene.Home.id) {
-        HomeScene()
+    composable(Scene.Main.id) {
+        MainScene()
     }
     composable(Scene.Theme.id) {
         ThemeScene()

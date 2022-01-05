@@ -3,7 +3,7 @@ package cn.chitanda.music.di
 import android.util.Log
 import cn.chitanda.music.BuildConfig
 import cn.chitanda.music.http.MyCookieJar
-import cn.chitanda.music.http.api.FindApi
+import cn.chitanda.music.http.api.HomeApi
 import cn.chitanda.music.http.api.LoginApi
 import cn.chitanda.music.http.api.UserApi
 import cn.chitanda.music.http.api.VideoApi
@@ -59,7 +59,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideFindApi(retrofit: Retrofit): FindApi = retrofit.create(FindApi::class.java)
+    fun provideFindApi(retrofit: Retrofit): HomeApi = retrofit.create(HomeApi::class.java)
 
     @Provides
     @Singleton

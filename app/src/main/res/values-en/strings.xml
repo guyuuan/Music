@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Music</string>
-    <string name="label_home">Home</string>
+    <string name="label_main">Home</string>
     <string name="label_login">Login</string>
     <string name="text_enter_phone_number">Please enter your phone number</string>
     <string name="text_enter_password">Please enter your password</string>

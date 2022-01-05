@@ -21,7 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import cn.chitanda.music.ui.LocalThemeViewModel
 import cn.chitanda.music.ui.monet.theme.MonetColor
 import cn.chitanda.music.ui.scene.ThemeViewModel
-import cn.chitanda.music.ui.scene.home.HomePageItem
+import cn.chitanda.music.ui.scene.main.MainPageItem
 import cn.chitanda.music.ui.theme.MusicTheme
 import com.google.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.delay
@@ -73,9 +73,9 @@ fun ThemePreview(modifier: Modifier = Modifier, color: MonetColor?) {
             },
             bottomBar = {
                 val list =
-                    remember { listOf(HomePageItem.Find, HomePageItem.Message, HomePageItem.Mine) }
+                    remember { listOf(MainPageItem.Find, MainPageItem.Message, MainPageItem.Mine) }
                 var currentPage by remember {
-                    mutableStateOf<HomePageItem>(HomePageItem.Find)
+                    mutableStateOf<MainPageItem>(MainPageItem.Find)
                 }
                 NavigationBar {
                     list.forEach { scene ->

@@ -121,7 +121,7 @@ fun LoginScene(
             DataState.STATE_SUCCESS -> {
                 showLoading = false
                 Toast.makeText(cxt, "login success", Toast.LENGTH_SHORT).show()
-                navController.navigate(Scene.Home.id) {
+                navController.navigate(Scene.Main.id) {
                     popUpTo(Scene.Login.id) { inclusive = true }
                 }
             }

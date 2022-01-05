@@ -12,8 +12,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import cn.chitanda.music.ui.LocalThemeViewModel
 import cn.chitanda.music.ui.LocalUserViewModel
@@ -23,7 +21,6 @@ import cn.chitanda.music.ui.scene.UserViewModel
 import cn.chitanda.music.ui.theme.MusicTheme
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "MainActivity"

@@ -10,7 +10,7 @@ import retrofit2.http.Query
  *@createTime: 2021/9/8 16:32
  *@description:
  **/
-interface FindApi {
+interface HomeApi {
     @GET("/homepage/block/page")
     suspend fun fetchHomeData(
         @Query("refresh") refresh: Boolean = false,
