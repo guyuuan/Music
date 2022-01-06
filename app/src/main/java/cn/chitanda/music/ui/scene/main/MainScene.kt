@@ -25,7 +25,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import cn.chitanda.music.R
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
-import cn.chitanda.music.ui.scene.UserViewModel
+import cn.chitanda.music.ui.scene.LocaleUserViewModel
 import cn.chitanda.music.ui.scene.home.HomeScene
 import cn.chitanda.music.ui.scene.message.MessageScene
 import cn.chitanda.music.ui.scene.mine.MineScene
@@ -51,7 +51,7 @@ private const val TAG = "HomeScene"
 @ExperimentalCoilApi
 @Composable
 fun MainScene(
-    userViewModel: UserViewModel = LocalUserViewModel.current,
+    userViewModel: LocaleUserViewModel = LocalUserViewModel.current,
     navController: NavController = LocalNavController.current
 ) {
     val homeNavController = rememberAnimatedNavController()

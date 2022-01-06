@@ -77,7 +77,7 @@ fun ThemePreview(modifier: Modifier = Modifier, color: MonetColor?) {
                 var currentPage by remember {
                     mutableStateOf<MainPageItem>(MainPageItem.Find)
                 }
-                NavigationBar {
+                NavigationBar(containerColor = MaterialTheme.colorScheme.inverseOnSurface) {
                     list.forEach { scene ->
                         NavigationBarItem(selected = currentPage == scene, onClick = {
                             currentPage = scene

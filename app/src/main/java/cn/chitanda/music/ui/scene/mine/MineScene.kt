@@ -20,7 +20,7 @@ import cn.chitanda.music.http.isLoading
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.Scene
-import cn.chitanda.music.ui.scene.UserViewModel
+import cn.chitanda.music.ui.scene.LocaleUserViewModel
 import cn.chitanda.music.ui.theme.Shapes
 import cn.chitanda.music.ui.widget.CoilImage
 import coil.annotation.ExperimentalCoilApi
@@ -40,9 +40,8 @@ private const val TAG = "MineScene"
 @Composable
 fun MineScene(
     navController: NavController = LocalNavController.current,
-    viewModel: UserViewModel = LocalUserViewModel.current
+    viewModel: LocaleUserViewModel = LocalUserViewModel.current
 ) {
-
     val playlist by viewModel.playlist.collectAsState()
     val user by viewModel.user.collectAsState()
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)

@@ -16,7 +16,7 @@ import kotlin.reflect.KProperty1
  * @description:
  **/
 
-suspend fun <T> MutableStateFlow<T>.setStat(reducer: T.() -> T) {
+suspend inline fun <T> MutableStateFlow<T>.setStat(reducer: T.() -> T) {
     this.emit(this.value.reducer())
 }
 

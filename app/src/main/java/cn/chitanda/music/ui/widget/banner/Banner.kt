@@ -109,4 +109,4 @@ private fun Int.floorMod(other: Int): Int = when (other) {
     else -> this - floorDiv(other) * other
 }
 
-private val EmptyPaddingValue = PaddingValues(0.dp)
+val EmptyPaddingValue = PaddingValues(0.dp)

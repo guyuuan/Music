@@ -1,10 +1,15 @@
 package cn.chitanda.music
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.util.Log
 import android.view.ViewTreeObserver
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -16,8 +21,8 @@ import androidx.core.view.WindowCompat
 import cn.chitanda.music.ui.LocalThemeViewModel
 import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.Router
+import cn.chitanda.music.ui.scene.LocaleUserViewModel
 import cn.chitanda.music.ui.scene.ThemeViewModel
-import cn.chitanda.music.ui.scene.UserViewModel
 import cn.chitanda.music.ui.theme.MusicTheme
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -29,7 +34,7 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
 
     private val themeViewModel by viewModels<ThemeViewModel>()
-    private val userViewModel by viewModels<UserViewModel>()
+    private val userViewModel by viewModels<LocaleUserViewModel>()
 
     @OptIn(
         ExperimentalFoundationApi::class,

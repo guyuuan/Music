@@ -30,6 +30,18 @@ object AppModule {
     private fun getOkHttpClient(cookiesPreference: CookiesPreference): OkHttpClient {
         return OkHttpClient.Builder().apply {
             cookieJar(MyCookieJar(cookiesPreference))
+            addInterceptor {chain->
+                val request = chain.request()
+                var response = chain.proceed(request)
+                var tryCount = 0
+                while (!response.isSuccessful && tryCount < 2) {
+                    response.close()
+                    Thread.sleep(500)
+                    tryCount++
+                    response = chain.proceed(request)
+                }
+                response
+            }
             if (BuildConfig.DEBUG) {
                 addInterceptor(HttpLoggingInterceptor {
                     Log.d("Retrofit", "log: $it")

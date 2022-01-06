@@ -25,7 +25,7 @@ private const val TAG = "CoilImage"
  **/
 @ExperimentalCoilApi
 @Composable
-fun CoilImage(
+inline fun CoilImage(
     url: String?,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
@@ -34,9 +34,9 @@ fun CoilImage(
     alpha: Float = DefaultAlpha,
     shape: Shape? = null,
     colorFilter: ColorFilter? = null,
-    onError: @Composable () -> Unit = {
+    crossinline onError: @Composable () -> Unit = {
     },
-    onLoading: @Composable () -> Unit = {
+    crossinline onLoading: @Composable () -> Unit = {
         CircularProgressIndicator()
     }
 

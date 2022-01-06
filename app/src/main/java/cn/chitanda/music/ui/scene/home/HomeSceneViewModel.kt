@@ -29,7 +29,7 @@ class HomeSceneViewModel @Inject constructor(
     fun loadHomeData(refresh: Boolean = true) {
         viewModelScope.launch {
             flow {
-                delay(200)
+//                delay(200)
                 emit(homeRepository.loadHomeData(refresh))
             }.onStart {
                 _viewState.setStat {

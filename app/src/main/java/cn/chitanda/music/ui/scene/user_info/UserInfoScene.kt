@@ -45,7 +45,7 @@ import cn.chitanda.music.http.DataState
 import cn.chitanda.music.http.bean.UserProfile
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
-import cn.chitanda.music.ui.scene.UserViewModel
+import cn.chitanda.music.ui.scene.LocaleUserViewModel
 import cn.chitanda.music.ui.theme.Shapes
 import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.widget.nestedscroll.rememberNestedScrollAppBarConnection
@@ -66,7 +66,7 @@ import kotlin.math.roundToInt
 @Composable
 fun UserInfoScene(
     navController: NavController = LocalNavController.current,
-    viewModel: UserViewModel = LocalUserViewModel.current
+    viewModel: LocaleUserViewModel = LocalUserViewModel.current
 ) {
     val user by viewModel.user.collectAsState()
     user.json?.let {

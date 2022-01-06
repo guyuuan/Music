@@ -11,33 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
  *@description:
  **/
 open class BaseRemoteRepository {
-//    protected suspend fun <T : BaseJson> httpRequest(
-//        stateLiveData: StateLiveData<T>,
-//        block: suspend () -> T?
-//    ) {
-//        try {
-//            stateLiveData.postValue(RequestStatus(status = DataState.STATE_LOADING))
-//            val data = block()
-//            val response = if (data != null) {
-//                RequestStatus(
-//                    code = data.code,
-//                    status = when (data.code) {
-//                        in 200..299 -> DataState.STATE_SUCCESS
-//                        in 300..599 -> DataState.STATE_FAILED
-//                        else -> DataState.STATE_UNKNOWN
-//                    },
-//                    msg = data.msg,
-//                    json = data
-//                )
-//            } else {
-//                RequestStatus(status = DataState.STATE_EMPTY)
-//            }
-//            stateLiveData.postValue(response)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            stateLiveData.postValue(RequestStatus(status = DataState.STATE_ERROR, error = e))
-//        }
-//    }
 
     protected suspend fun <T : BaseJson<*>> httpRequest(
         stateFlow: MutableStateFlow<RequestStatus<T>>? = null,

@@ -26,7 +26,7 @@ import javax.inject.Inject
 private const val TAG = "UserViewModel"
 
 @HiltViewModel
-class UserViewModel @Inject constructor(
+class LocaleUserViewModel @Inject constructor(
     private val userRepository: UserRepository,
     preferenceManager: PreferenceManager
 ) : ViewModel() {

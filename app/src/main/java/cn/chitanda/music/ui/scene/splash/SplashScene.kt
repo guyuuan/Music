@@ -14,7 +14,7 @@ import cn.chitanda.music.http.DataState
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.Scene
-import cn.chitanda.music.ui.scene.UserViewModel
+import cn.chitanda.music.ui.scene.LocaleUserViewModel
 
 /**
  *@author: Chen
@@ -23,7 +23,7 @@ import cn.chitanda.music.ui.scene.UserViewModel
  **/
 @Composable
 fun SplashScene(
-    userViewModel: UserViewModel = LocalUserViewModel.current,
+    userViewModel: LocaleUserViewModel = LocalUserViewModel.current,
     navController: NavController = LocalNavController.current
 ) {
     val user by userViewModel.user.collectAsState()

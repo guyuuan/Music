@@ -4,7 +4,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation.NavHostController
 import cn.chitanda.music.ui.scene.ThemeViewModel
-import cn.chitanda.music.ui.scene.UserViewModel
+import cn.chitanda.music.ui.scene.LocaleUserViewModel
 
 /**
  *@author: Chen
@@ -15,7 +15,7 @@ import cn.chitanda.music.ui.scene.UserViewModel
 val LocalNavController =
     compositionLocalOf<NavHostController> { error("Can't get nacController") }
 val LocalUserViewModel =
-    staticCompositionLocalOf<UserViewModel> { error("Can't get user view model")
+    staticCompositionLocalOf<LocaleUserViewModel> { error("Can't get user view model")
     }
 val LocalThemeViewModel =
     staticCompositionLocalOf<ThemeViewModel> { error("Can't get theme view model") }

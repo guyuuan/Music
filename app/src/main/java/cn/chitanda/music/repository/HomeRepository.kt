@@ -7,6 +7,7 @@ import cn.chitanda.music.http.bean.*
 import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.ui.scene.home.HomeViewState
 import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Types
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -19,18 +20,6 @@ import kotlinx.coroutines.withContext
  *@description:
  **/
 class HomeRepository(private val api: HomeApi) : BaseRemoteRepository() {
-    suspend fun fetchHomeData(
-        stateLiveData: MutableStateFlow<RequestStatus<HomeData>>,
-        refresh: Boolean = false
-    ) =
-        httpRequest(stateLiveData) {
-            api.fetchHomeData(refresh)
-        }
-
-    suspend fun fetchHomeRoundIconList(stateLiveData: MutableStateFlow<RequestStatus<HomeRoundIconList>>) =
-        httpRequest(stateLiveData) {
-            api.fetchHomeRoundIconList()
-        }
 
     suspend fun loadHomeData(refresh: Boolean = false) = withContext(Dispatchers.IO) {
         val homeResponse = async { api.fetchHomeData(refresh = refresh) }
