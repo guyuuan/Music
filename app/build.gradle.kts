@@ -65,12 +65,12 @@ dependencies {
     implementation(Libs.compose_md)
     implementation(Libs.compose_md3)
     implementation(Libs.compose_ui_preview)
-    implementation(Libs.compose_ui_tooling)
-    implementation(Libs.compose_test)
     implementation(Libs.viewmodel_compose)
     implementation(Libs.navigation_compose)
     implementation(Libs.lifecycle)
     implementation(Libs.activity_compose)
+    debugImplementation(Libs.compose_ui_tooling)
+    androidTestImplementation(Libs.compose_test)
 
     // Retrofit
     implementation(Libs.retrofit)
