@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
@@ -22,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -38,9 +38,11 @@ import cn.chitanda.music.http.bean.HomeData
 import cn.chitanda.music.http.bean.MLogExtInfo
 import cn.chitanda.music.http.bean.SubTitleType
 import cn.chitanda.music.http.moshi.moshi
+import cn.chitanda.music.ui.LocalMusicControllerBarHeight
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.scene.PageState
+import cn.chitanda.music.ui.theme.Shapes
 import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.widget.banner.Banner
 import cn.chitanda.music.utils.collectPartAsState
@@ -71,7 +73,8 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
     val user by LocalUserViewModel.current.user.collectAsState()
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = remember(decayAnimationSpec) {
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+//        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+        TopAppBarDefaults.pinnedScrollBehavior()
     }
     val viewState by viewModel.viewState.collectAsState()
     val appBarColors = TopAppBarDefaults.smallTopAppBarColors()
@@ -79,7 +82,7 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
         rememberInsetsPaddingValues(insets = LocalWindowInsets.current.statusBars, applyTop = true)
     val swiperRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     Scaffold(
-//        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             SmallTopAppBar(
                 modifier = Modifier
@@ -95,8 +98,14 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
             viewModel.loadHomeData()
         }) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(32.dp)
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    top = 16.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = LocalMusicControllerBarHeight.current
+                ),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
                     HomeBanners(
@@ -565,10 +574,10 @@ fun TitleColumn(
     buttonText: String?,
     content: @Composable (PaddingValues) -> Unit
 ) {
-    Card(
-        backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
-        elevation = 0.dp,
-        modifier = modifier
+    Surface(
+        modifier = modifier,
+        shape = Shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceVariant
     ) {
         Column {
             Row(

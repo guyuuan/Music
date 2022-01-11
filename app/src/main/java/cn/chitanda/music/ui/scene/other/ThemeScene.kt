@@ -23,6 +23,7 @@ import cn.chitanda.music.ui.monet.theme.MonetColor
 import cn.chitanda.music.ui.scene.ThemeViewModel
 import cn.chitanda.music.ui.scene.main.MainPageItem
 import cn.chitanda.music.ui.theme.MusicTheme
+import cn.chitanda.music.ui.widget.navbar.BottomNavigationBar
 import com.google.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.delay
 import java.util.*
@@ -77,7 +78,7 @@ fun ThemePreview(modifier: Modifier = Modifier, color: MonetColor?) {
                 var currentPage by remember {
                     mutableStateOf<MainPageItem>(MainPageItem.Find)
                 }
-                NavigationBar(containerColor = MaterialTheme.colorScheme.inverseOnSurface) {
+                BottomNavigationBar {
                     list.forEach { scene ->
                         NavigationBarItem(selected = currentPage == scene, onClick = {
                             currentPage = scene

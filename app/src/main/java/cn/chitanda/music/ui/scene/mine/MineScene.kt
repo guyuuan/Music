@@ -17,6 +17,7 @@ import cn.chitanda.music.http.DataState
 import cn.chitanda.music.http.bean.PlaylistJson
 import cn.chitanda.music.http.bean.UserProfile
 import cn.chitanda.music.http.isLoading
+import cn.chitanda.music.ui.LocalMusicControllerBarHeight
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.Scene
@@ -46,12 +47,19 @@ fun MineScene(
     val user by viewModel.user.collectAsState()
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     Scaffold { padding ->
-        SwipeRefresh(state = swipeRefreshState, onRefresh = { viewModel.getUserPlayList() }) {
+        SwipeRefresh(
+            state = swipeRefreshState,
+            modifier = Modifier.padding(padding),
+            onRefresh = { viewModel.getUserPlayList() }) {
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                contentPadding = padding,
+                    .fillMaxSize(),
+                contentPadding = PaddingValues(
+                    top = 16.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = LocalMusicControllerBarHeight.current
+                ),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 user.json?.let {
