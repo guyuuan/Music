@@ -205,44 +205,6 @@ private fun HomeBanners(viewModel: HomeSceneViewModel, modifier: Modifier = Modi
 
 }
 
-private fun getMLogData(extInfo: Any?) = try {
-    if (null == extInfo) {
-        emptyList()
-    } else {
-        val type = Types.newParameterizedType(
-            List::class.java,
-            Any::class.java
-        )
-        val adapter: JsonAdapter<List<Any>> =
-            moshi.adapter(type)
-        val str = adapter.toJson(extInfo as List<Any>)
-        val extInfoAdapter: JsonAdapter<List<MLogExtInfo>> =
-            moshi.adapter(Types.newParameterizedType(List::class.java, MLogExtInfo::class.java))
-        extInfoAdapter.fromJson(str) ?: emptyList()
-    }
-} catch (e: Exception) {
-    Log.e(TAG, "getMLogData: ", e)
-    emptyList()
-}
-
-private fun getBannerData(extInfo: Any?) = try {
-    if (null == extInfo) {
-        emptyList()
-    } else {
-        val type = Types.newParameterizedType(
-            Map::class.java,
-            Any::class.java, Any::class.java
-        )
-        val adapter: JsonAdapter<Map<*, *>> =
-            moshi.adapter(type)
-        val str = adapter.toJson(extInfo as Map<*, *>)
-        moshi.adapter(HomeBanner::class.java).fromJson(str)?.banners ?: emptyList()
-    }
-} catch (e: Exception) {
-    Log.e(TAG, "getBannerData: ", e)
-    emptyList()
-}
-
 @ExperimentalCoilApi
 @Composable
 fun HomeRoundIconList(
