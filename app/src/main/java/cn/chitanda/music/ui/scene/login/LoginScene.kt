@@ -37,6 +37,7 @@ import androidx.navigation.NavController
 import cn.chitanda.music.R
 import cn.chitanda.music.http.DataState
 import cn.chitanda.music.ui.LocalNavController
+import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.Scene
 
 /**
@@ -50,6 +51,7 @@ fun LoginScene(
     navController: NavController = LocalNavController.current
 ) {
     val login by viewModel.login.collectAsState()
+    val userViewModel = LocalUserViewModel.current
     var showLoading by remember {
         mutableStateOf(false)
     }
@@ -121,6 +123,7 @@ fun LoginScene(
             DataState.STATE_SUCCESS -> {
                 showLoading = false
                 Toast.makeText(cxt, "login success", Toast.LENGTH_SHORT).show()
+                userViewModel.fetchUserInfo()
                 navController.navigate(Scene.Main.id) {
                     popUpTo(Scene.Login.id) { inclusive = true }
                 }

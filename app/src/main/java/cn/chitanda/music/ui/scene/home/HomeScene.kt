@@ -108,11 +108,7 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    HomeBanners(
-                        viewModel, modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                    )
+                    HomeBanners(viewModel, modifier = Modifier.fillMaxWidth())
                 }
 
                 item {
@@ -181,7 +177,7 @@ private fun HomeBanners(viewModel: HomeSceneViewModel, modifier: Modifier = Modi
         ) { item ->
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth().aspectRatio(108/42f)
                     .clip(RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.BottomEnd
             ) {
