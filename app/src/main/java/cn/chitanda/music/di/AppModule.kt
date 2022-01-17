@@ -3,10 +3,7 @@ package cn.chitanda.music.di
 import android.util.Log
 import cn.chitanda.music.BuildConfig
 import cn.chitanda.music.http.MyCookieJar
-import cn.chitanda.music.http.api.HomeApi
-import cn.chitanda.music.http.api.LoginApi
-import cn.chitanda.music.http.api.UserApi
-import cn.chitanda.music.http.api.VideoApi
+import cn.chitanda.music.http.api.*
 import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.preference.CookiesPreference
 import dagger.Module
@@ -30,7 +27,7 @@ object AppModule {
     private fun getOkHttpClient(cookiesPreference: CookiesPreference): OkHttpClient {
         return OkHttpClient.Builder().apply {
             cookieJar(MyCookieJar(cookiesPreference))
-            addInterceptor {chain->
+            addInterceptor { chain ->
                 val request = chain.request()
                 var response = chain.proceed(request)
                 var tryCount = 0
@@ -76,4 +73,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideVideoApi(retrofit: Retrofit): VideoApi = retrofit.create(VideoApi::class.java)
+
+
+    @Provides
+    @Singleton
+    fun provideSongsApi(retrofit: Retrofit): SongsApi = retrofit.create(SongsApi::class.java)
 }

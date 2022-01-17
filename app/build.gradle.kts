@@ -111,7 +111,7 @@ dependencies {
 
     //StatusBarColor
 //    implementation(Libs.status_bar)
-//    implementation(files("./libs/lib.aar"))
+    implementation(files("./libs/lib.aar"))
     implementation(Libs.permission)
 
 }

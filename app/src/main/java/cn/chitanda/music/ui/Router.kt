@@ -1,6 +1,7 @@
 package cn.chitanda.music.ui
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -38,9 +39,9 @@ sealed class Scene(val id: String, @StringRes val label: Int? = null) {
     object Playlist : Scene(id = "playlist/{id}", label = R.string.label_playlist)
 
     fun replaceId(vararg kv: Pair<String, String>): String {
-        val result = id
+        var result = id
         kv.forEach {
-            result.replace("{${it.first}}",it.second)
+            result = result.replace("{${it.first}}", it.second)
         }
         return result
     }

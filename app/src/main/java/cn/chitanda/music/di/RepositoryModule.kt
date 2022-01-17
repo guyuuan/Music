@@ -1,11 +1,9 @@
 package cn.chitanda.music.di
 
-import cn.chitanda.music.http.api.HomeApi
-import cn.chitanda.music.http.api.LoginApi
-import cn.chitanda.music.http.api.UserApi
-import cn.chitanda.music.http.api.VideoApi
+import cn.chitanda.music.http.api.*
 import cn.chitanda.music.preference.PreferenceManager
 import cn.chitanda.music.repository.HomeRepository
+import cn.chitanda.music.repository.SongsRepository
 import cn.chitanda.music.repository.UserRepository
 import cn.chitanda.music.repository.VideoRepository
 import dagger.Module
@@ -42,4 +40,8 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideVideoRepository(videoApi: VideoApi) = VideoRepository(videoApi)
+
+    @Provides
+    @Singleton
+    fun provideSongsRepository(songsApi: SongsApi) = SongsRepository(songsApi)
 }
