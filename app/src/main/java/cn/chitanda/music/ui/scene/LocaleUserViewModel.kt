@@ -1,6 +1,7 @@
 package cn.chitanda.music.ui.scene
 
 import android.os.Build
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -28,9 +29,9 @@ private const val TAG = "UserViewModel"
 @HiltViewModel
 class LocaleUserViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    preferenceManager: PreferenceManager
+    private val preferenceManager: PreferenceManager
 ) : ViewModel() {
-    val uid = preferenceManager.uid
+    val uid: String get() = preferenceManager.uid
     private val _user = MutableStateFlow<RequestStatus<UserProfile>>(RequestStatus())
     val user: StateFlow<RequestStatus<UserProfile>>
         get() = _user
@@ -75,6 +76,7 @@ class LocaleUserViewModel @Inject constructor(
     }
 
     fun getUserPlayList(uid: String = this.uid) {
+        Log.d(TAG, "getUserPlayList: ${this.uid}")
         viewModelScope.launch(Dispatchers.IO) {
             userRepository.getUserPlayList(
                 uid = uid, _playlist

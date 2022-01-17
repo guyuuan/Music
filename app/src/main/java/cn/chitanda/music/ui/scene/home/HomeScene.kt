@@ -96,8 +96,6 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
                     top = 16.dp,
-//                    start = 16.dp,
-//                    end = 16.dp,
                     bottom = LocalMusicControllerBarHeight.current
                 ),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -180,7 +178,7 @@ private fun HomeBanners(
             modifier = modifier,
             itemPaddingValues = contentPadding,
             itemSpacing = 16.dp,
-            indicatorPaddingValues = PaddingValues(24.dp)
+            indicatorPaddingValues = PaddingValues(bottom = 8.dp)
         ) { item ->
             Box(
                 modifier = Modifier

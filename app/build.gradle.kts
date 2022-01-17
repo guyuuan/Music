@@ -110,8 +110,8 @@ dependencies {
     implementation(Libs.paging_compose)
 
     //StatusBarColor
-    implementation(Libs.status_bar)
-
+//    implementation(Libs.status_bar)
+//    implementation(files("./libs/lib.aar"))
     implementation(Libs.permission)
 
 }
