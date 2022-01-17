@@ -1,7 +1,6 @@
 package cn.chitanda.music.ui.scene.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.BorderStroke
@@ -33,11 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import cn.chitanda.music.R
-import cn.chitanda.music.http.bean.HomeBanner
 import cn.chitanda.music.http.bean.HomeData
 import cn.chitanda.music.http.bean.MLogExtInfo
 import cn.chitanda.music.http.bean.SubTitleType
-import cn.chitanda.music.http.moshi.moshi
 import cn.chitanda.music.ui.LocalMusicControllerBarHeight
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
@@ -53,8 +50,6 @@ import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Types
 
 /**
  *@author: Chen
@@ -101,24 +96,29 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
                     top = 16.dp,
-                    start = 16.dp,
-                    end = 16.dp,
+//                    start = 16.dp,
+//                    end = 16.dp,
                     bottom = LocalMusicControllerBarHeight.current
                 ),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    HomeBanners(viewModel, modifier = Modifier.fillMaxWidth())
+                    HomeBanners(
+                        viewModel,
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = 16.dp)
+                    )
                 }
 
                 item {
-                    HomeRoundIconList(viewModel)
+                    HomeRoundIconList(viewModel, contentPadding = PaddingValues(horizontal = 16.dp))
                 }
 
                 item {
                     RecommendPlayList(
                         viewModel,
                         modifier = Modifier
+                            .padding(horizontal = 16.dp)
                             .fillMaxWidth(),
                         contentPadding = PaddingValues(16.dp)
                     )
@@ -128,6 +128,7 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
                     RecommendSongList(
                         viewModel,
                         modifier = Modifier
+                            .padding(horizontal = 16.dp)
                             .fillMaxWidth(),
                         contentPadding = PaddingValues(16.dp)
                     )
@@ -136,6 +137,7 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
                 item {
                     MLogList(
                         viewModel, modifier = Modifier
+                            .padding(horizontal = 16.dp)
                             .fillMaxWidth(), contentPadding = PaddingValues(16.dp)
                     )
                 }
@@ -166,18 +168,24 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
 @ExperimentalCoilApi
 @ExperimentalPagerApi
 @Composable
-private fun HomeBanners(viewModel: HomeSceneViewModel, modifier: Modifier = Modifier) {
-//    val banners by remember { derivedStateOf { getBannerData(data.extInfo) } }
+private fun HomeBanners(
+    viewModel: HomeSceneViewModel,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues
+) {
     val banners by viewModel.viewState.collectPartAsState(part = HomeViewState::banner)
     if (banners.isNotEmpty()) {
         Banner(
             data = banners,
             modifier = modifier,
+            itemPaddingValues = contentPadding,
+            itemSpacing = 16.dp,
             indicatorPaddingValues = PaddingValues(24.dp)
         ) { item ->
             Box(
                 modifier = Modifier
-                    .fillMaxWidth().aspectRatio(108/42f)
+                    .fillMaxWidth()
+                    .aspectRatio(108 / 42f)
                     .clip(RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.BottomEnd
             ) {
@@ -210,9 +218,10 @@ private fun HomeBanners(viewModel: HomeSceneViewModel, modifier: Modifier = Modi
 fun HomeRoundIconList(
     viewModel: HomeSceneViewModel,
     modifier: Modifier = Modifier,
+    contentPadding:PaddingValues
 ) {
     val data by viewModel.viewState.collectPartAsState(part = HomeViewState::icons)
-    LazyRow(modifier = modifier) {
+    LazyRow(modifier = modifier, contentPadding = contentPadding) {
         itemsIndexed(data) { i, item ->
             Column(
                 Modifier.fillMaxHeight() then if (i == data.lastIndex) Modifier else Modifier.padding(

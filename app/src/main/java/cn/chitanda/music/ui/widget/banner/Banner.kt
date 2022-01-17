@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -26,6 +27,7 @@ fun <T> Banner(
     data: List<T>,
     modifier: Modifier = Modifier,
     itemPaddingValues: PaddingValues = EmptyPaddingValue,
+    itemSpacing: Dp = 0.dp,
     autoLooper: Boolean = true,
     looperTime: Long = 5000L,
     isVertical: Boolean = false, infiniteLoop: Boolean = true,
@@ -52,7 +54,8 @@ fun <T> Banner(
             modifier = Modifier
                 .fillMaxSize(),
             count = if (infiniteLoop) Int.MAX_VALUE else data.size,
-            contentPadding = itemPaddingValues
+            contentPadding = itemPaddingValues,
+            itemSpacing = itemSpacing
         ) { index ->
             val page = if (infiniteLoop) (index - startIndex).floorMod(pageCount) else index
             Box(
