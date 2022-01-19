@@ -2,7 +2,6 @@ package cn.chitanda.music
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewTreeObserver
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -63,7 +62,6 @@ class MainActivity : AppCompatActivity() {
             ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
                 return (themeViewModel.isReady.value && userViewModel.isReady.value).also {
-                    Log.d(TAG, "onPreDraw: $it")
                     if (it) {
                         window.decorView.viewTreeObserver?.removeOnPreDrawListener(this)
                     }

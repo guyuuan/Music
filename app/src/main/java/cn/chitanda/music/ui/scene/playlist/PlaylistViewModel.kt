@@ -19,7 +19,7 @@ class PlaylistViewModel @Inject constructor(private val songsRepository: SongsRe
     fun getPlaylistDetail(id: String,callback:(String)->Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = songsRepository.getPlaylistDetail(id)
-            callback(response.toString())
+            callback("tracks size = ${response?.data?.tracks?.size},tracks id = ${response?.data?.trackIds?.size}")
         }
     }
 }

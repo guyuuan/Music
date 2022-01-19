@@ -37,6 +37,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
     buildFeatures {
         compose = true
@@ -110,8 +111,8 @@ dependencies {
     implementation(Libs.paging_compose)
 
     //StatusBarColor
-//    implementation(Libs.status_bar)
-    implementation(files("./libs/lib.aar"))
+    implementation(Libs.status_bar)
+//    implementation(files("./libs/lib.aar"))
     implementation(Libs.permission)
 
 }

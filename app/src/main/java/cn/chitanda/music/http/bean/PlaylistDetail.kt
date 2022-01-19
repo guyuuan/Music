@@ -76,11 +76,11 @@ data class PlaylistDetail(
         @Json(name = "subscribers")
         val subscribers: List<Any?>?,
         @Json(name = "tags")
-        val tags: List<Any?>?,
+        val tags: List<String>?,
         @Json(name = "titleImage")
         val titleImage: Long?,
         @Json(name = "titleImageUrl")
-        val titleImageUrl: Any?,
+        val titleImageUrl: String?,
         @Json(name = "trackCount")
         val trackCount: Long?,
         @Json(name = "trackIds")
@@ -90,7 +90,7 @@ data class PlaylistDetail(
         @Json(name = "trackUpdateTime")
         val trackUpdateTime: Long?,
         @Json(name = "tracks")
-        val tracks: List<Track?>?,
+        val tracks: List<Track>?,
         @Json(name = "updateFrequency")
         val updateFrequency: Any?,
         @Json(name = "updateTime")
