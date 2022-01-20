@@ -1,22 +1,38 @@
 package cn.chitanda.music.ui.scene.playlist
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import cn.chitanda.dynamicstatusbar.DynamicStatusBar
 import cn.chitanda.music.ui.LocalNavController
+import cn.chitanda.music.ui.scene.isLaoding
+import cn.chitanda.music.ui.theme.DownArcShape
+import cn.chitanda.music.ui.theme.Shapes
+import cn.chitanda.music.ui.widget.CoilImage
+import coil.annotation.ExperimentalCoilApi
+import coil.transform.BlurTransformation
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.statusBarsPadding
 
 /**
  * @author: Chen
  * @createTime: 2021/12/31 16:34
  * @description:
  **/
+@OptIn(ExperimentalCoilApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun PlaylistScene(navController: NavController = LocalNavController.current, playlist: String?) {
@@ -25,19 +41,133 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
         return
     }
     val viewModel = hiltViewModel<PlaylistViewModel>()
-    var str by remember {
-        mutableStateOf(playlist)
-    }
-    Scaffold {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = str)
-        }
-        LaunchedEffect(key1 = playlist) {
-            if (!playlist.isNullOrEmpty()) {
-                viewModel.getPlaylistDetail(playlist){
-                    str = it
+    val viewState by viewModel.viewState.collectAsState()
+    val appBarPadding =
+        rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.statusBars,
+            applyTop = true
+        ).calculateTopPadding() + 56.dp
+    Box {
+        Scaffold {
+            Column {
+                Box(
+                    modifier = Modifier
+                        .height(250.dp + appBarPadding)
+                ) {
+                    CoilImage(
+                        modifier = Modifier
+                            .padding(bottom = 16.dp)
+                            .fillMaxSize()
+                            .clip(
+                                shape = DownArcShape(16.dp)
+                            ),
+                        url = viewState.playlist?.coverUrl,
+                        onLoading = {},
+                        builder = {
+                            crossfade(true)
+                            transformations(
+                                BlurTransformation(
+                                    context = LocalContext.current,
+                                    radius = 25f,
+                                    sampling = 10f
+                                )
+                            )
+                        })
+                    if (viewState.state.isLaoding && null == viewState.playlist) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    } else {
+                        val color =
+                            if (DynamicStatusBar.isLight) Color.White else LocalContentColor.current
+                        CompositionLocalProvider(LocalContentColor provides color) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(horizontal = 24.dp)
+                                    .height(100.dp)
+                                    .fillMaxSize()
+                                    .align(Alignment.Center),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                CoilImage(
+                                    url = viewState.playlist?.coverUrl,
+                                    modifier = Modifier.aspectRatio(1f, true),
+                                    shape = Shapes.small
+                                )
+                                Column(
+                                    verticalArrangement = Arrangement.SpaceAround,
+                                    modifier = Modifier.fillMaxHeight()
+                                ) {
+                                    Text(text = viewState.playlist?.name ?: "")
+                                    Text(text = viewState.playlist?.creator?.nickname ?: "")
+                                    Text(text = viewState.playlist?.description ?: "")
+                                }
+                            }
+                        }
+
+                        Surface(
+                            modifier = Modifier.align(Alignment.BottomCenter),
+                            tonalElevation = 8.dp,
+                            shadowElevation = 1.dp,
+                            shape = CircleShape
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .width(240.dp)
+                                    .height(50.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .weight(1f)
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .weight(1f)
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .weight(1f)
+                                )
+                            }
+                        }
+                    }
+                }
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(100) { i ->
+                        Text(text = i.toString())
+                    }
                 }
             }
+            LaunchedEffect(key1 = playlist) {
+                if (!playlist.isNullOrEmpty()) {
+                    viewModel.getPlaylistDetail(playlist)
+                }
+            }
+        }
+        val color =
+            if (DynamicStatusBar.isLight) Color.White else LocalContentColor.current
+        CompositionLocalProvider(LocalContentColor provides color) {
+            SmallTopAppBar(
+                modifier = Modifier
+                    .background(color = Color.Transparent)
+                    .statusBarsPadding(),
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent,
+                    titleContentColor = color,
+                    actionIconContentColor = color,
+                    navigationIconContentColor = color
+                ),
+                title = {
+                    Text(text = "歌单")
+                })
         }
     }
 }

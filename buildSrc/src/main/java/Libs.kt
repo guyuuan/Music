@@ -77,7 +77,7 @@ object Libs {
     const val paging_compose = "androidx.paging:paging-compose:1.0.0-alpha14"
 
     //StatusBarColor
-    const val status_bar = "cn.chitanda:dynamicstatusbar:2.5.0"
+    const val status_bar = "cn.chitanda:dynamicstatusbar:2.5.1"
 
     const val permission = "com.guolindev.permissionx:permissionx:1.6.1"
 

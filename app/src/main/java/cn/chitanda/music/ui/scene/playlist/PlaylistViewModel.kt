@@ -3,8 +3,11 @@ package cn.chitanda.music.ui.scene.playlist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.chitanda.music.repository.SongsRepository
+import cn.chitanda.music.ui.scene.PageState
+import cn.chitanda.music.utils.setStat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,10 +19,25 @@ import javax.inject.Inject
 @HiltViewModel
 class PlaylistViewModel @Inject constructor(private val songsRepository: SongsRepository) :
     ViewModel() {
-    fun getPlaylistDetail(id: String,callback:(String)->Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = songsRepository.getPlaylistDetail(id)
-            callback("tracks size = ${response?.data?.tracks?.size},tracks id = ${response?.data?.trackIds?.size}")
+    private val _viewState = MutableStateFlow(PlaylistViewState())
+    val viewState: StateFlow<PlaylistViewState> get() = _viewState
+    fun getPlaylistDetail(id: String) {
+        viewModelScope.launch {
+            flow {
+                emit(songsRepository.getPlaylistDetail(id))
+            }.onStart {
+                _viewState.setStat {
+                    copy(state = PageState.Loading)
+                }
+            }.onEach {
+                _viewState.setStat {
+                    copy(playlist = it.playlist, state = PageState.Success)
+                }
+            }.catch { e ->
+                _viewState.setStat {
+                    copy(state = PageState.Error(e))
+                }
+            }.collect()
         }
     }
 }

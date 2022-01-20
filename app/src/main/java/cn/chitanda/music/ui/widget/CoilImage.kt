@@ -2,7 +2,7 @@ package cn.chitanda.music.ui.widget
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,6 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 
 private const val TAG = "CoilImage"
 
@@ -26,7 +27,7 @@ private const val TAG = "CoilImage"
 @ExperimentalCoilApi
 @Composable
 inline fun CoilImage(
-    url: String?,
+    url: Any?,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     alignment: Alignment = Alignment.Center,
@@ -34,21 +35,21 @@ inline fun CoilImage(
     alpha: Float = DefaultAlpha,
     shape: Shape? = null,
     colorFilter: ColorFilter? = null,
+    builder: ImageRequest.Builder.() -> Unit = {},
     crossinline onError: @Composable () -> Unit = {
     },
     crossinline onLoading: @Composable () -> Unit = {
         CircularProgressIndicator()
     }
-
 ) {
-    val painter = rememberImagePainter(data = url)
+    val painter = rememberImagePainter(data = url, builder = builder)
     Box(
         modifier = modifier then if (shape != null) Modifier.clip(shape) else Modifier,
         contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painter, contentDescription = contentDescription,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.matchParentSize(),
             alignment = alignment,
             contentScale = contentScale,
             alpha = alpha, colorFilter = colorFilter

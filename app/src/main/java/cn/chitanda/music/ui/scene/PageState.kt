@@ -11,3 +11,5 @@ sealed class PageState {
     object Empty : PageState()
     data class Error(val tr: Throwable) : PageState()
 }
+
+val PageState.isLaoding: Boolean get() = this == PageState.Loading
