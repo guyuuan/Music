@@ -84,13 +84,11 @@ data class PlaylistDetail(
         @Json(name = "trackCount")
         val trackCount: Long?,
         @Json(name = "trackIds")
-        val trackIds: List<TrackId?>?,
+        val trackIds: List<TrackId>?,
         @Json(name = "trackNumberUpdateTime")
         val trackNumberUpdateTime: Long?,
         @Json(name = "trackUpdateTime")
         val trackUpdateTime: Long?,
-        @Json(name = "tracks")
-        val tracks: List<Track>?,
         @Json(name = "updateFrequency")
         val updateFrequency: Any?,
         @Json(name = "updateTime")
@@ -181,152 +179,6 @@ data class PlaylistDetail(
             @Json(name = "v")
             val v: Long?
         )
-
-        @JsonClass(generateAdapter = true)
-        data class Track(
-            @Json(name = "a")
-            val a: Any?,
-            @Json(name = "al")
-            val al: Al?,
-            @Json(name = "alia")
-            val alia: List<String?>?,
-            @Json(name = "ar")
-            val ar: List<Ar?>?,
-            @Json(name = "cd")
-            val cd: String?,
-            @Json(name = "cf")
-            val cf: String?,
-            @Json(name = "copyright")
-            val copyright: Long?,
-            @Json(name = "cp")
-            val cp: Long?,
-            @Json(name = "crbt")
-            val crbt: Any?,
-            @Json(name = "djId")
-            val djId: Long?,
-            @Json(name = "dt")
-            val dt: Long?,
-            @Json(name = "fee")
-            val fee: Long?,
-            @Json(name = "ftype")
-            val ftype: Long?,
-            @Json(name = "h")
-            val h: H?,
-            @Json(name = "id")
-            val id: Long?,
-            @Json(name = "l")
-            val l: L?,
-            @Json(name = "m")
-            val m: M?,
-            @Json(name = "mark")
-            val mark: Long?,
-            @Json(name = "mst")
-            val mst: Long?,
-            @Json(name = "mv")
-            val mv: Long?,
-            @Json(name = "name")
-            val name: String?,
-            @Json(name = "no")
-            val no: Long?,
-            @Json(name = "noCopyrightRcmd")
-            val noCopyrightRcmd: Any?,
-            @Json(name = "originCoverType")
-            val originCoverType: Long?,
-            @Json(name = "originSongSimpleData")
-            val originSongSimpleData: Any?,
-            @Json(name = "pop")
-            val pop: Long?,
-            @Json(name = "pst")
-            val pst: Long?,
-            @Json(name = "publishTime")
-            val publishTime: Long?,
-            @Json(name = "rt")
-            val rt: String?,
-            @Json(name = "rtUrl")
-            val rtUrl: Any?,
-            @Json(name = "rtUrls")
-            val rtUrls: List<Any?>?,
-            @Json(name = "rtype")
-            val rtype: Long?,
-            @Json(name = "rurl")
-            val rurl: Any?,
-            @Json(name = "s_id")
-            val sId: Long?,
-            @Json(name = "single")
-            val single: Long?,
-            @Json(name = "st")
-            val st: Long?,
-            @Json(name = "t")
-            val t: Long?,
-            @Json(name = "tns")
-            val tns: List<String?>?,
-            @Json(name = "v")
-            val v: Long?
-        ) {
-            @JsonClass(generateAdapter = true)
-            data class Al(
-                @Json(name = "id")
-                val id: Long?,
-                @Json(name = "name")
-                val name: String?,
-                @Json(name = "pic")
-                val pic: Long?,
-                @Json(name = "pic_str")
-                val picStr: String?,
-                @Json(name = "picUrl")
-                val picUrl: String?,
-                @Json(name = "tns")
-                val tns: List<Any?>?
-            )
-
-            @JsonClass(generateAdapter = true)
-            data class Ar(
-                @Json(name = "alias")
-                val alias: List<Any?>?,
-                @Json(name = "id")
-                val id: Long?,
-                @Json(name = "name")
-                val name: String?,
-                @Json(name = "tns")
-                val tns: List<Any?>?
-            )
-
-            @JsonClass(generateAdapter = true)
-            data class H(
-                @Json(name = "br")
-                val br: Long?,
-                @Json(name = "fid")
-                val fid: Long?,
-                @Json(name = "size")
-                val size: Long?,
-                @Json(name = "vd")
-                val vd: Long?
-            )
-
-            @JsonClass(generateAdapter = true)
-            data class L(
-                @Json(name = "br")
-                val br: Long?,
-                @Json(name = "fid")
-                val fid: Long?,
-                @Json(name = "size")
-                val size: Long?,
-                @Json(name = "vd")
-                val vd: Long?
-            )
-
-            @JsonClass(generateAdapter = true)
-            data class M(
-                @Json(name = "br")
-                val br: Long?,
-                @Json(name = "fid")
-                val fid: Long?,
-                @Json(name = "size")
-                val size: Long?,
-                @Json(name = "vd")
-                val vd: Long?
-            )
-        }
     }
 
 }

@@ -12,4 +12,4 @@ sealed class PageState {
     data class Error(val tr: Throwable) : PageState()
 }
 
-val PageState.isLaoding: Boolean get() = this == PageState.Loading
+val PageState.isLoading: Boolean get() = this == PageState.Loading

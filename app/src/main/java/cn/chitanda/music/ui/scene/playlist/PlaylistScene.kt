@@ -1,5 +1,6 @@
 package cn.chitanda.music.ui.scene.playlist
 
+import android.widget.Toast
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,7 +22,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import cn.chitanda.dynamicstatusbar.DynamicStatusBar
 import cn.chitanda.music.ui.LocalNavController
-import cn.chitanda.music.ui.scene.isLaoding
+import cn.chitanda.music.ui.scene.PageState
+import cn.chitanda.music.ui.scene.isLoading
 import cn.chitanda.music.ui.theme.DownArcShape
 import cn.chitanda.music.ui.theme.Shapes
 import cn.chitanda.music.ui.widget.CoilImage
@@ -37,6 +39,8 @@ import kotlinx.coroutines.delay
  * @createTime: 2021/12/31 16:34
  * @description:
  **/
+private const val TAG = "PlaylistScene"
+
 @OptIn(ExperimentalCoilApi::class)
 @ExperimentalMaterial3Api
 @Composable
@@ -51,6 +55,13 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = remember(decayAnimationSpec) {
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+    }
+    val cxt = LocalContext.current
+    LaunchedEffect(key1 = viewState) {
+        if (viewState.state is PageState.Error) {
+            Toast.makeText(cxt, (viewState.state as PageState.Error).tr.message, Toast.LENGTH_SHORT)
+                .show()
+        }
     }
     Box {
         Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
@@ -118,7 +129,7 @@ private fun FoldableTopAppBar(
                     )
                 )
             })
-        if (viewState.state.isLaoding && null == viewState.playlist) {
+        if (viewState.state.isLoading && null == viewState.playlist) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         } else {
             CompositionLocalProvider(LocalContentColor provides color) {
