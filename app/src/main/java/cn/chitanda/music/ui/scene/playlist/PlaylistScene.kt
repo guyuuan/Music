@@ -3,12 +3,38 @@ package cn.chitanda.music.ui.scene.playlist
 import android.widget.Toast
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.SmallTopAppBar
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,9 +44,16 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemsIndexed
 import cn.chitanda.dynamicstatusbar.DynamicStatusBar
+import cn.chitanda.music.http.paging.PlaylistSongsPagingSource
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.scene.PageState
 import cn.chitanda.music.ui.scene.isLoading
@@ -63,28 +96,67 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
                 .show()
         }
     }
-    Box {
-        Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
-            Column {
-                FoldableTopAppBar(
-                    scrollBehavior = scrollBehavior, viewState = viewState
-                )
+
+    Surface{
+        Column(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
+            FoldableTopAppBar(
+                scrollBehavior = scrollBehavior, viewState = viewState
+            )
+            //歌曲列表
+            if (!viewState.state.isLoading && viewState.songs != null) {
+                val pager = remember(viewState.songs) {
+                    Pager(
+                        config = PagingConfig(pageSize = PlaylistSongsPagingSource.PageSize),
+                        initialKey = 0,
+                        pagingSourceFactory = { viewState.songs!! }
+                    )
+                }
+                val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    items(100) { i ->
-                        Text(text = i.toString())
+                    if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
+                        item {
+                            Text(
+                                text = "Waiting for items to load from the backend",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                            )
+                        }
+                    }
+
+                    itemsIndexed(lazyPagingItems) { index, item ->
+                        Text("Index=$index: ${item?.name}", fontSize = 14.sp)
+                    }
+
+                    if (lazyPagingItems.loadState.append == LoadState.Loading) {
+                        item {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                            )
+                        }
+                    }
+                }
+
+            }
+            LaunchedEffect(key1 = viewState) {
+                if (viewState.state == PageState.Success && viewState.songs == null) {
+                    viewState.playlist?.let {
+                        viewModel.getPlaylistSongsPagingSource(it.id, maxSize = it.songsCount)
                     }
                 }
             }
-            LaunchedEffect(key1 = playlist) {
-                if (!playlist.isNullOrEmpty()) {
-                    viewModel.getPlaylistDetail(playlist)
-                }
-            }
+        }
+    }
+    LaunchedEffect(key1 = playlist) {
+        if (!playlist.isNullOrEmpty()) {
+            viewModel.getPlaylistDetail(playlist)
         }
     }
 }
@@ -110,25 +182,15 @@ private fun FoldableTopAppBar(
         modifier = Modifier
             .height(appBarSize + height * (1f - scrollBehavior.scrollFraction))
     ) {
-        CoilImage(
+        AppbarBackground(
             modifier = Modifier
                 .padding(bottom = 16.dp * (1f - scrollBehavior.scrollFraction))
                 .fillMaxSize()
                 .clip(
                     shape = DownArcShape(8.dp * (1f - scrollBehavior.scrollFraction))
-                ),
-            url = viewState.playlist?.coverUrl,
-            onLoading = {},
-            builder = {
-                crossfade(true)
-                transformations(
-                    BlurTransformation(
-                        context = LocalContext.current,
-                        radius = 25f,
-                        sampling = 10f
-                    )
-                )
-            })
+                ), url = viewState.playlist?.coverUrl
+        )
+        //歌单详情
         if (viewState.state.isLoading && null == viewState.playlist) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         } else {
@@ -218,4 +280,23 @@ private fun FoldableTopAppBar(
     SideEffect {
         if (scrollBehavior.offsetLimit != offsetLimit) scrollBehavior.offsetLimit = offsetLimit
     }
+}
+
+@OptIn(ExperimentalCoilApi::class)
+@Composable
+private fun AppbarBackground(modifier: Modifier, url: String?) {
+    CoilImage(
+        modifier = modifier,
+        url = url,
+        onLoading = {},
+        builder = {
+            crossfade(true)
+            transformations(
+                BlurTransformation(
+                    context = LocalContext.current,
+                    radius = 25f,
+                    sampling = 10f
+                )
+            )
+        })
 }

@@ -1,13 +1,20 @@
 package cn.chitanda.music.ui.scene.playlist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cn.chitanda.music.http.paging.PlaylistSongsPagingSource
 import cn.chitanda.music.repository.SongsRepository
 import cn.chitanda.music.ui.scene.PageState
 import cn.chitanda.music.utils.setStat
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,6 +23,8 @@ import javax.inject.Inject
  * @createTime: 2021/12/31 16:40
  * @description:
  **/
+private const val TAG = "PlaylistViewModel"
+
 @HiltViewModel
 class PlaylistViewModel @Inject constructor(private val songsRepository: SongsRepository) :
     ViewModel() {
@@ -38,6 +47,15 @@ class PlaylistViewModel @Inject constructor(private val songsRepository: SongsRe
                     copy(state = PageState.Error(e))
                 }
             }.collect()
+        }
+    }
+
+    suspend fun getPlaylistSongsPagingSource(id: String, maxSize: Int) {
+        Log.d(TAG, "getPlaylistSongsPagingSource: ")
+        _viewState.setStat {
+            copy(songs = PlaylistSongsPagingSource(maxSize) { offset, pageSize ->
+                songsRepository.getPlaylistSongs(id = id, offset = offset, pageSize = pageSize )
+            })
         }
     }
 }
