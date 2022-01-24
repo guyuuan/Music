@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     private val themeViewModel by viewModels<ThemeViewModel>()
     private val userViewModel by viewModels<LocaleUserViewModel>()
+    private val musicViewModel by viewModels<MusicViewModel>()
 
     @OptIn(
         ExperimentalFoundationApi::class,
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             keepSplashScreen()
         }
+        musicViewModel.init()
     }
 
     private fun keepSplashScreen() {

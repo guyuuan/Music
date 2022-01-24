@@ -425,7 +425,7 @@ fun MLogItem(
                 .fillMaxWidth()
                 .aspectRatio(0.75f)
         ) {
-            CoilImage(url = data.mlogBaseData?.coverUrl, shape = RoundedCornerShape(8.dp))
+            CoilImage(url = data.mlogBaseData?.coverUrl,modifier = Modifier.fillMaxSize() ,shape = Shapes.small)
             PlayCount(
                 modifier = Modifier
                     .padding(top = 4.dp, end = 4.dp)

@@ -56,7 +56,7 @@ dependencies {
     implementation(Libs.androidx_core)
     implementation(Libs.androidx_appcompat)
     implementation(Libs.material)
-//    implementation project(path: ':media')
+    implementation(project(":media"))
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")

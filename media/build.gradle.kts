@@ -1,11 +1,10 @@
-
 plugins {
     id("com.android.library")
     id("kotlin-android")
 }
 
 android {
-compileSdk = Version.compileSdk
+    compileSdk = Version.compileSdk
     defaultConfig {
         minSdk = Version.minSdk
         targetSdk = Version.targetSdk
@@ -37,13 +36,14 @@ dependencies {
 
     implementation(Libs.androidx_core)
     implementation(Libs.androidx_appcompat)
+    implementation(Libs.kotlin_coroutines_android)
     //media session
     api(Libs.media)
 
     //exo player
     api(Libs.exo_core)
     api(Libs.exo_ui)
-    api(Libs.exo_mediasession)
+    api(Libs.exo_media_session)
     api(Libs.exo_cast)
 
 }

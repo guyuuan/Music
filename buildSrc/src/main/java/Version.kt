@@ -24,4 +24,5 @@ object Version {
     const val ksp_version = "$kotlin_version-1.0.2"
     const val exoplayer_version = "2.16.1"
     const val media_version = "1.4.3"
+    const val kotlin_coroutines_version = "1.5.2"
 }

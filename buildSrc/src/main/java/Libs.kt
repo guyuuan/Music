@@ -87,7 +87,9 @@ object Libs {
     //exo player
     const val exo_core = "com.google.android.exoplayer:exoplayer-core:${Version.exoplayer_version}"
     const val exo_ui = "com.google.android.exoplayer:exoplayer-ui:${Version.exoplayer_version}"
-    const val exo_mediasession =
+    const val exo_media_session =
         "com.google.android.exoplayer:extension-mediasession:${Version.exoplayer_version}"
     const val exo_cast = "com.google.android.exoplayer:extension-cast:${Version.exoplayer_version}"
+
+    const val kotlin_coroutines_android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.kotlin_coroutines_version}"
 }
