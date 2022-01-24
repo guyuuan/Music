@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -155,7 +157,8 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
 @Composable
 private fun FoldableTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior,
-    viewState: PlaylistViewState
+    viewState: PlaylistViewState,
+    navController: NavController = LocalNavController.current
 ) {
     var isLight by remember { mutableStateOf(DynamicStatusBar.isLight) }
     val color =
@@ -215,7 +218,8 @@ private fun FoldableTopAppBar(
             }
             FloatActionBar(modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .fillMaxWidth(0.7f).height(60.dp)
+                .fillMaxWidth(0.7f)
+                .height(60.dp)
                 .graphicsLayer {
                     alpha = contentAlpha
                 })
@@ -232,6 +236,13 @@ private fun FoldableTopAppBar(
                     actionIconContentColor = color,
                     navigationIconContentColor = color
                 ),
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.navigateUp()
+                    }) {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back")
+                    }
+                },
                 title = {
                     Text(text = "歌单")
                 })
@@ -310,9 +321,8 @@ fun SongsItem(
     modifier: Modifier = Modifier,
     song: Songs.Song,
     index: Int,
-    iconColor: Color = LocalContentColor.current
+    iconColor: Color = LocalContentColor.current,
 ) {
-
     Row(modifier = modifier) {
         Text(
             text = index.toString(), modifier = Modifier

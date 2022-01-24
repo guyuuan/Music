@@ -23,7 +23,7 @@ class SongsRepository(private val api: SongsApi) : BaseRemoteRepository() {
                         creator = data.creator,
                         description = data.description,
                         coverUrl = data.coverImgUrl ?: "",
-                        songsCount = data.trackCount?.toInt()?:0
+                        songsCount = data.trackCount?.toInt() ?: 0
                     )
                 )
             }
@@ -31,7 +31,12 @@ class SongsRepository(private val api: SongsApi) : BaseRemoteRepository() {
         throw RuntimeException("load playlist detail failed")
     }
 
-    suspend fun getPlaylistSongs(id: String, offset: Int,pageSize:Int) = withContext(Dispatchers.IO) {
-    api.getPlaylistSongs(id, offset = offset, limit = pageSize)
+    suspend fun getPlaylistSongs(id: String, offset: Int, pageSize: Int) =
+        withContext(Dispatchers.IO) {
+            api.getPlaylistSongs(id, offset = offset, limit = pageSize)
+        }
+
+    suspend fun getSongUrl(id: String, br: Long = 999000L) = withContext(Dispatchers.IO) {
+        api.getSongUrl(id, br)
     }
 }
