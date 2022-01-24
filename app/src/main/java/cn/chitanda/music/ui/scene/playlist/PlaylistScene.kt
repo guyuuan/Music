@@ -3,48 +3,24 @@ package cn.chitanda.music.ui.scene.playlist
 import android.widget.Toast
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.SmallTopAppBar
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -53,6 +29,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import cn.chitanda.dynamicstatusbar.DynamicStatusBar
+import cn.chitanda.music.R
+import cn.chitanda.music.http.bean.Songs
+import cn.chitanda.music.http.bean.artists
 import cn.chitanda.music.http.paging.PlaylistSongsPagingSource
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.scene.PageState
@@ -65,7 +44,9 @@ import coil.transform.BlurTransformation
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.statusBarsPadding
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * @author: Chen
@@ -97,7 +78,7 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
         }
     }
 
-    Surface{
+    Surface {
         Column(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
             FoldableTopAppBar(
                 scrollBehavior = scrollBehavior, viewState = viewState
@@ -117,6 +98,7 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
                         .fillMaxWidth()
                         .weight(1f),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(vertical = 16.dp)
                 ) {
                     if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
                         item {
@@ -130,7 +112,15 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
                     }
 
                     itemsIndexed(lazyPagingItems) { index, item ->
-                        Text("Index=$index: ${item?.name}", fontSize = 14.sp)
+//                        Text("Index=$index: ${item?.name}", fontSize = 14.sp)
+                        item?.let {
+                            SongsItem(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(40.dp), song = it, index = index + 1,
+                                iconColor = LocalContentColor.current.copy(alpha = 0.6f).copy(0.5f)
+                            )
+                        }
                     }
 
                     if (lazyPagingItems.loadState.append == LoadState.Loading) {
@@ -189,7 +179,9 @@ private fun FoldableTopAppBar(
                 .clip(
                     shape = DownArcShape(8.dp * (1f - scrollBehavior.scrollFraction))
                 ), url = viewState.playlist?.coverUrl
-        )
+        ) {
+            isLight = DynamicStatusBar.isLight
+        }
         //歌单详情
         if (viewState.state.isLoading && null == viewState.playlist) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -221,43 +213,12 @@ private fun FoldableTopAppBar(
                     }
                 }
             }
-            Surface(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .graphicsLayer {
-                        alpha = contentAlpha
-                    },
-                tonalElevation = 8.dp,
-                shadowElevation = 1.dp,
-                shape = CircleShape
-            ) {
-                Row(
-                    modifier = Modifier
-                        .width(240.dp)
-                        .height(50.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f)
-                    )
-                }
-            }
-            LaunchedEffect(key1 = Unit) {
-                delay(400)
-                isLight = DynamicStatusBar.isLight
-            }
+            FloatActionBar(modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth(0.7f).height(60.dp)
+                .graphicsLayer {
+                    alpha = contentAlpha
+                })
         }
         CompositionLocalProvider(LocalContentColor provides color) {
             SmallTopAppBar(
@@ -284,13 +245,16 @@ private fun FoldableTopAppBar(
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-private fun AppbarBackground(modifier: Modifier, url: String?) {
+private fun AppbarBackground(modifier: Modifier, url: String?, sideEffect: () -> Unit) {
+    val scope = rememberCoroutineScope()
+    var job: Job? = remember(scope) {
+        null
+    }
     CoilImage(
-        modifier = modifier,
+        modifier = modifier.onSizeChanged { },
         url = url,
         onLoading = {},
         builder = {
-            crossfade(true)
             transformations(
                 BlurTransformation(
                     context = LocalContext.current,
@@ -299,4 +263,108 @@ private fun AppbarBackground(modifier: Modifier, url: String?) {
                 )
             )
         })
+    SideEffect {
+        if (job?.isActive == true) {
+            job?.cancel()
+        }
+        job = scope.launch {
+            delay(200)
+            sideEffect()
+        }
+    }
+}
+
+@Composable
+fun FloatActionBar(modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier,
+        tonalElevation = 8.dp,
+        shadowElevation = 1.dp,
+        shape = CircleShape
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f)
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f)
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+fun SongsItem(
+    modifier: Modifier = Modifier,
+    song: Songs.Song,
+    index: Int,
+    iconColor: Color = LocalContentColor.current
+) {
+
+    Row(modifier = modifier) {
+        Text(
+            text = index.toString(), modifier = Modifier
+                .fillMaxHeight()
+                .aspectRatio(1f, true)
+                .wrapContentSize(),
+            style = MaterialTheme.typography.bodyMedium
+                .copy(color = iconColor)
+        )
+        Column(
+            verticalArrangement = Arrangement.SpaceAround, modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+        ) {
+            Text(
+                text = song.name.toString(),
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = "${song.artists ?: ""} - ${song.al?.name}",
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+        song.mv?.takeIf { it != 0L }?.let {
+            IconButton(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(1f, true)
+                    .wrapContentSize(Alignment.Center), onClick = {}
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_music_video),
+                    contentDescription = "mv",
+                    tint = iconColor
+                )
+            }
+        }
+        IconButton(
+            modifier = Modifier
+                .fillMaxHeight()
+                .aspectRatio(1f, true)
+                .wrapContentSize(Alignment.Center), onClick = {}
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_more_vert),
+                contentDescription = "more",
+                tint = iconColor
+            )
+        }
+    }
 }

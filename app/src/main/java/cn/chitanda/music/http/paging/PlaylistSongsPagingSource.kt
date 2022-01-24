@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import cn.chitanda.music.http.bean.Songs
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  *@author: Chen
@@ -34,27 +36,33 @@ class PlaylistSongsPagingSource(
         }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Songs.Song> {
-        val key = params.key ?: 0
-        Log.d(TAG, "load: $key,maxsize = $maxSize max offset = ${maxSize/ PageSize} ${Thread.currentThread().name}")
-        try {
-            val response = load(key, PageSize)
-            return if (response.code == 200) {
-                val songs = if (key == maxSize/ PageSize) response.data?.subList(0,maxSize% PageSize) else response.data
-                LoadResult.Page(
-                    data = songs ?: emptyList(),
-                    prevKey = if (key == 0) null else key - 1,
-                    nextKey = (if (songs.isNullOrEmpty() || key >= maxSize / PageSize ) null else key + 1).also {
-                        Log.d(TAG, "load: next key = $it songs = ${songs?.size}")
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Songs.Song> =
+        withContext(Dispatchers.IO) {
+            val key = params.key ?: 0
+            try {
+                val response = load(key, PageSize)
+                return@withContext if (response.code == 200) {
+                    val raw = if (key == maxSize / PageSize) response.data?.subList(
+                        0,
+                        maxSize % PageSize
+                    ) else response.data
+                    val privileges = response.privileges ?: emptyList()
+                    val songs = mutableListOf<Songs.Song>()
+                    raw?.forEachIndexed { i, s ->
+                        songs.add(s.copy(privilege = privileges.getOrNull(i)))
                     }
-                )
-            } else {
-                LoadResult.Error(Exception("load playlist songs failed: ${response.message ?: response.msg}"))
-            }
+                    LoadResult.Page(
+                        data = songs,
+                        prevKey = if (key == 0) null else key - 1,
+                        nextKey = (if (songs.isNullOrEmpty() || key >= maxSize / PageSize) null else key + 1)
+                    )
+                } else {
+                    LoadResult.Error(Exception("load playlist songs failed: ${response.message ?: response.msg}"))
+                }
 
-        } catch (e: Exception) {
-            Log.e(TAG, "load: ", e)
-            return LoadResult.Error(e)
+            } catch (e: Exception) {
+                Log.e(TAG, "load: ", e)
+                return@withContext LoadResult.Error(e)
+            }
         }
-    }
 }

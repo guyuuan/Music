@@ -73,7 +73,13 @@ fun MineScene(
                             MyFavoritePlaylist(
                                 playlist = it,
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .fillMaxWidth().clickable {
+                                        navController.navigate(
+                                            Scene.Playlist.replaceId(
+                                                "id" to it.id.toString()
+                                            )
+                                        )
+                                    }
                             )
                         }
                     }

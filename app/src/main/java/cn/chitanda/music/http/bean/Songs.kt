@@ -9,7 +9,9 @@ data class Songs(
     override val code: Int,
     override val message: String?, override val msg: String?,
     @Json(name = "songs")
-    override val data: List<Song>?
+    override val data: List<Song>?,
+    @Json(name = "privileges")
+    val privileges: List<Privilege>?
 ) : BaseJson<List<Songs.Song>?>() {
 
     @JsonClass(generateAdapter = true)
@@ -21,7 +23,7 @@ data class Songs(
         @Json(name = "alia")
         val alia: List<String?>?,
         @Json(name = "ar")
-        val ar: List<Ar?>?,
+        val artist: List<Artist>?,
         @Json(name = "cd")
         val cd: String?,
         @Json(name = "cf")
@@ -89,8 +91,10 @@ data class Songs(
         @Json(name = "v")
         val v: Long?,
         @Json(name = "version")
-        val version: Long?
+        val version: Long?,
+        val privilege: Privilege?
     ) {
+
         @JsonClass(generateAdapter = true)
         data class Al(
             @Json(name = "id")
@@ -105,54 +109,6 @@ data class Songs(
             val picUrl: String?,
             @Json(name = "tns")
             val tns: List<String?>?
-        )
-
-        @JsonClass(generateAdapter = true)
-        data class Ar(
-            @Json(name = "alias")
-            val alias: List<String?>?,
-            @Json(name = "id")
-            val id: Long?,
-            @Json(name = "name")
-            val name: String?,
-            @Json(name = "tns")
-            val tns: List<String?>?
-        )
-
-        @JsonClass(generateAdapter = true)
-        data class H(
-            @Json(name = "br")
-            val br: Long?,
-            @Json(name = "fid")
-            val fid: Long?,
-            @Json(name = "size")
-            val size: Long?,
-            @Json(name = "vd")
-            val vd: Long?
-        )
-
-        @JsonClass(generateAdapter = true)
-        data class L(
-            @Json(name = "br")
-            val br: Long?,
-            @Json(name = "fid")
-            val fid: Long?,
-            @Json(name = "size")
-            val size: Long?,
-            @Json(name = "vd")
-            val vd: Long?
-        )
-
-        @JsonClass(generateAdapter = true)
-        data class M(
-            @Json(name = "br")
-            val br: Long?,
-            @Json(name = "fid")
-            val fid: Long?,
-            @Json(name = "size")
-            val size: Long?,
-            @Json(name = "vd")
-            val vd: Long?
         )
 
         @JsonClass(generateAdapter = true)
@@ -176,3 +132,5 @@ data class Songs(
         )
     }
 }
+
+val Songs.Song.artists get() = artist?.joinToString(separator = "/") { it.name.toString() }

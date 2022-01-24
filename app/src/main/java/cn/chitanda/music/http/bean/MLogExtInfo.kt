@@ -125,15 +125,7 @@ data class MLogExtInfo(
                 val privilege: Any?,
                 @Json(name = "startTime")
                 val startTime: Any?
-            ) {
-                @JsonClass(generateAdapter = true)
-                data class Artist(
-                    @Json(name = "artistId")
-                    val artistId: Int?,
-                    @Json(name = "artistName")
-                    val artistName: String?
-                )
-            }
+            )
         }
 
         @JsonClass(generateAdapter = true)
