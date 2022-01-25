@@ -1,6 +1,7 @@
 package cn.chitanda.music.http.api
 
 import cn.chitanda.music.http.bean.PlaylistDetail
+import cn.chitanda.music.http.bean.SongUrl
 import cn.chitanda.music.http.bean.Songs
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -22,6 +23,11 @@ interface SongsApi {
         @Query("limit") limit: Int = 20
     ): Songs
 
+    @GET("/playlist/track/all")
+    suspend fun getPlaylistAllSongs(
+        @Query("id") id: String,
+    ): Songs
+
     @GET("/song/url")
-    suspend fun getSongUrl(@Query("id") id: String, @Query("br") br: Long)
+    suspend fun getSongUrl(@Query("id") id: String, @Query("br") br: Long):SongUrl
 }

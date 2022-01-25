@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.example.android.uamp.media.extensions
+package cn.chitanda.music.media.extensions
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -125,7 +126,7 @@ inline val MediaMetadataCompat.downloadStatus
  * item that is [MediaItem.FLAG_BROWSABLE] or [MediaItem.FLAG_PLAYABLE].
  */
 inline val MediaMetadataCompat.flag
-    get() = this.getLong(METADATA_KEY_UAMP_FLAGS).toInt()
+    get() = this.getLong(METADATA_KEY_FLAGS).toInt()
 
 /**
  * Useful extensions for [MediaMetadataCompat.Builder].
@@ -254,62 +255,46 @@ inline var MediaMetadataCompat.Builder.flag: Int
     @Deprecated(NO_GET, level = DeprecationLevel.ERROR)
     get() = throw IllegalAccessException("Cannot get from MediaMetadataCompat.Builder")
     set(value) {
-        putLong(METADATA_KEY_UAMP_FLAGS, value.toLong())
+        putLong(METADATA_KEY_FLAGS, value.toLong())
     }
 
-/**
- * Extension method for building an [ExtractorMediaSource] from a [MediaMetadataCompat] object.
- *
- * For convenience, place the [MediaDescriptionCompat] into the tag so it can be retrieved later.
- */
-fun MediaMetadataCompat.toMediaSource(dataSourceFactory: DataSource.Factory) =
-    ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaUri)
-
-/**
- * Extension method for building a [ConcatenatingMediaSource] given a [List]
- * of [MediaMetadataCompat] objects.
- */
-fun List<MediaMetadataCompat>.toMediaSource(
-    dataSourceFactory: DataSource.Factory
-): ConcatenatingMediaSource {
-
-    val concatenatingMediaSource = ConcatenatingMediaSource()
-    forEach {
-        concatenatingMediaSource.addMediaSource(it.toMediaSource(dataSourceFactory))
-    }
-    return concatenatingMediaSource
+fun MediaMetadataCompat.toMediaItemMetadata(): com.google.android.exoplayer2.MediaMetadata {
+    return with(com.google.android.exoplayer2.MediaMetadata.Builder()) {
+        setTitle(title)
+        setDisplayTitle(displayTitle)
+        setAlbumArtist(artist)
+        setAlbumTitle(album)
+        setComposer(composer)
+        setTrackNumber(trackNumber.toInt())
+        setTotalTrackCount(trackCount.toInt())
+        setDiscNumber(discNumber.toInt())
+        setWriter(writer)
+        setArtworkUri(albumArtUri)
+        val extras = Bundle()
+//        getString(JsonSource.ORIGINAL_ARTWORK_URI_KEY)?.let {
+//            // album art is a content:// URI. Keep the original for Cast.
+//            extras.putString(
+//                JsonSource.ORIGINAL_ARTWORK_URI_KEY,
+//                getString(JsonSource.ORIGINAL_ARTWORK_URI_KEY)
+//            )
+//        }
+        extras.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)
+        setExtras(extras)
+    }.build()
 }
 
-fun MediaMetadataCompat.toMediaQueueItem(): MediaQueueItem {
-    val metadata: MediaMetadata = toCastMediaMetadata()
-    val mediaInfo = MediaInfo.Builder(this.mediaUri.toString())
-            .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-            .setContentType(MimeTypes.AUDIO_MPEG)
-            .setStreamDuration(this.duration)
-            .setMetadata(metadata)
-            .build()
-    return MediaQueueItem.Builder(mediaInfo).build()
+fun MediaMetadataCompat.toMediaItem(): com.google.android.exoplayer2.MediaItem {
+    return with(com.google.android.exoplayer2.MediaItem.Builder()) {
+        setMediaId(id.toString())
+        setUri(mediaUri)
+        setMimeType(MimeTypes.AUDIO_MPEG)
+        setMediaMetadata(toMediaItemMetadata())
+    }.build()
 }
-
-private fun MediaMetadataCompat.toCastMediaMetadata(): MediaMetadata {
-    val mediaMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK)
-    mediaMetadata.putString(MediaMetadata.KEY_TITLE, this.title)
-    mediaMetadata.putString(MediaMetadata.KEY_ARTIST, this.artist)
-    mediaMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, this.album)
-    mediaMetadata.addImage(WebImage(this.albumArtUri))
-    mediaMetadata.addImage(WebImage(this.displayIconUri))
-    mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, this.albumArtist)
-    mediaMetadata.putString(MediaMetadata.KEY_COMPOSER, this.composer)
-    this.date?.let { date -> mediaMetadata.putString(MediaMetadata.KEY_RELEASE_DATE, date) }
-    mediaMetadata.putInt(MediaMetadata.KEY_TRACK_NUMBER, this.trackNumber.toInt())
-    mediaMetadata.putInt(MediaMetadata.KEY_DISC_NUMBER, this.discNumber.toInt())
-    return mediaMetadata
-}
-
 
 /**
  * Custom property that holds whether an item is [MediaItem.FLAG_BROWSABLE] or
  * [MediaItem.FLAG_PLAYABLE].
  */
-const val METADATA_KEY_UAMP_FLAGS = "com.example.android.uamp.media.METADATA_KEY_UAMP_FLAGS"
+const val METADATA_KEY_FLAGS = "cn.chitanda.music.media.METADATA_KEY_FLAGS"
 

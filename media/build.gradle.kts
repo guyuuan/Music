@@ -1,6 +1,8 @@
 plugins {
     id("com.android.library")
     id("kotlin-android")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -46,4 +48,7 @@ dependencies {
     api(Libs.exo_media_session)
     api(Libs.exo_cast)
 
+    implementation(Libs.hilt)
+    kapt(Libs.hilt_compiler)
+    kapt(Libs.hilt_kapt)
 }

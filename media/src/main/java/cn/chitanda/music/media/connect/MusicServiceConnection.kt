@@ -14,7 +14,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.media.MediaBrowserServiceCompat
-import com.example.android.uamp.media.extensions.id
+import cn.chitanda.music.media.extensions.id
 
 /**
  * @author: Chen

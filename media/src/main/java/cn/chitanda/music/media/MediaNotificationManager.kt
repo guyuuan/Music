@@ -8,8 +8,8 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.android.uamp.media.extensions.displaySubtitle
-import com.example.android.uamp.media.extensions.displayTitle
+import cn.chitanda.music.media.extensions.displaySubtitle
+import cn.chitanda.music.media.extensions.displayTitle
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import kotlinx.coroutines.CoroutineScope
@@ -31,14 +31,14 @@ class MediaNotificationManager(
 ) {
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
-    private val notificationManager: PlayerNotificationManager
+    private val playerNotificationManager: PlayerNotificationManager
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(context)
         }
         val mediaController = MediaControllerCompat(context, sessionToken)
-        notificationManager = PlayerNotificationManager.Builder(
+        playerNotificationManager = PlayerNotificationManager.Builder(
             context,
             NOW_PLAYING_NOTIFICATION_ID,
             NOW_PLAYING_CHANNEL_ID
@@ -62,10 +62,10 @@ class MediaNotificationManager(
     }
 
     fun showNotification(player: Player){
-        notificationManager.setPlayer(player)
+        playerNotificationManager.setPlayer(player)
     }
     fun hideNotification(){
-        notificationManager.setPlayer(null)
+        playerNotificationManager.setPlayer(null)
     }
 
     private inner class DescriptionAdapter(private val controller: MediaControllerCompat) :

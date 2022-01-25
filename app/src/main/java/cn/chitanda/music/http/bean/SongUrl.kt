@@ -6,11 +6,12 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class SongUrl(
-    override val code: Int,
+    val code: Int,
     @Json(name = "data")
-    override val data: List<Url>? = null,
-    override val message: String?, override val msg: String?
-) : BaseJson<List<SongUrl.Url>>() {
+    val data: List<Url>? = null,
+    val message: String?,
+    val msg: String?
+) {
     @JsonClass(generateAdapter = true)
     data class Url(
         @Json(name = "br")
