@@ -1,6 +1,5 @@
 package cn.chitanda.music.media
 
-import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -19,6 +18,7 @@ import kotlinx.coroutines.*
  **/
 
 private const val TAG = "MusicSourceImp"
+private const val STEP = 20
 
 class MusicSourceImp(private val songsRepository: SongsRepository) : AbstractMusicSource() {
     private var catalog: List<MediaMetadataCompat> = emptyList()
@@ -48,18 +48,37 @@ class MusicSourceImp(private val songsRepository: SongsRepository) : AbstractMus
     private suspend fun updateCatLog(
         playlist: String
     ) = withContext(Dispatchers.Default) {
-        val response = songsRepository.getPlaylistAllSongs(playlist)
-        if (response.code == 200) {
-            val urls = response.data?.joinToString { it.id.toString() }?.let { ids ->
-                songsRepository.getSongUrl(ids).data?.associateBy { it.id }
+        try {
+            val response = songsRepository.getPlaylistAllSongs(playlist)
+            if (response.code == 200) {
+                val urls = mutableMapOf<Long?, SongUrl.Url>()
+                response.data?.map { it.id.toString() }?.let { ids ->
+                    val tasks = mutableListOf<Deferred<Unit?>>()
+                    for (i in ids.indices step STEP) {
+                        tasks += async {
+                            songsRepository.getSongUrl(
+                                ids.subList(
+                                    i, (i + STEP - 1).coerceAtMost(ids.lastIndex) + 1
+                                ).joinToString(separator = ",") { it }).data?.associateBy { it.id }
+                                ?.let { map ->
+                                    urls.putAll(map)
+                                }
+                        }
+                    }
+                    tasks.forEach { task -> task.await() }
+
+                }
+                response.data?.map { song ->
+                    MediaMetadataCompat.Builder().from(song, urls.get(song.id)).build()
+                }?.let {
+                    catalog = it
+                }
             }
-            response.data?.map { song ->
-                MediaMetadataCompat.Builder().from(song, urls?.get(song.id)).build()
-            }?.let {
-                catalog = it
-            }
+            state = STATE_INITIALIZED
+        } catch (e: Exception) {
+            Log.e(TAG, "updateCatLog: ", e)
+            state = STATE_ERROR
         }
-        state = STATE_INITIALIZED
     }
 
     override fun iterator(): Iterator<MediaMetadataCompat> = catalog.listIterator()
@@ -69,13 +88,13 @@ fun MediaMetadataCompat.Builder.from(
     song: Songs.Song,
     url: SongUrl.Url?,
 ): MediaMetadataCompat.Builder {
-    val albumUri =  song.al?.picUrl.toString()
+    val albumUri = song.al?.picUrl.toString()
     id = song.id.toString()
     title = song.name
     artist = song.artists
     album = song.al?.name
     mediaUri = url?.url
-    albumArtUri =albumUri
+    albumArtUri = albumUri
     flag = MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
     // To make things easier for *displaying* these, set the display properties as well.
     displayTitle = song.name
