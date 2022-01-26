@@ -6,7 +6,7 @@
 object Libs {
 
     //ClassPath
-    const val agp = "com.android.tools.build:gradle:7.0.4"
+    const val agp = "com.android.tools.build:gradle:7.1.0"
     const val kgp = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.kotlin_version}"
     const val hgp = "com.google.dagger:hilt-android-gradle-plugin:${Version.hilt_version}"
 
