@@ -15,17 +15,17 @@ data class SongUrl(
     @JsonClass(generateAdapter = true)
     data class Url(
         @Json(name = "br")
-        val br: Int? = null,
+        val br: Long? = null,
         @Json(name = "encodeType")
         val encodeType: String? = null,
         @Json(name = "flag")
-        val flag: Int? = null,
+        val flag: Long? = null,
         @Json(name = "id")
-        val id: Int? = null,
+        val id: Long? = null,
         @Json(name = "md5")
         val md5: String? = null,
         @Json(name = "size")
-        val size: Int? = null,
+        val size: Long? = null,
         @Json(name = "type")
         val type: String? = null,
         @Json(name = "url")

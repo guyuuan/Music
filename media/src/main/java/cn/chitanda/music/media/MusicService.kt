@@ -89,7 +89,7 @@ class MusicService : MediaBrowserServiceCompat() {
     ) {
         Log.d(TAG, "onLoadChildren: $parentId")
         musicSource.load(parentId)
-        val s = musicSource.whenReady { success ->
+        val sentResult = musicSource.whenReady { success ->
             if (success) {
                 result.sendResult(musicSource.map {
                     MediaBrowserCompat.MediaItem(
@@ -102,7 +102,7 @@ class MusicService : MediaBrowserServiceCompat() {
                 result.sendResult(null)
             }
         }
-        if (!s) result.detach()
+        if (!sentResult) result.detach()
     }
 
     private fun preparePlaylist(
@@ -135,6 +135,7 @@ class MusicService : MediaBrowserServiceCompat() {
     private inner class QueueNavigator(
         mediaSession: MediaSessionCompat
     ) : TimelineQueueNavigator(mediaSession) {
+
         override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat =
             currentPlaylist.getOrNull(windowIndex)?.description ?: MediaDescriptionCompat.Builder()
                 .build()
@@ -207,30 +208,12 @@ class MusicService : MediaBrowserServiceCompat() {
             }
         }
 
-        /**
-         * This method is used by the Google Assistant to respond to requests such as:
-         * - Play Geisha from Wake Up on UAMP
-         * - Play electronic music on UAMP
-         * - Play music on UAMP
-         *
-         * For details on how search is handled, see [AbstractMusicSource.search].
-         */
         override fun onPrepareFromSearch(query: String, playWhenReady: Boolean, extras: Bundle?) {
 
         }
 
         override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) = Unit
 
-        /**
-         * Builds a playlist based on a [MediaMetadataCompat].
-         *
-         * TODO: Support building a playlist by artist, genre, etc...
-         *
-         * @param item Item to base the playlist on.
-         * @return a [List] of [MediaMetadataCompat] objects representing a playlist.
-         */
-        private fun buildPlaylist(item: MediaMetadataCompat): List<MediaMetadataCompat> =
-            emptyList()
     }
 
     private inner class PlayerNotificationListener :

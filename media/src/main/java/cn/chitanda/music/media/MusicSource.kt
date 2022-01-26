@@ -45,6 +45,7 @@ abstract class AbstractMusicSource : MusicSource {
                     onReadyListeners.forEach { listener ->
                         listener(state == STATE_INITIALIZED)
                     }
+                    onReadyListeners.clear()
                 }
             } else {
                 field = value

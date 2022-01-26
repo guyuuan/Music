@@ -92,4 +92,6 @@ object Libs {
     const val exo_cast = "com.google.android.exoplayer:extension-cast:${Version.exoplayer_version}"
 
     const val kotlin_coroutines_android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.kotlin_coroutines_version}"
+
+    const val glide = "com.github.bumptech.glide:glide:4.11.0"
 }

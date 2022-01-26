@@ -12,6 +12,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.view.WindowCompat
+import cn.chitanda.music.ui.LocalMusicViewModel
 import cn.chitanda.music.ui.LocalThemeViewModel
 import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.Router
@@ -45,7 +46,8 @@ class MainActivity : AppCompatActivity() {
         setContent {
             CompositionLocalProvider(
                 LocalThemeViewModel provides themeViewModel,
-                LocalUserViewModel provides userViewModel
+                LocalUserViewModel provides userViewModel,
+                LocalMusicViewModel provides musicViewModel
             ) {
                 MusicTheme(themeViewModel.monetColor.value) {
                     Router()
@@ -56,7 +58,6 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             keepSplashScreen()
         }
-        musicViewModel.init()
     }
 
     private fun keepSplashScreen() {

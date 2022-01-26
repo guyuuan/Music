@@ -115,6 +115,7 @@ dependencies {
 //    implementation(files("./libs/lib.aar"))
     implementation(Libs.permission)
 
+    implementation(Libs.glide)
     //MediaSession
 //    api(Libs.media)
 //

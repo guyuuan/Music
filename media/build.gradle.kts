@@ -48,6 +48,8 @@ dependencies {
     api(Libs.exo_media_session)
     api(Libs.exo_cast)
 
+    api(Libs.coil)
+
     implementation(Libs.hilt)
     kapt(Libs.hilt_compiler)
     kapt(Libs.hilt_kapt)

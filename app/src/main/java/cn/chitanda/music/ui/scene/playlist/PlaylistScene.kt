@@ -3,6 +3,7 @@ package cn.chitanda.music.ui.scene.playlist
 import android.widget.Toast
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -35,6 +36,7 @@ import cn.chitanda.music.R
 import cn.chitanda.music.http.bean.Songs
 import cn.chitanda.music.http.bean.artists
 import cn.chitanda.music.http.paging.PlaylistSongsPagingSource
+import cn.chitanda.music.ui.LocalMusicViewModel
 import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.scene.PageState
 import cn.chitanda.music.ui.scene.isLoading
@@ -65,7 +67,7 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
         navController.navigateUp()
         return
     }
-
+    val musicViewModel = LocalMusicViewModel.current
     val viewModel = hiltViewModel<PlaylistViewModel>()
     val viewState by viewModel.viewState.collectAsState()
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
@@ -119,7 +121,10 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
                             SongsItem(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(40.dp), song = it, index = index + 1,
+                                    .height(40.dp)
+                                    .clickable {
+                                        musicViewModel.play(playlist, it.id.toString())
+                                    }, song = it, index = index + 1,
                                 iconColor = LocalContentColor.current.copy(alpha = 0.6f).copy(0.5f)
                             )
                         }

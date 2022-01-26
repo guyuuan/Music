@@ -1,5 +1,6 @@
 package cn.chitanda.music.media
 
+import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -29,13 +30,18 @@ class MusicSourceImp(private val songsRepository: SongsRepository) : AbstractMus
     }
 
     override fun load(playlist: String) {
-        if (loadJob?.isActive == true) loadJob?.cancel()
+        state = STATE_INITIALIZING
+        if (loadJob?.isActive == true) {
+            Log.d(TAG, "load: cancel job")
+            loadJob?.cancel()
+        }
         try {
             loadJob = coroutineScope.launch {
                 updateCatLog(playlist)
             }
         } catch (e: Exception) {
             Log.e(TAG, "load: ", e)
+            state = STATE_ERROR
         }
     }
 
@@ -44,11 +50,13 @@ class MusicSourceImp(private val songsRepository: SongsRepository) : AbstractMus
     ) = withContext(Dispatchers.Default) {
         val response = songsRepository.getPlaylistAllSongs(playlist)
         if (response.code == 200) {
-            val url = response.data?.joinToString { it.id.toString() }?.let { ids ->
-                songsRepository.getSongUrl(ids)
+            val urls = response.data?.joinToString { it.id.toString() }?.let { ids ->
+                songsRepository.getSongUrl(ids).data?.associateBy { it.id }
             }
-            response.data?.mapIndexed { i, song ->
-                MediaMetadataCompat.Builder().from(song, url?.data?.getOrNull(i)).build()
+            response.data?.map { song ->
+                MediaMetadataCompat.Builder().from(song, urls?.get(song.id)).build()
+            }?.let {
+                catalog = it
             }
         }
         state = STATE_INITIALIZED
@@ -61,33 +69,24 @@ fun MediaMetadataCompat.Builder.from(
     song: Songs.Song,
     url: SongUrl.Url?,
 ): MediaMetadataCompat.Builder {
-    // The duration from the JSON is given in seconds, but the rest of the code works in
-    // milliseconds. Here's where we convert to the proper units.
-//    val durationMs = TimeUnit.SECONDS.toMillis(jsonMusic.duration)
-
+    val albumUri =  song.al?.picUrl.toString()
     id = song.id.toString()
     title = song.name
     artist = song.artists
     album = song.al?.name
-//    duration = durationMs
-//    genre = jsonMusic.genre
     mediaUri = url?.url
-    albumArtUri = song.al?.picUrl.toString()
-//    trackNumber = jsonMusic
-//    trackCount = jsonMusic.totalTrackCount
+    albumArtUri =albumUri
     flag = MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-
     // To make things easier for *displaying* these, set the display properties as well.
     displayTitle = song.name
     displaySubtitle = song.artists
     displayDescription = song.al?.name
-    displayIconUri = song.al?.picUrl.toString()
+    displayIconUri = albumUri
 
     // Add downloadStatus to force the creation of an "extras" bundle in the resulting
     // MediaMetadataCompat object. This is needed to send accurate metadata to the
     // media session during updates.
     downloadStatus = MediaDescriptionCompat.STATUS_NOT_DOWNLOADED
-
     // Allow it to be used in the typical builder style.
     return this
 }
