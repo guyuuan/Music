@@ -9,16 +9,14 @@ import com.squareup.moshi.JsonClass
  *@description:
  **/
 @JsonClass(generateAdapter = true)
-class RequestStatus<T : BaseJson<*>>(
+data class RequestStatus<T : BaseJson<*>>(
     var code: Int = 0,
     var error: Throwable? = null,
     var msg: String? = null,
     var status: DataState = DataState.STATE_CREATE,
     var json: T? = null,
 ) {
-
-
-    val  data get() = json?.data
+    val data get() = json?.data
 }
 
 enum class DataState {
