@@ -100,67 +100,6 @@ data class PlaylistDetail(
         @Json(name = "videos")
         val videos: Any?
     ) {
-        @JsonClass(generateAdapter = true)
-        data class Creator(
-            @Json(name = "accountStatus")
-            val accountStatus: Long?,
-            @Json(name = "anchor")
-            val anchor: Boolean?,
-            @Json(name = "authStatus")
-            val authStatus: Long?,
-            @Json(name = "authenticationTypes")
-            val authenticationTypes: Long?,
-            @Json(name = "authority")
-            val authority: Long?,
-            @Json(name = "avatarDetail")
-            val avatarDetail: Any?,
-            @Json(name = "avatarImgId")
-            val avatarImgId: Long?,
-            @Json(name = "avatarUrl")
-            val avatarUrl: String?,
-            @Json(name = "backgroundImgId")
-            val backgroundImgId: Long?,
-            @Json(name = "backgroundImgIdStr")
-            val backgroundImgIdStr: String?,
-            @Json(name = "backgroundUrl")
-            val backgroundUrl: String?,
-            @Json(name = "birthday")
-            val birthday: Long?,
-            @Json(name = "city")
-            val city: Long?,
-            @Json(name = "defaultAvatar")
-            val defaultAvatar: Boolean?,
-            @Json(name = "description")
-            val description: String?,
-            @Json(name = "detailDescription")
-            val detailDescription: String?,
-            @Json(name = "djStatus")
-            val djStatus: Long?,
-            @Json(name = "expertTags")
-            val expertTags: Any?,
-            @Json(name = "experts")
-            val experts: Any?,
-            @Json(name = "followed")
-            val followed: Boolean?,
-            @Json(name = "gender")
-            val gender: Long?,
-            @Json(name = "mutual")
-            val mutual: Boolean?,
-            @Json(name = "nickname")
-            val nickname: String?,
-            @Json(name = "province")
-            val province: Long?,
-            @Json(name = "remarkName")
-            val remarkName: Any?,
-            @Json(name = "signature")
-            val signature: String?,
-            @Json(name = "userId")
-            val userId: Long?,
-            @Json(name = "userType")
-            val userType: Long?,
-            @Json(name = "vipType")
-            val vipType: Long?
-        )
 
         @JsonClass(generateAdapter = true)
         data class TrackId(

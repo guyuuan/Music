@@ -43,6 +43,7 @@ import cn.chitanda.music.ui.scene.isLoading
 import cn.chitanda.music.ui.theme.DownArcShape
 import cn.chitanda.music.ui.theme.Shapes
 import cn.chitanda.music.ui.widget.CoilImage
+import cn.chitanda.music.utils.toUnitString
 import coil.annotation.ExperimentalCoilApi
 import coil.transform.BlurTransformation
 import com.google.accompanist.insets.LocalWindowInsets
@@ -172,8 +173,8 @@ private fun FoldableTopAppBar(
         rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.statusBars,
             applyTop = true
-        ).calculateTopPadding() + 64.dp
-    val height = remember { 250.dp }
+        ).calculateTopPadding() + FoldableTopAppBarHeight
+    val height = remember { 200.dp }
     val contentAlpha =
         if (1f - scrollBehavior.scrollFraction > 0.5f) 1f else (1f - scrollBehavior.scrollFraction) / 0.5f
     Box(
@@ -221,13 +222,15 @@ private fun FoldableTopAppBar(
                     }
                 }
             }
-            FloatActionBar(modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth(0.7f)
-                .height(60.dp)
-                .graphicsLayer {
-                    alpha = contentAlpha
-                })
+            viewState.playlist?.let {
+                FloatActionBar(it, modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth(0.7f)
+                    .height(50.dp)
+                    .graphicsLayer {
+                        alpha = contentAlpha
+                    })
+            }
         }
         CompositionLocalProvider(LocalContentColor provides color) {
             SmallTopAppBar(
@@ -284,14 +287,14 @@ private fun AppbarBackground(modifier: Modifier, url: String?, sideEffect: () ->
             job?.cancel()
         }
         job = scope.launch {
-            delay(200)
+            delay(400)
             sideEffect()
         }
     }
 }
 
 @Composable
-fun FloatActionBar(modifier: Modifier = Modifier) {
+fun FloatActionBar(playlist: PlaylistViewState.PlaylistDetail, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier,
         tonalElevation = 8.dp,
@@ -300,23 +303,68 @@ fun FloatActionBar(modifier: Modifier = Modifier) {
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Box(
+            IconButton(onClick = { }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(if (playlist.subscribed) R.drawable.ic_subscribed else R.drawable.ic_add_subscribed),
+                        contentDescription = null, modifier = Modifier.size(18.dp)
+                    )
+                    Text(
+                        text = playlist.subscribedCount.toUnitString(),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+            Spacer(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
+                    .fillMaxHeight(0.35f)
+                    .width(1.dp)
+                    .background(LocalContentColor.current.copy(alpha = 0.5f))
             )
-            Box(
+            IconButton(onClick = { }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_comment),
+                        contentDescription = null, modifier = Modifier.size(18.dp)
+                    )
+                    Text(
+                        text = playlist.commentCount.toUnitString(),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+            Spacer(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
+                    .fillMaxHeight(0.4f)
+                    .width(1.dp)
+                    .background(LocalContentColor.current.copy(alpha = 0.5f))
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
-            )
+
+            IconButton(onClick = { }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_share),
+                        contentDescription = null, modifier = Modifier.size(18.dp)
+                    )
+                    Text(
+                        text = playlist.shareCount.toUnitString(),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+
         }
     }
 }
@@ -383,3 +431,5 @@ fun SongsItem(
         }
     }
 }
+
+val FoldableTopAppBarHeight = 64.dp

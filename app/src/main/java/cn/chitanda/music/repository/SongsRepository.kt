@@ -16,6 +16,10 @@ class SongsRepository(private val api: SongsApi) : BaseRemoteRepository() {
         val viewState = PlaylistViewState()
         if (response.code == 200) {
             response.data?.let { data ->
+                data.shareCount
+                data.commentCount
+                data.subscribedCount
+                data.subscribed
                 return@withContext viewState.copy(
                     playlist = PlaylistViewState.PlaylistDetail(
                         name = data.name.toString(),
@@ -23,7 +27,11 @@ class SongsRepository(private val api: SongsApi) : BaseRemoteRepository() {
                         creator = data.creator,
                         description = data.description,
                         coverUrl = data.coverImgUrl ?: "",
-                        songsCount = data.trackCount?.toInt() ?: 0
+                        songsCount = data.trackCount?.toInt() ?: 0,
+                        shareCount = data.shareCount ?: 0,
+                        commentCount = data.commentCount ?: 0,
+                        subscribedCount = data.subscribedCount ?: 0,
+                        subscribed = data.subscribed ?: false
                     )
                 )
             }

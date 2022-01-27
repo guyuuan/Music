@@ -20,7 +20,11 @@ data class PlaylistViewState(
         val coverUrl: String,
         val creator: UserProfile.Data? = null,
         val description: String? = null,
-        val songsCount: Int = 0
+        val songsCount: Int = 0,
+        val shareCount: Long = 0,
+        val commentCount: Long = 0,
+        val subscribedCount: Long = 0,
+        val subscribed: Boolean = false
     )
 
 }
