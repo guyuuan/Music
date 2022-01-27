@@ -96,7 +96,7 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
                     top = 16.dp,
-                    bottom = LocalMusicControllerBarHeight.current
+                    bottom = LocalMusicControllerBarHeight.current.coerceAtLeast(16.dp)
                 ),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {

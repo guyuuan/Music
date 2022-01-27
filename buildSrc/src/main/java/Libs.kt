@@ -24,9 +24,10 @@ object Libs {
         "androidx.activity:activity-compose:${Version.activity_compose_version}"
     const val compose_md3 = "androidx.compose.material3:material3:${Version.compose_md3_version}"
     const val compose_test = "androidx.compose.ui:ui-test-junit4:${Version.compose_version}"
-
+    const val compose_live_data =
+        "androidx.compose.runtime:runtime-livedata:${Version.compose_version}"
     const val lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:${Version.lifecycle_version}"
-    const val viewmodel_compose =
+    const val view_model_compose =
         "androidx.lifecycle:lifecycle-viewmodel-compose:${Version.lifecycle_version}"
 
     const val navigation_compose =
@@ -91,7 +92,8 @@ object Libs {
         "com.google.android.exoplayer:extension-mediasession:${Version.exoplayer_version}"
     const val exo_cast = "com.google.android.exoplayer:extension-cast:${Version.exoplayer_version}"
 
-    const val kotlin_coroutines_android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.kotlin_coroutines_version}"
+    const val kotlin_coroutines_android =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.kotlin_coroutines_version}"
 
     const val glide = "com.github.bumptech.glide:glide:4.11.0"
 }

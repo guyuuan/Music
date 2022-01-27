@@ -73,10 +73,11 @@ dependencies {
     implementation(Libs.compose_md)
     implementation(Libs.compose_md3)
     implementation(Libs.compose_ui_preview)
-    implementation(Libs.viewmodel_compose)
+    implementation(Libs.view_model_compose)
     implementation(Libs.navigation_compose)
     implementation(Libs.lifecycle)
     implementation(Libs.activity_compose)
+    implementation(Libs.compose_live_data)
     debugImplementation(Libs.compose_ui_tooling)
     androidTestImplementation(Libs.compose_test)
 

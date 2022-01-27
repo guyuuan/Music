@@ -2,6 +2,7 @@ package cn.chitanda.music
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -25,6 +26,7 @@ class MusicViewModel @Inject constructor(
     private val musicServiceConnection: MusicServiceConnection
 ) : ViewModel() {
     val nowPlaying: LiveData<MediaMetadataCompat> = musicServiceConnection.nowPlaying
+    val playbackState: LiveData<PlaybackStateCompat> = musicServiceConnection.playbackState
     private var _currentPlaylist = ""
 
     fun play(playlist: String, mediaId: String?, pauseAllowed: Boolean = true) {

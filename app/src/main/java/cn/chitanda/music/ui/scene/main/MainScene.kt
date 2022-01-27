@@ -6,13 +6,12 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
@@ -25,10 +24,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import cn.chitanda.music.R
+import cn.chitanda.music.media.connect.NOTHING_PLAYING
+import cn.chitanda.music.media.extensions.isPlaying
 import cn.chitanda.music.ui.LocalMusicControllerBarHeight
+import cn.chitanda.music.ui.LocalMusicViewModel
 import cn.chitanda.music.ui.scene.home.HomeScene
 import cn.chitanda.music.ui.scene.message.MessageScene
 import cn.chitanda.music.ui.scene.mine.MineScene
+import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.widget.navbar.BottomNavigationBar
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -54,6 +57,9 @@ fun MainScene() {
     var currentDestination by remember { mutableStateOf(homeNavController.currentDestination) }
     var musicControllerBarHeight by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
+    val musicViewModel = LocalMusicViewModel.current
+    val playbackState by musicViewModel.playbackState.observeAsState()
+    val nowPlaying by musicViewModel.nowPlaying.observeAsState()
     CompositionLocalProvider(LocalMusicControllerBarHeight provides musicControllerBarHeight) {
         Scaffold(
             bottomBar = {
@@ -88,7 +94,7 @@ fun MainScene() {
                 }
                 AnimatedVisibility(
                     modifier = Modifier.align(Alignment.BottomCenter),
-                    visible = currentDestination?.route != MainPageItem.Message.route
+                    visible = currentDestination?.route != MainPageItem.Message.route && nowPlaying != null && nowPlaying != NOTHING_PLAYING
                 ) {
                     Surface(
                         modifier = Modifier
@@ -104,7 +110,46 @@ fun MainScene() {
                                 .fillMaxWidth()
                                 .height(60.dp), contentAlignment = Alignment.CenterStart
                         ) {
-                            Text(text = "控制栏", modifier = Modifier.padding(start = 32.dp))
+
+                            nowPlaying?.description?.let { description ->
+                                Row(
+                                    modifier = Modifier.padding(
+                                        horizontal = 16.dp,
+                                        vertical = 8.dp
+                                    ),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    CoilImage(
+                                        url = description.iconUri,
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .aspectRatio(1f, true),
+                                        shape = CircleShape
+                                    )
+                                    Column(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        verticalArrangement = Arrangement.SpaceAround
+                                    ) {
+                                        Text(
+                                            text = "${description.title}",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Text(
+                                            text = "${description.subtitle}",
+                                            style = MaterialTheme.typography.bodySmall
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    IconButton(
+                                        onClick = { }, modifier = Modifier
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = if (playbackState?.isPlaying == true) R.drawable.ic_pause else R.drawable.ic_play_arrow),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
