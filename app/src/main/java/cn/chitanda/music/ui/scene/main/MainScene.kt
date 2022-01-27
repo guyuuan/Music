@@ -1,6 +1,7 @@
 package cn.chitanda.music.ui.scene.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.*
@@ -12,6 +13,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
@@ -60,10 +63,22 @@ fun MainScene() {
     val musicViewModel = LocalMusicViewModel.current
     val playbackState by musicViewModel.playbackState.observeAsState()
     val nowPlaying by musicViewModel.nowPlaying.observeAsState()
+    var currentIndex by rememberSaveable {
+        mutableStateOf(0)
+    }
     CompositionLocalProvider(LocalMusicControllerBarHeight provides musicControllerBarHeight) {
         Scaffold(
             bottomBar = {
-                BottomBar(homeNavController)
+                BottomBar(currentIndex, onItemClick = { index ->
+                    currentIndex = index
+                    homeNavController.navigate(pages[index].route) {
+                        popUpTo(homeNavController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                })
             }) {
             Box(modifier = Modifier.padding(it)) {
                 AnimatedNavHost(
@@ -190,24 +205,23 @@ private val exitTransition: (AnimatedContentScope<NavBackStackEntry>.() -> ExitT
 private val enterTransition: (AnimatedContentScope<NavBackStackEntry>.() -> EnterTransition) = {
     fadeIn(tween(500))
 }
+val pages = listOf(MainPageItem.Find, MainPageItem.Message, MainPageItem.Mine)
+private val PageSaver =
+    mapSaver(save = { mapOf("index" to pages.indexOf(it)) }, restore = {
+        Log.d(TAG, "restore: it")
+        pages[it["index"] as Int]
+    })
 
 @Composable
-private fun BottomBar(homeNavController: NavController) {
-    val list = remember { listOf(MainPageItem.Find, MainPageItem.Message, MainPageItem.Mine) }
-    var currentPage by remember {
-        mutableStateOf<MainPageItem>(MainPageItem.Find)
-    }
+private fun BottomBar(
+    currentIndex: Int,
+    onItemClick: (Int) -> Unit
+) {
+    val currentPage = pages[currentIndex]
     BottomNavigationBar {
-        list.forEach { scene ->
+        pages.forEachIndexed { i, scene ->
             NavigationBarItem(selected = currentPage == scene, onClick = {
-                currentPage = scene
-                homeNavController.navigate(scene.route) {
-                    popUpTo(homeNavController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                onItemClick(i)
             }, icon = {
                 Icon(
                     painter = painterResource(id = scene.icon),
@@ -217,6 +231,9 @@ private fun BottomBar(homeNavController: NavController) {
                 Text(text = stringResource(id = scene.label))
             }, alwaysShowLabel = true)
         }
+    }
+    LaunchedEffect(key1 = currentPage) {
+        Log.d(TAG, "BottomBar: ${pages.indexOf(currentPage)}")
     }
 }
 
