@@ -196,29 +196,72 @@ private fun FoldableTopAppBar(
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         } else {
             CompositionLocalProvider(LocalContentColor provides color) {
-                Row(
+                Box(
                     modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .height(100.dp)
+                        .padding(top = (appBarSize - 65.dp) * contentAlpha)
                         .fillMaxSize()
-                        .align(Alignment.Center)
-                        .graphicsLayer {
-                            alpha = contentAlpha
-                        },
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    CoilImage(
-                        url = viewState.playlist?.coverUrl,
-                        modifier = Modifier.aspectRatio(1f, true),
-                        shape = Shapes.small
-                    )
-                    Column(
-                        verticalArrangement = Arrangement.SpaceAround,
-                        modifier = Modifier.fillMaxHeight()
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 20.dp)
+                            .height(110.dp)
+                            .fillMaxWidth()
+                            .align(Alignment.Center)
+                            .graphicsLayer {
+                                alpha = contentAlpha
+                            },
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text(text = viewState.playlist?.name ?: "")
-                        Text(text = viewState.playlist?.creator?.nickname ?: "")
-                        Text(text = viewState.playlist?.description ?: "")
+                        CoilImage(
+                            url = viewState.playlist?.coverUrl,
+                            modifier = Modifier.aspectRatio(1f, true),
+                            shape = Shapes.small
+                        )
+                        Column(
+                            verticalArrangement = Arrangement.SpaceAround,
+                            modifier = Modifier.fillMaxHeight()
+                        ) {
+                            Text(
+                                text = viewState.playlist?.name ?: "",
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                CoilImage(
+                                    url = viewState.playlist?.creator?.avatarUrl,
+                                    modifier = Modifier.size(24.dp),
+                                    shape = CircleShape
+                                )
+                                Text(
+                                    text = "${viewState.playlist?.creator?.nickname ?: ""} >",
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = MaterialTheme.typography.titleSmall
+                                )
+                            }
+                            if (!viewState.playlist?.description.isNullOrEmpty()) {
+                                Box(modifier = Modifier
+                                    .clip(Shapes.small)
+                                    .clickable { }
+                                    .padding(4.dp)
+                                ) {
+                                    Text(
+                                        text = " ${viewState.playlist?.description ?: ""} >",
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.titleSmall,
+                                        color = color,
+                                    )
+                                }
+
+                            } else {
+                                Spacer(modifier = Modifier.size(8.dp))
+                            }
+                        }
                     }
                 }
             }
