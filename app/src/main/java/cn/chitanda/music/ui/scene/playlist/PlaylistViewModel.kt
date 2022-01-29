@@ -51,7 +51,6 @@ class PlaylistViewModel @Inject constructor(private val songsRepository: SongsRe
     }
 
     suspend fun getPlaylistSongsPagingSource(id: String, maxSize: Int) {
-        Log.d(TAG, "getPlaylistSongsPagingSource: ")
         _viewState.setStat {
             copy(songs = PlaylistSongsPagingSource(maxSize) { offset, pageSize ->
                 songsRepository.getPlaylistSongs(id = id, offset = offset, pageSize = pageSize )

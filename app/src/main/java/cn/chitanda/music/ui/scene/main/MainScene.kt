@@ -193,7 +193,6 @@ class MainDestinationChangedListener(private val callBack: (NavDestination?) -> 
     ) {
         callBack(destination)
     }
-
 }
 
 @ExperimentalAnimationApi
@@ -206,11 +205,6 @@ private val enterTransition: (AnimatedContentScope<NavBackStackEntry>.() -> Ente
     fadeIn(tween(500))
 }
 val pages = listOf(MainPageItem.Find, MainPageItem.Message, MainPageItem.Mine)
-private val PageSaver =
-    mapSaver(save = { mapOf("index" to pages.indexOf(it)) }, restore = {
-        Log.d(TAG, "restore: it")
-        pages[it["index"] as Int]
-    })
 
 @Composable
 private fun BottomBar(
@@ -231,9 +225,6 @@ private fun BottomBar(
                 Text(text = stringResource(id = scene.label))
             }, alwaysShowLabel = true)
         }
-    }
-    LaunchedEffect(key1 = currentPage) {
-        Log.d(TAG, "BottomBar: ${pages.indexOf(currentPage)}")
     }
 }
 
