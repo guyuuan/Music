@@ -4,14 +4,14 @@
  * @description:
  **/
 object Version {
-    const val compileSdk = 31
-    const val minSdk = 23
-    const val targetSdk = 31
+    const val compileSdkVersion = 31
+    const val minSdkVersion = 23
+    const val targetSdkVersion = 31
 
     const val kotlin_version = "1.6.10"
-    const val compose_version = "1.2.0-alpha02"
+    const val compose_version = "1.2.0-alpha03"
     const val activity_compose_version = "1.4.0"
-    const val compose_md3_version = "1.0.0-alpha04"
+    const val compose_md3_version = "1.0.0-alpha05"
     const val navigation_version = "2.4.0-rc01"
     const val retrofit_version = "2.9.0"
     const val accompanist_version = "0.24.0-alpha"

@@ -1,18 +1,18 @@
 plugins {
     id("com.android.application")
-    id("kotlin-android")
+    kotlin("android")
+    kotlin("kapt")
     id("dagger.hilt.android.plugin")
-    id("kotlin-kapt")
     id("kotlin-parcelize")
     id("com.google.devtools.ksp") version (Version.ksp_version)
 }
 
 android {
-    compileSdk = Version.compileSdk
+    compileSdk = Version.compileSdkVersion
     defaultConfig {
         applicationId = "cn.chitanda.music"
-        minSdk = Version.minSdk
-        targetSdk = Version.targetSdk
+        minSdk = Version.minSdkVersion
+        targetSdk = Version.targetSdkVersion
         versionCode = 1
         versionName = "1.0"
 
@@ -30,13 +30,13 @@ android {
                 "proguard-rules.pro"
             )
         }
-        getByName("debug") {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
+//        getByName("debug") {
+//            isMinifyEnabled = true
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -123,13 +123,4 @@ dependencies {
 //    implementation(files("./libs/lib.aar"))
     implementation(Libs.permission)
 
-    implementation(Libs.glide)
-    //MediaSession
-//    api(Libs.media)
-//
-//    //exo player
-//    api(Libs.exo_core)
-//    api(Libs.exo_ui)
-//    api(Libs.exo_media_session)
-//    api(Libs.exo_cast)
 }

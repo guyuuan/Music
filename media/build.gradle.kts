@@ -1,15 +1,16 @@
+
 plugins {
     id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
+    kotlin("android")
+    kotlin("kapt")
     id("dagger.hilt.android.plugin")
 }
 
 android {
-    compileSdk = Version.compileSdk
+    compileSdk = Version.compileSdkVersion
     defaultConfig {
-        minSdk = Version.minSdk
-        targetSdk = Version.targetSdk
+        minSdk = Version.minSdkVersion
+        targetSdk = Version.targetSdkVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -30,7 +31,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
-//        useIR = true
     }
 }
 
