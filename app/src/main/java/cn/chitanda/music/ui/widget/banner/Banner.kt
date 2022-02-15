@@ -3,12 +3,12 @@ package cn.chitanda.music.ui.widget.banner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -48,11 +48,39 @@ fun <T> Banner(
     val startIndex = Int.MAX_VALUE / 2
     val pagerState =
         rememberPagerState(initialPage = if (infiniteLoop) startIndex else 0)
+    var isDragEvent by remember {
+        mutableStateOf(false)
+    }
     Box(modifier = modifier) {
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .pointerInput(pagerState.currentPage) {
+
+                    awaitPointerEventScope {
+                        while (true) {
+                            //PointerEventPass.Initial - 本控件优先处理手势，处理后再交给子组件
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                            //获取到第一根按下的手指
+                            val dragEvent = event.changes.firstOrNull()
+                            when {
+                                //当前移动手势是否已被消费
+                                dragEvent!!.positionChangeConsumed() -> {
+                                    return@awaitPointerEventScope
+                                }
+                                //是否已经按下(忽略按下手势已消费标记)
+                                dragEvent.changedToDownIgnoreConsumed() -> {
+                                    isDragEvent = true
+                                }
+                                //是否已经抬起(忽略按下手势已消费标记)
+                                dragEvent.changedToUpIgnoreConsumed() -> {
+                                    isDragEvent = false
+                                }
+                            }
+                        }
+                    }
+                },
             count = if (infiniteLoop) Int.MAX_VALUE else data.size,
             contentPadding = itemPaddingValues,
             itemSpacing = itemSpacing
@@ -100,7 +128,8 @@ fun <T> Banner(
         }
     }
     if (autoLooper) {
-        LaunchedEffect(key1 = pagerState.currentPage) {
+        LaunchedEffect(key1 = pagerState.currentPage, key2 = isDragEvent) {
+            if (isDragEvent) return@LaunchedEffect
             delay(looperTime)
             pagerState.animateScrollToPage((pagerState.currentPage + 1) % if (infiniteLoop) Int.MAX_VALUE else pageCount)
         }
