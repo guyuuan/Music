@@ -68,8 +68,9 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
     val user by LocalUserViewModel.current.user.collectAsState()
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = remember(decayAnimationSpec) {
-//        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
-        TopAppBarDefaults.pinnedScrollBehavior()
+//    val scrollBehavior = remember {
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+//        TopAppBarDefaults.pinnedScrollBehavior()
     }
     val viewState by viewModel.viewState.collectAsState()
     val appBarColors = TopAppBarDefaults.smallTopAppBarColors()
@@ -237,9 +238,8 @@ fun HomeRoundIconList(
                             shape = CircleShape
                         ),
                     contentDescription = item.name,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
-                    onLoading = {}
-                )
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
+                ) {}
                 Spacer(modifier = Modifier.size(4.dp))
                 Text(text = item.name, style = MaterialTheme.typography.labelSmall)
             }
@@ -425,7 +425,7 @@ fun MLogItem(
                 .fillMaxWidth()
                 .aspectRatio(0.75f)
         ) {
-            CoilImage(url = data.mlogBaseData?.coverUrl,modifier = Modifier.fillMaxSize() ,shape = Shapes.small)
+            CoilImage(url = data.mlogBaseData?.coverUrl, modifier = Modifier.fillMaxSize() , shape = Shapes.small)
             PlayCount(
                 modifier = Modifier
                     .padding(top = 4.dp, end = 4.dp)

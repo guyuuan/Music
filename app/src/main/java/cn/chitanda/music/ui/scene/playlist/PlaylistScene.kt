@@ -1,5 +1,6 @@
 package cn.chitanda.music.ui.scene.playlist
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
@@ -14,12 +15,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -50,9 +49,6 @@ import coil.transform.BlurTransformation
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.statusBarsPadding
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * @author: Chen
@@ -176,18 +172,19 @@ private fun FoldableTopAppBar(
             applyTop = true
         ).calculateTopPadding() + FoldableTopAppBarHeight
     val height = remember { 200.dp }
+    val fraction = 1f - scrollBehavior.scrollFraction
     val contentAlpha =
-        if (1f - scrollBehavior.scrollFraction > 0.5f) 1f else (1f - scrollBehavior.scrollFraction) / 0.5f
+        if (fraction > 0.5f) 1f else (fraction) / 0.5f
     Box(
         modifier = Modifier
-            .height(appBarSize + height * (1f - scrollBehavior.scrollFraction))
+            .height(appBarSize + height * (fraction))
     ) {
         AppbarBackground(
             modifier = Modifier
-                .padding(bottom = 16.dp * (1f - scrollBehavior.scrollFraction))
+                .padding(bottom = 16.dp * (fraction))
                 .fillMaxSize()
                 .clip(
-                    shape = DownArcShape(8.dp * (1f - scrollBehavior.scrollFraction))
+                    shape = DownArcShape(8.dp * (fraction))
                 ), url = viewState.playlist?.coverUrl
         ) {
             isLight = DynamicStatusBar.isLight
@@ -309,32 +306,23 @@ private fun FoldableTopAppBar(
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun AppbarBackground(modifier: Modifier, url: String?, sideEffect: () -> Unit) {
-    val scope = rememberCoroutineScope()
-    var job: Job? = remember(scope) {
-        null
-    }
+    val cxt = LocalContext.current
     CoilImage(
-        modifier = modifier.onSizeChanged { },
+        modifier = modifier,
         url = url,
         onLoading = {},
+        onSuccess = {
+            sideEffect()
+        },
         builder = {
             transformations(
                 BlurTransformation(
-                    context = LocalContext.current,
+                    context = cxt,
                     radius = 25f,
                     sampling = 10f
                 )
             )
         })
-    SideEffect {
-        if (job?.isActive == true) {
-            job?.cancel()
-        }
-        job = scope.launch {
-            delay(400)
-            sideEffect()
-        }
-    }
 }
 
 @Composable

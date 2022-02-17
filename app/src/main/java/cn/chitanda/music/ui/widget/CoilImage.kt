@@ -26,7 +26,7 @@ private const val TAG = "CoilImage"
  **/
 @ExperimentalCoilApi
 @Composable
-inline fun CoilImage(
+fun CoilImage(
     url: Any?,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
@@ -36,9 +36,10 @@ inline fun CoilImage(
     shape: Shape? = null,
     colorFilter: ColorFilter? = null,
     builder: ImageRequest.Builder.() -> Unit = {},
-    crossinline onError: @Composable () -> Unit = {
+    onSuccess: (() -> Unit)? = null,
+    onError: @Composable () -> Unit = {
     },
-    crossinline onLoading: @Composable () -> Unit = {
+    onLoading: @Composable () -> Unit = {
         CircularProgressIndicator()
     }
 ) {
@@ -63,6 +64,7 @@ inline fun CoilImage(
                     onLoading()
                 }
                 is ImagePainter.State.Success -> {
+                    onSuccess?.invoke()
                 }
                 is ImagePainter.State.Error -> {
                     onError()
