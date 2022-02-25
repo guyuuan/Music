@@ -88,6 +88,7 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
             //歌曲列表
             if (!viewState.state.isLoading && viewState.songs != null) {
                 val pager = remember(viewState.songs) {
+                    Log.d(TAG, "PlaylistScene: pager create")
                     Pager(
                         config = PagingConfig(pageSize = PlaylistSongsPagingSource.PageSize),
                         initialKey = 0,
@@ -175,105 +176,48 @@ private fun FoldableTopAppBar(
     val fraction = 1f - scrollBehavior.scrollFraction
     val contentAlpha =
         if (fraction > 0.5f) 1f else (fraction) / 0.5f
-    Box(
-        modifier = Modifier
-            .height(appBarSize + height * (fraction))
-    ) {
-        AppbarBackground(
+    CompositionLocalProvider(LocalContentColor provides color) {
+
+        Box(
             modifier = Modifier
-                .padding(bottom = 16.dp * (fraction))
-                .fillMaxSize()
-                .clip(
-                    shape = DownArcShape(8.dp * (fraction))
-                ), url = viewState.playlist?.coverUrl
+                .height(appBarSize + height * (fraction))
         ) {
-            isLight = DynamicStatusBar.isLight
-        }
-        //歌单详情
-        if (viewState.state.isLoading && null == viewState.playlist) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        } else {
-            CompositionLocalProvider(LocalContentColor provides color) {
-                Box(
-                    modifier = Modifier
-                        .padding(top = (appBarSize - 65.dp) * contentAlpha)
-                        .fillMaxSize()
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(horizontal = 20.dp)
-                            .height(110.dp)
-                            .fillMaxWidth()
-                            .align(Alignment.Center)
+            AppbarBackground(
+                modifier = Modifier
+                    .padding(bottom = 16.dp * (fraction))
+                    .fillMaxSize()
+                    .clip(
+                        shape = DownArcShape(8.dp * (fraction))
+                    ), url = viewState.playlist?.coverUrl
+            ) {
+                isLight = DynamicStatusBar.isLight
+            }
+            //歌单详情
+            if (viewState.state.isLoading && null == viewState.playlist) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else {
+                if (contentAlpha > 0.2f) {
+                    viewState.playlist?.let {
+                        PlaylistInfo(modifier = Modifier
                             .graphicsLayer {
                                 alpha = contentAlpha
-                            },
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        CoilImage(
-                            url = viewState.playlist?.coverUrl,
-                            modifier = Modifier.aspectRatio(1f, true),
-                            shape = Shapes.small
-                        )
-                        Column(
-                            verticalArrangement = Arrangement.SpaceAround,
-                            modifier = Modifier.fillMaxHeight()
-                        ) {
-                            Text(
-                                text = viewState.playlist?.name ?: "",
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                CoilImage(
-                                    url = viewState.playlist?.creator?.avatarUrl,
-                                    modifier = Modifier.size(24.dp),
-                                    shape = CircleShape
-                                )
-                                Text(
-                                    text = "${viewState.playlist?.creator?.nickname ?: ""} >",
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = MaterialTheme.typography.titleSmall
-                                )
                             }
-                            if (!viewState.playlist?.description.isNullOrEmpty()) {
-                                Box(modifier = Modifier
-                                    .clip(Shapes.small)
-                                    .clickable { }
-                                    .padding(4.dp)
-                                ) {
-                                    Text(
-                                        text = " ${viewState.playlist?.description ?: ""} >",
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        style = MaterialTheme.typography.titleSmall,
-                                        color = color,
-                                    )
-                                }
-
-                            } else {
-                                Spacer(modifier = Modifier.size(8.dp))
-                            }
-                        }
+                            .padding(horizontal = 20.dp)
+                            .padding(top = (appBarSize - 65.dp) * contentAlpha)
+                            .height(110.dp)
+                            .fillMaxWidth()
+                            .align(Alignment.Center), playlist = it)
+                        FloatActionBar(it, modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .fillMaxWidth(0.7f)
+                            .height(50.dp)
+                            .graphicsLayer {
+                                alpha = contentAlpha
+                            })
                     }
                 }
             }
-            viewState.playlist?.let {
-                FloatActionBar(it, modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth(0.7f)
-                    .height(50.dp)
-                    .graphicsLayer {
-                        alpha = contentAlpha
-                    })
-            }
-        }
-        CompositionLocalProvider(LocalContentColor provides color) {
+
             SmallTopAppBar(
                 modifier = Modifier
                     .background(color = Color.Transparent)
@@ -305,7 +249,72 @@ private fun FoldableTopAppBar(
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-private fun AppbarBackground(modifier: Modifier, url: String?, sideEffect: () -> Unit) {
+fun PlaylistInfo(modifier: Modifier, playlist: PlaylistViewState.PlaylistDetail) {
+    val color = LocalContentColor.current
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        CoilImage(
+            url = playlist.coverUrl,
+            modifier = Modifier.aspectRatio(1f, true),
+            shape = Shapes.small
+        )
+        Column(
+            verticalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier.fillMaxHeight()
+        ) {
+            Text(
+                text = playlist.name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                CoilImage(
+                    url = playlist.creator?.avatarUrl,
+                    modifier = Modifier.size(24.dp),
+                    shape = CircleShape
+                )
+                Text(
+                    text = "${playlist.creator?.nickname ?: ""} >",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
+            if (playlist.description.isNullOrEmpty()) {
+                Box(modifier = Modifier
+                    .clip(Shapes.small)
+                    .clickable { }
+                    .padding(4.dp)
+                ) {
+                    Text(
+                        text = " ${playlist.description ?: ""} >",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = color,
+                    )
+                }
+
+            } else {
+                Spacer(modifier = Modifier.size(8.dp))
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalCoilApi::class)
+@Composable
+private inline fun AppbarBackground(
+    modifier: Modifier,
+    url: String?,
+    crossinline sideEffect: () -> Unit
+) {
     val cxt = LocalContext.current
     CoilImage(
         modifier = modifier,

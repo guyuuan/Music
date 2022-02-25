@@ -32,8 +32,7 @@ class MediaNotificationManager(
     sessionToken: MediaSessionCompat.Token,
     notificationListener: PlayerNotificationManager.NotificationListener
 ) {
-    private val job = SupervisorJob()
-    private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val playerNotificationManager: PlayerNotificationManager
     private val imageLoader = context.imageLoader
     private val context = WeakReference(context)
@@ -84,6 +83,7 @@ class MediaNotificationManager(
         PlayerNotificationManager.MediaDescriptionAdapter {
         var currentIconUri: Uri? = null
         var currentBitmap: Bitmap? = null
+        private var iconJob: Job? = null
         override fun getCurrentContentTitle(player: Player) = controller.metadata.displayTitle ?: ""
 
         override fun createCurrentContentIntent(player: Player): PendingIntent? =
@@ -97,15 +97,16 @@ class MediaNotificationManager(
         ): Bitmap? {
             val iconUri = controller.metadata.description.iconUri
             return if (currentIconUri != iconUri || currentBitmap == null) {
-
+                if (iconJob?.isActive == true) {
+                    iconJob?.cancel()
+                }
                 // Cache the bitmap for the current song so that successive calls to
                 // `getCurrentLargeIcon` don't cause the bitmap to be recreated.
                 currentIconUri = iconUri
-                coroutineScope.launch {
+                iconJob = coroutineScope.launch(Dispatchers.IO) {
                     currentBitmap = iconUri?.let {
-                        resolveUriAsBitmap(it)
+                        resolveUriAsBitmap(it)?.also { bm -> callback.onBitmap(bm) }
                     }
-                    currentBitmap?.let { callback.onBitmap(it) }
                 }
                 null
             } else {
@@ -118,7 +119,7 @@ class MediaNotificationManager(
         return withContext(Dispatchers.IO) {
             context.get()?.let { cxt ->
                 (imageLoader.execute(
-                    ImageRequest.Builder(cxt).data(uri.toString()).size(
+                    ImageRequest.Builder(cxt).data(uri).size(
                         NOTIFICATION_LARGE_ICON_SIZE
                     ).build()
                 ).drawable as? BitmapDrawable)?.bitmap

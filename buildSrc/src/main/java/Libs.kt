@@ -70,7 +70,7 @@ object Libs {
     const val hilt = "com.google.dagger:hilt-android:${Version.hilt_version}"
     const val hilt_kapt = "com.google.dagger:hilt-compiler:${Version.hilt_version}"
     const val hilt_viewmodel = "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    const val hilt_navigation_compose = "androidx.hilt:hilt-navigation-compose:1.0.0-rc01"
+    const val hilt_navigation_compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
     const val hilt_compiler = "androidx.hilt:hilt-compiler:1.0.0"
 
     //Paging3
