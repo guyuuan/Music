@@ -30,13 +30,13 @@ android {
                 "proguard-rules.pro"
             )
         }
-//        getByName("debug") {
-//            isMinifyEnabled = true
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//        }
+        getByName("debug") {
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -123,4 +123,5 @@ dependencies {
 //    implementation(files("./libs/lib.aar"))
     implementation(Libs.permission)
 
+    implementation ("androidx.metrics:metrics-performance:1.0.0-alpha01")
 }
