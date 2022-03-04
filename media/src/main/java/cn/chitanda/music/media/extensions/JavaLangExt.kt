@@ -30,7 +30,7 @@ import java.util.Locale
  */
 fun String?.containsCaseInsensitive(other: String?) =
     if (this != null && other != null) {
-        toLowerCase(Locale.getDefault()).contains(other.toLowerCase(Locale.getDefault()))
+        lowercase(Locale.getDefault()).contains(other.lowercase(Locale.getDefault()))
     } else {
         this == other
     }
