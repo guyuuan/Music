@@ -77,7 +77,10 @@ class MainActivity : AppCompatActivity() {
             window,
             Dispatchers.Default.asExecutor(),
         ) { df ->
-            if (df.isJank) Log.i("JankStats", "${df.states}该帧 绘制耗时${df.frameDurationUiNanos/1000000f}ms")
+            if (df.isJank) Log.i(
+                "JankStats",
+                "${df.states}该帧 绘制耗时${df.frameDurationUiNanos / 1000000f}ms"
+            )
         }
     }
 
@@ -95,6 +98,7 @@ class MainActivity : AppCompatActivity() {
         statsHolder = null
         super.onDestroy()
     }
+
     private fun keepSplashScreen() {
         window.decorView.viewTreeObserver?.addOnPreDrawListener(object :
             ViewTreeObserver.OnPreDrawListener {

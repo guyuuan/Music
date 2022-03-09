@@ -6,9 +6,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath(Libs.agp)
-        classpath(Libs.kgp)
-        classpath(Libs.hgp)
+        classpath(libs.gradleplugin.android)
+        classpath(libs.gradleplugin.kotlin)
+        classpath(libs.gradleplugin.dagger)
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

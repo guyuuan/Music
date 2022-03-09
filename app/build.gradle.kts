@@ -1,24 +1,30 @@
+@Suppress("UnstableApiUsage")
 plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
     id("kotlin-parcelize")
-    id("com.google.devtools.ksp") version (Version.ksp_version)
+    alias(libs.plugins.ksp)
 }
 
 android {
-    compileSdk = Version.compileSdkVersion
+    compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig {
         applicationId = "cn.chitanda.music"
-        minSdk = Version.minSdkVersion
-        targetSdk = Version.targetSdkVersion
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+
+        ndk {
+            abiFilters += "armeabi-v7a"
+            abiFilters += "arm64-v8a"
         }
     }
 
@@ -31,7 +37,7 @@ android {
             )
         }
         getByName("debug") {
-            isMinifyEnabled = true
+//            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -50,7 +56,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Version.compose_version
+        kotlinCompilerExtensionVersion = libs.versions.compose.toString()
     }
     packagingOptions {
         resources.excludes += "META-INF/AL2.0"
@@ -60,68 +66,68 @@ android {
 
 dependencies {
 
-    implementation(Libs.androidx_core)
-    implementation(Libs.androidx_appcompat)
-    implementation(Libs.material)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.material)
     implementation(project(":media"))
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 
     //Compose
-    implementation(Libs.compose_ui)
-    implementation(Libs.compose_md)
-    implementation(Libs.compose_md3)
-    implementation(Libs.compose_ui_preview)
-    implementation(Libs.view_model_compose)
-    implementation(Libs.navigation_compose)
-    implementation(Libs.lifecycle)
-    implementation(Libs.activity_compose)
-    implementation(Libs.compose_live_data)
-    debugImplementation(Libs.compose_ui_tooling)
-    androidTestImplementation(Libs.compose_test)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.materila)
+    implementation(libs.compose.materila3)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.navigation.compose)
+    implementation(libs.androidx.lifecycle)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.compose.livedata)
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.tooling.preview)
+    androidTestImplementation(libs.compose.ui.test)
 
     // Retrofit
-    implementation(Libs.retrofit)
-    implementation(Libs.retrofit_converter_moshi)
-    implementation(Libs.retrofit_logging)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.moshi)
+    implementation(libs.retrofit.logging)
 
     //Moshi
-    implementation(Libs.moshi)
-    implementation(Libs.moshi_kt)
-    ksp(Libs.moshi_ksp)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    ksp(libs.moshi.ksp)
 
     //Accompanist
-    implementation(Libs.accompanist_insets)
-    implementation(Libs.accompanist_systemuicontroller)
-    implementation(Libs.accompanist_pager)
-    implementation(Libs.accompanist_navigation_animation)
-    implementation(Libs.accompanist_navigation_material)
-    implementation(Libs.accompanist_swiperefresh)
-    implementation(Libs.accompanist_flowlayout)
+    implementation(libs.accompanist.insets)
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.navigation.animation)
+    implementation(libs.accompanist.navigation.material)
+    implementation(libs.accompanist.swiperefresh)
+    implementation(libs.accompanist.flowlayout)
 
     //Coil
-    implementation(Libs.coil)
-    implementation(Libs.coil_compose)
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
 
     //MMKV
-    implementation(Libs.mmkv)
+    implementation(libs.mmkv)
 
     //Hilt
-    implementation(Libs.hilt)
-    kapt(Libs.hilt_compiler)
-    kapt(Libs.hilt_kapt)
-    implementation(Libs.hilt_viewmodel)
-    implementation(Libs.hilt_navigation_compose)
+    implementation(libs.dagger.android)
+    kapt(libs.dagger.compiler)
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.viewmodel)
+    implementation(libs.hilt.navigation.compose)
 
     //Paging3
-    implementation(Libs.paging)
-    implementation(Libs.paging_compose)
+    implementation(libs.paging)
+    implementation(libs.paging.compose)
 
     //StatusBarColor
-    implementation(Libs.status_bar)
+    implementation(libs.statusbar)
 //    implementation(files("./libs/lib.aar"))
-    implementation(Libs.permission)
+    implementation(libs.permissionx)
 
-    implementation ("androidx.metrics:metrics-performance:1.0.0-alpha01")
+    implementation (libs.androidx.metrics.performance)
 }

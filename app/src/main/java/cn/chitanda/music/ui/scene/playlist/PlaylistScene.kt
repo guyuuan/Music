@@ -68,7 +68,7 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
         navController.navigateUp()
         return
     }
-    DisposableEffect(key1 = Unit){
+    DisposableEffect(key1 = Unit) {
         onDispose {
             MainActivity.statsHolder?.state?.removeState(TAG)
         }
@@ -89,31 +89,33 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
     }
 
     Surface {
-        Column(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection).pointerInput(Unit) {
+        Column(modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .pointerInput(Unit) {
 
-            awaitPointerEventScope {
-                while (true) {
-                    //PointerEventPass.Initial - 本控件优先处理手势，处理后再交给子组件
-                    val event = awaitPointerEvent(PointerEventPass.Initial)
-                    //获取到第一根按下的手指
-                    val dragEvent = event.changes.firstOrNull()
-                    when {
-                        //当前移动手势是否已被消费
-                        dragEvent!!.positionChangeConsumed() -> {
-                            return@awaitPointerEventScope
-                        }
-                        //是否已经按下(忽略按下手势已消费标记)
-                        dragEvent.changedToDownIgnoreConsumed() -> {
-                         MainActivity.statsHolder?.state?.addState("Drag","用户正在拖动中")
-                        }
-                        //是否已经抬起(忽略按下手势已消费标记)
-                        dragEvent.changedToUpIgnoreConsumed() -> {
-                            MainActivity.statsHolder?.state?.removeState("Drag")
+                awaitPointerEventScope {
+                    while (true) {
+                        //PointerEventPass.Initial - 本控件优先处理手势，处理后再交给子组件
+                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                        //获取到第一根按下的手指
+                        val dragEvent = event.changes.firstOrNull()
+                        when {
+                            //当前移动手势是否已被消费
+                            dragEvent!!.positionChangeConsumed() -> {
+                                return@awaitPointerEventScope
+                            }
+                            //是否已经按下(忽略按下手势已消费标记)
+                            dragEvent.changedToDownIgnoreConsumed() -> {
+                                MainActivity.statsHolder?.state?.addState("Drag", "用户正在拖动中")
+                            }
+                            //是否已经抬起(忽略按下手势已消费标记)
+                            dragEvent.changedToUpIgnoreConsumed() -> {
+                                MainActivity.statsHolder?.state?.removeState("Drag")
+                            }
                         }
                     }
                 }
-            }
-        }) {
+            }) {
             FoldableTopAppBar(
                 scrollBehavior = scrollBehavior, viewState = viewState
             )
@@ -129,16 +131,22 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
                 }
                 val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
                 val lazyState = rememberLazyListState()
-                LaunchedEffect(key1 = lazyState.isScrollInProgress){
-                  if (lazyState .isScrollInProgress)  MainActivity.statsHolder?.state?.addState(stateName = TAG, state= "LazyColumn 滚动中")
+                LaunchedEffect(key1 = lazyState.isScrollInProgress) {
+                    if (lazyState.isScrollInProgress) MainActivity.statsHolder?.state?.addState(
+                        stateName = TAG,
+                        state = "LazyColumn 滚动中"
+                    )
                 }
                 LazyColumn(
-                   state = lazyState ,
+                    state = lazyState,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(vertical = 16.dp)
+                    contentPadding = PaddingValues(
+                        top = 16.dp,
+                        bottom = 16.dp + rememberInsetsPaddingValues(insets = LocalWindowInsets.current.navigationBars).calculateBottomPadding()
+                    )
                 ) {
                     if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
                         item {

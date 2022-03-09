@@ -1,16 +1,16 @@
-
+@Suppress("UnstableApiUsage")
 plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.ksp)
 }
 
 android {
-    compileSdk = Version.compileSdkVersion
+    compileSdk =  libs.versions.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = Version.minSdkVersion
-        targetSdk = Version.targetSdkVersion
+        minSdk =  libs.versions.minSdk.get().toInt()
+        targetSdk =  libs.versions.targetSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -36,21 +36,21 @@ android {
 
 dependencies {
 
-    implementation(Libs.androidx_core)
-    implementation(Libs.androidx_appcompat)
-    implementation(Libs.kotlin_coroutines_android)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.kotlin.coroutines.android)
     //media session
-    api(Libs.media)
+    api(libs.androidx.media)
 
     //exo player
-    api(Libs.exo_core)
-    api(Libs.exo_ui)
-    api(Libs.exo_media_session)
-    api(Libs.exo_cast)
+    api(libs.exo.core)
+    api(libs.exo.ui)
+    api(libs.exo.mediasession)
+    api(libs.exo.cast)
 
-    api(Libs.coil)
+    api(libs.coil)
 
-    implementation(Libs.hilt)
-    kapt(Libs.hilt_compiler)
-    kapt(Libs.hilt_kapt)
+    implementation(libs.dagger.android)
+    kapt(libs.hilt.compiler)
+    kapt(libs.dagger.compiler)
 }
