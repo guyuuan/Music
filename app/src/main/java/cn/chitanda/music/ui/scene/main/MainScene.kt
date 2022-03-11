@@ -106,14 +106,13 @@ fun MainScene() {
                     }
                 }
                 AnimatedVisibility(
-                    modifier = Modifier.align(Alignment.BottomCenter),
+                    modifier = Modifier.onSizeChanged {
+                        musicControllerBarHeight = with(density) { it.height.toDp() }
+                    }.align(Alignment.BottomCenter),
                     visible = currentDestination?.route != MainPageItem.Message.route && nowPlaying != null && nowPlaying != NOTHING_PLAYING
                 ) {
                     Surface(
                         modifier = Modifier
-                            .onSizeChanged {
-                                musicControllerBarHeight = with(density) { it.height.toDp() }
-                            }
                             .padding(vertical = 8.dp, horizontal = 6.dp),
                         shape = RoundedCornerShape(8.dp),
                         tonalElevation = 3.dp
