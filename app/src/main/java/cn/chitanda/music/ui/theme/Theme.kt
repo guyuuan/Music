@@ -7,6 +7,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
+import androidx.compose.material.Divider
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -38,6 +39,8 @@ fun MusicTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+
+androidx.compose.material3.Divider()
 
     MaterialTheme(
         colorScheme = colors.animateColor(),
@@ -102,6 +105,7 @@ fun ColorScheme.animateColor() = ColorScheme(
     errorContainer = animateColorAsState(targetValue = this.errorContainer, tween(600)).value,
     onErrorContainer = animateColorAsState(targetValue = this.onErrorContainer, tween(600)).value,
     outline = animateColorAsState(targetValue = this.outline, tween(600)).value,
+    surfaceTint = animateColorAsState(targetValue = this.surfaceTint,tween(600)).value
 )
 
 private fun MonetColor.getMonetNeutralColor(

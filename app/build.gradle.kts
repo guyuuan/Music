@@ -98,7 +98,7 @@ dependencies {
     ksp(libs.moshi.ksp)
 
     //Accompanist
-    implementation(libs.accompanist.insets)
+//    implementation(libs.accompanist.insets)
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.navigation.animation)

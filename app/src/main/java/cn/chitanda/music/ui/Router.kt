@@ -1,7 +1,6 @@
 package cn.chitanda.music.ui
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -20,7 +19,6 @@ import cn.chitanda.music.ui.scene.other.ThemeScene
 import cn.chitanda.music.ui.scene.playlist.PlaylistScene
 import cn.chitanda.music.ui.scene.splash.SplashScene
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -60,22 +58,20 @@ fun Router(navController: NavHostController = rememberAnimatedNavController()) {
     CompositionLocalProvider(
         LocalNavController provides navController
     ) {
-        ProvideWindowInsets {
-            if (userViewModel.isReady.value && themeViewModel.isReady.value) {
-                AnimatedNavHost(
-                    navController = navController,
-                    startDestination = when {
-                        Build.VERSION.SDK_INT < Build.VERSION_CODES.S -> Scene.Splash.id
-                        userViewModel.loginSuccess -> {
-                            Scene.Main.id
-                        }
-                        else -> {
-                            Scene.Login.id
-                        }
+        if (userViewModel.isReady.value && themeViewModel.isReady.value) {
+            AnimatedNavHost(
+                navController = navController,
+                startDestination = when {
+                    Build.VERSION.SDK_INT < Build.VERSION_CODES.S -> Scene.Splash.id
+                    userViewModel.loginSuccess -> {
+                        Scene.Main.id
                     }
-                ) {
-                    route()
+                    else -> {
+                        Scene.Login.id
+                    }
                 }
+            ) {
+                route()
             }
         }
     }

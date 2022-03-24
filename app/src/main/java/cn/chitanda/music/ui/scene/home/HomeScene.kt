@@ -46,8 +46,6 @@ import cn.chitanda.music.ui.widget.banner.Banner
 import cn.chitanda.music.utils.collectPartAsState
 import cn.chitanda.music.utils.toUnitString
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -76,8 +74,7 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
 //    }
     val viewState by viewModel.viewState.collectAsState()
     val appBarColors = TopAppBarDefaults.smallTopAppBarColors()
-    val statusBarPadding =
-        rememberInsetsPaddingValues(insets = LocalWindowInsets.current.statusBars)
+    val statusBarPadding = WindowInsets.statusBars.asPaddingValues()
     val swiperRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     Scaffold(
 //        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

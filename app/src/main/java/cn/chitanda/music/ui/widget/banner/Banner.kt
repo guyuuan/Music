@@ -15,6 +15,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  *@author: Chen
@@ -57,7 +58,6 @@ fun <T> Banner(
             modifier = Modifier
                 .fillMaxSize()
                 .pointerInput(pagerState.currentPage) {
-
                     awaitPointerEventScope {
                         while (true) {
                             //PointerEventPass.Initial - 本控件优先处理手势，处理后再交给子组件
@@ -128,10 +128,13 @@ fun <T> Banner(
         }
     }
     if (autoLooper) {
+        val animScope = rememberCoroutineScope()
         LaunchedEffect(key1 = pagerState.currentPage, key2 = isDragEvent) {
             if (isDragEvent) return@LaunchedEffect
             delay(looperTime)
-            pagerState.animateScrollToPage((pagerState.currentPage + 1) % if (infiniteLoop) Int.MAX_VALUE else pageCount)
+            animScope.launch {
+                pagerState.animateScrollToPage((pagerState.currentPage + 1) % if (infiniteLoop) Int.MAX_VALUE else pageCount)
+            }
         }
     }
 }

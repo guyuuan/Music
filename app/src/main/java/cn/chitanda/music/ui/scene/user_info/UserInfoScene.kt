@@ -9,12 +9,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -51,9 +55,6 @@ import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.widget.nestedscroll.rememberNestedScrollAppBarConnection
 import cn.chitanda.music.ui.widget.nestedscroll.rememberNestedScrollAppBarState
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.statusBarsPadding
-import kotlin.math.roundToInt
 
 /**
  *@author: Chen
@@ -84,9 +85,7 @@ fun UserInfoScene(
 private fun NestedScrollBody(user: UserProfile) {
     val max = remember { Resources.getSystem().displayMetrics.widthPixels }
     val min = with(LocalDensity.current) {
-        with(LocalWindowInsets.current) {
-            (statusBars.top - statusBars.bottom) + 64.dp.toPx()
-        }.roundToInt()
+        (WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 64.dp).roundToPx()
     }
     val appBarState = rememberNestedScrollAppBarState(
         appBarHeight = max,
@@ -209,7 +208,11 @@ private fun NestedScrollBody(user: UserProfile) {
 @Composable
 private fun UserInfoItem(top: String?, bottom: String) {
     Column {
-        Text(text = top.toString(), style = MaterialTheme.typography.titleMedium, color = Color.Black)
+        Text(
+            text = top.toString(),
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Black
+        )
         Text(text = bottom, style = MaterialTheme.typography.titleSmall)
     }
 }
