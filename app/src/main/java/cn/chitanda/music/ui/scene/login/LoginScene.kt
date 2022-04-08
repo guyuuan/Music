@@ -20,6 +20,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -133,6 +134,7 @@ fun LoginScene(
                     }, modifier = Modifier.fillMaxWidth()
                 )
                 Button(shape = RoundedCornerShape(30.dp), onClick = {
+                    focusManager.clearFocus()
                     if (accountName.isNotEmpty() && password.isNotEmpty()) {
                         viewModel.login(username = accountName, password = password)
                     }

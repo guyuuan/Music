@@ -99,6 +99,12 @@ fun MineScene(
                             Text(text = "Theme")
                         }
                     }
+
+                    item {
+                        Button(onClick = {  }) {
+                            Text(text = "Logout")
+                        }
+                    }
                 }
             }
         }
