@@ -1,8 +1,15 @@
 package cn.chitanda.music.extension
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 
 /**
  * @author: Chen
@@ -16,9 +23,14 @@ fun <T> ViewModel.launchFlow(block: FlowScope<T>.() -> Unit) {
     flow {
         scope.apply(block).check()
         emit(scope.onEmit())
-    }.onStart { scope.onStart() }
+    }.onStart {
+        viewModelScope.launch{
+            scope.onStart()
+        }
+    }
         .onEach { scope.onEach(it) }
         .catch { scope.onError(it) }
+        .onCompletion {  }
         .launchIn(viewModelScope)
 }
 

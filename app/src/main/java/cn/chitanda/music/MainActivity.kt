@@ -2,7 +2,6 @@ package cn.chitanda.music
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewTreeObserver
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -12,14 +11,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.metrics.performance.JankStats
-import androidx.metrics.performance.PerformanceMetricsState
 import cn.chitanda.music.ui.LocalMusicViewModel
 import cn.chitanda.music.ui.LocalThemeViewModel
 import cn.chitanda.music.ui.LocalUserViewModel
@@ -30,22 +22,15 @@ import cn.chitanda.music.ui.theme.MusicTheme
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.asExecutor
 
 private const val TAG = "MainActivity"
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    companion object {
-        var statsHolder: PerformanceMetricsState.MetricsStateHolder? = null
-            private set
-    }
 
     private val themeViewModel by viewModels<ThemeViewModel>()
     private val userViewModel by viewModels<LocaleUserViewModel>()
     private val musicViewModel by viewModels<MusicViewModel>()
-    private lateinit var jankStats: JankStats
 
     @OptIn(
         ExperimentalFoundationApi::class,
@@ -74,35 +59,8 @@ class MainActivity : AppCompatActivity() {
             keepSplashScreen()
         }
 
-        // metrics state holder can be retrieved regardless of JankStats initialization
-        val metricsStateHolder = PerformanceMetricsState.getForHierarchy(window.decorView)
-        statsHolder = metricsStateHolder
-        // initialize JankStats for current window
-        jankStats = JankStats.createAndTrack(
-            window,
-            Dispatchers.Default.asExecutor(),
-        ) { df ->
-            if (df.isJank) Log.i(
-                "JankStats",
-                "${df.states}该帧 绘制耗时${df.frameDurationUiNanos / 1000000f}ms"
-            )
-        }
     }
 
-    override fun onResume() {
-        super.onResume()
-        jankStats.isTrackingEnabled = true
-    }
-
-    override fun onPause() {
-        jankStats.isTrackingEnabled = false
-        super.onPause()
-    }
-
-    override fun onDestroy() {
-        statsHolder = null
-        super.onDestroy()
-    }
 
     private fun keepSplashScreen() {
         window.decorView.viewTreeObserver?.addOnPreDrawListener(object :

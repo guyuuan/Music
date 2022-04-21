@@ -107,11 +107,11 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
         navController.navigateUp()
         return
     }
-    DisposableEffect(key1 = Unit) {
-        onDispose {
-            MainActivity.statsHolder?.state?.removeState(TAG)
-        }
-    }
+//    DisposableEffect(key1 = Unit) {
+//        onDispose {
+//            MainActivity.statsHolder?.state?.removeState(TAG)
+//        }
+//    }
     val musicViewModel = LocalMusicViewModel.current
     val viewModel = hiltViewModel<PlaylistViewModel>()
     val viewState by viewModel.viewState.collectAsState()
@@ -131,8 +131,7 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
         Column(modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .pointerInput(Unit) {
-
-                awaitPointerEventScope {
+                /*awaitPointerEventScope {
                     while (true) {
                         //PointerEventPass.Initial - 本控件优先处理手势，处理后再交给子组件
                         val event = awaitPointerEvent(PointerEventPass.Initial)
@@ -153,7 +152,7 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
                             }
                         }
                     }
-                }
+                }*/
             }) {
             FoldableTopAppBar(
                 scrollBehavior = scrollBehavior, viewState = viewState
@@ -170,12 +169,12 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
                 }
                 val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
                 val lazyState = rememberLazyListState()
-                LaunchedEffect(key1 = lazyState.isScrollInProgress) {
+           /*     LaunchedEffect(key1 = lazyState.isScrollInProgress) {
                     if (lazyState.isScrollInProgress) MainActivity.statsHolder?.state?.addState(
                         stateName = TAG,
                         state = "LazyColumn 滚动中"
                     )
-                }
+                }*/
                 LazyColumn(
                     state = lazyState,
                     modifier = Modifier
