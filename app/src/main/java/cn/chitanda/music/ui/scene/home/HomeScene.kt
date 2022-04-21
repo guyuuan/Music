@@ -65,7 +65,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import cn.chitanda.music.R
+import cn.chitanda.music.http.bean.HomeBanner
 import cn.chitanda.music.http.bean.HomeData
+import cn.chitanda.music.http.bean.HomeRoundIcon
 import cn.chitanda.music.http.bean.MLogExtInfo
 import cn.chitanda.music.http.bean.SubTitleType
 import cn.chitanda.music.ui.LocalMusicControllerBarHeight
@@ -104,10 +106,16 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
 //        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
 //        TopAppBarDefaults.pinnedScrollBehavior()
 //    }
-    val viewState by viewModel.viewState.collectAsState()
+    val viewState by viewModel.viewState.collectPartAsState(part = HomeViewState::state)
     val appBarColors = TopAppBarDefaults.smallTopAppBarColors()
     val statusBarPadding = WindowInsets.statusBars.asPaddingValues()
     val swiperRefreshState = rememberSwipeRefreshState(isRefreshing = false)
+    val banners by viewModel.viewState.collectPartAsState(part = HomeViewState::banner)
+    val icons by viewModel.viewState.collectPartAsState(part = HomeViewState::icons)
+    val playlist by viewModel.viewState.collectPartAsState(part = HomeViewState::playlist)
+    val songList by viewModel.viewState.collectPartAsState(part = HomeViewState::songList)
+    val mLog by viewModel.viewState.collectPartAsState(part = HomeViewState::mLog)
+
     Scaffold(
 //        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -137,7 +145,7 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
                 ) {
                     item {
                         HomeBanners(
-                            viewModel,
+                            banners,
                             modifier = Modifier.fillMaxWidth(),
                             contentPadding = PaddingValues(horizontal = 16.dp)
                         )
@@ -145,14 +153,14 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
 
                     item {
                         HomeRoundIconList(
-                            viewModel,
+                            icons,
                             contentPadding = PaddingValues(horizontal = 16.dp)
                         )
                     }
 
                     item {
                         RecommendPlayList(
-                            viewModel,
+                            playlist,
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .fillMaxWidth(),
@@ -162,17 +170,17 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
 
                     item {
                         RecommendSongList(
-                            viewModel,
+                            songList,
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .fillMaxWidth(),
                             contentPadding = PaddingValues(16.dp)
                         )
                     }
-
                     item {
                         MLogList(
-                            viewModel, modifier = Modifier
+                            mLog,
+                            modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .fillMaxWidth(), contentPadding = PaddingValues(16.dp)
                         )
@@ -184,13 +192,17 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
     }
     val cxt = LocalContext.current
     LaunchedEffect(key1 = viewState) {
-        when (val state = viewState.state) {
+        when (viewState) {
             is PageState.Success -> swiperRefreshState.isRefreshing = false
             is PageState.Loading -> swiperRefreshState.isRefreshing = true
             is PageState.Empty -> viewModel.loadHomeData()
             is PageState.Error -> {
                 swiperRefreshState.isRefreshing = false
-                Toast.makeText(cxt, state.tr.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    cxt,
+                    (viewState as PageState.Error).tr.toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             else -> {}
         }
@@ -203,11 +215,10 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
 @ExperimentalPagerApi
 @Composable
 private fun HomeBanners(
-    viewModel: HomeSceneViewModel,
+    banners: List<HomeBanner.Banner>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues
 ) {
-    val banners by viewModel.viewState.collectPartAsState(part = HomeViewState::banner)
     if (banners.isNotEmpty()) {
         Banner(
             data = banners,
@@ -250,11 +261,10 @@ private fun HomeBanners(
 @ExperimentalCoilApi
 @Composable
 fun HomeRoundIconList(
-    viewModel: HomeSceneViewModel,
+    data: List<HomeRoundIcon>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues
 ) {
-    val data by viewModel.viewState.collectPartAsState(part = HomeViewState::icons)
     LazyRow(modifier = modifier, contentPadding = contentPadding) {
         itemsIndexed(data) { i, item ->
             Column(
@@ -285,11 +295,10 @@ fun HomeRoundIconList(
 @ExperimentalCoilApi
 @Composable
 fun RecommendPlayList(
-    viewModel: HomeSceneViewModel,
+    data: Pair<HomeData.Data.Block.UiElement?, List<HomeData.Data.Block.Creative.Resource>>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    val data by viewModel.viewState.collectPartAsState(part = HomeViewState::playlist)
     val list = data.second
     if (list.isEmpty()) return
     TitleColumn(
@@ -368,11 +377,10 @@ fun PlayCount(modifier: Modifier, playCount: Long) {
 @ExperimentalCoilApi
 @Composable
 fun RecommendSongList(
-    viewModel: HomeSceneViewModel,
+    data: Pair<HomeData.Data.Block.UiElement?, List<HomeData.Data.Block.Creative>>,
     modifier: Modifier,
     contentPadding: PaddingValues
 ) {
-    val data by viewModel.viewState.collectPartAsState(part = HomeViewState::songList)
     val songs = data.second
     if (songs.isEmpty()) return
     TitleColumn(
@@ -421,11 +429,10 @@ fun RecommendSongList(
 @ExperimentalCoilApi
 @Composable
 fun MLogList(
-    viewModel: HomeSceneViewModel,
+    data: Pair<HomeData.Data.Block.UiElement?, List<MLogExtInfo>>,
     modifier: Modifier,
     contentPadding: PaddingValues
 ) {
-    val data by viewModel.viewState.collectPartAsState(part = HomeViewState::mLog)
     val mLogs = data.second
     if (mLogs.isEmpty()) return
     TitleColumn(

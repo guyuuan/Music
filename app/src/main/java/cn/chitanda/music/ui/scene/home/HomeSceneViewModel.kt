@@ -6,7 +6,9 @@ import cn.chitanda.music.repository.HomeRepository
 import cn.chitanda.music.ui.scene.PageState
 import cn.chitanda.music.utils.setStat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
@@ -23,14 +25,15 @@ class HomeSceneViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(HomeViewState())
-    val viewState = _viewState.asStateFlow()
+    val viewState= _viewState.asStateFlow()
 
     fun loadHomeData(refresh: Boolean = true) = launchFlow<HomeViewState> {
-        onEmit = { homeRepository.loadHomeData(refresh) }
+        onEmit = {
+            delay(1000L)
+            homeRepository.loadHomeData(refresh)
+        }
         onStart = {
-            _viewState.setStat {
-                copy(state = PageState.Loading)
-            }
+            _viewState.setStat { copy(state = PageState.Loading) }
         }
         onEach = {
             _viewState.setStat {
@@ -39,7 +42,8 @@ class HomeSceneViewModel @Inject constructor(
                     icons = it.icons,
                     playlist = it.playlist,
                     mLog = it.mLog,
-                    songList = it.songList, state = PageState.Success
+                    songList = it.songList,
+                    state = it.state
                 )
             }
         }

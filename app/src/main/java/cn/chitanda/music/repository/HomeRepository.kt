@@ -5,6 +5,7 @@ import cn.chitanda.music.http.bean.HomeBanner
 import cn.chitanda.music.http.bean.MLogExtInfo
 import cn.chitanda.music.http.bean.RCMDShowType
 import cn.chitanda.music.http.moshi.moshi
+import cn.chitanda.music.ui.scene.PageState
 import cn.chitanda.music.ui.scene.home.HomeViewState
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Types
@@ -48,7 +49,7 @@ class HomeRepository(private val api: HomeApi) : BaseRemoteRepository() {
                 }
             }
         }
-        viewState.copy(icons = roundIcons.await())
+        viewState.copy(icons = roundIcons.await(), state = PageState.Success)
     }
 
     private fun getBannerData(extInfo: Any?) =
