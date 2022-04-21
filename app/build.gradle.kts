@@ -1,6 +1,6 @@
 @Suppress("UnstableApiUsage")
 plugins {
-    id("com.android.application")
+    id(libs.plugins.android.app.get().pluginId)
     kotlin("android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
@@ -129,5 +129,5 @@ dependencies {
 //    implementation(files("./libs/lib.aar"))
     implementation(libs.permissionx)
 
-    implementation (libs.androidx.metrics.performance)
+//    implementation (libs.androidx.metrics.performance)
 }

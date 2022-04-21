@@ -1,6 +1,6 @@
 @Suppress("UnstableApiUsage")
 plugins {
-    id("com.android.library")
+    id(libs.plugins.android.lib.get().pluginId)
     kotlin("android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
