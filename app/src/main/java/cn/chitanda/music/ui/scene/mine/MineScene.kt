@@ -101,7 +101,12 @@ fun MineScene(
                     }
 
                     item {
-                        Button(onClick = {  }) {
+                        Button(onClick = {
+                            viewModel.logout()
+                            navController.navigate(Scene.Login.id){
+                                popUpTo(Scene.Main.id){inclusive = true}
+                            }
+                        }) {
                             Text(text = "Logout")
                         }
                     }

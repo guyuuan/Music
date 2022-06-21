@@ -13,7 +13,8 @@ import cn.chitanda.music.preference.PreferenceManager
 import cn.chitanda.music.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -60,6 +61,11 @@ class LocaleUserViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             userRepository.loginWithPassword(username, password)
         }
+    }
+
+    fun logout() {
+        preferenceManager.uid = ""
+        preferenceManager.cookies = ""
     }
 
     fun fetchUserInfo() {

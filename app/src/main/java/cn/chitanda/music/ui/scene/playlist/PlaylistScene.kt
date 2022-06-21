@@ -42,9 +42,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -58,11 +58,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.changedToDownIgnoreConsumed
-import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.positionChangeConsumed
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -76,7 +72,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import cn.chitanda.dynamicstatusbar.DynamicStatusBar
-import cn.chitanda.music.MainActivity
 import cn.chitanda.music.R
 import cn.chitanda.music.http.bean.Songs
 import cn.chitanda.music.http.bean.artists
@@ -116,8 +111,12 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
     val viewModel = hiltViewModel<PlaylistViewModel>()
     val viewState by viewModel.viewState.collectAsState()
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+    val topAppBarScrollState = rememberTopAppBarScrollState()
     val scrollBehavior = remember(decayAnimationSpec) {
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec)
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+            decayAnimationSpec,
+            topAppBarScrollState
+        )
     }
     val cxt = LocalContext.current
     LaunchedEffect(key1 = viewState) {
@@ -240,7 +239,6 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
 
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun FoldableTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior,
@@ -257,7 +255,6 @@ private fun FoldableTopAppBar(
     val contentAlpha =
         if (fraction > 0.5f) 1f else (fraction) / 0.5f
     CompositionLocalProvider(LocalContentColor provides color) {
-
         Box(
             modifier = Modifier
                 .height(appBarSize + height * (fraction))
@@ -323,7 +320,7 @@ private fun FoldableTopAppBar(
     }
     val offsetLimit = with(LocalDensity.current) { -appBarSize.toPx() }
     SideEffect {
-        if (scrollBehavior.offsetLimit != offsetLimit) scrollBehavior.offsetLimit = offsetLimit
+        if (scrollBehavior.state.offsetLimit != offsetLimit) scrollBehavior.state.offsetLimit = offsetLimit
     }
 }
 

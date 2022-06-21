@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -134,7 +134,7 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
         SwipeRefresh(modifier = Modifier.padding(it), state = swiperRefreshState, onRefresh = {
             viewModel.loadHomeData()
         }) {
-            CompositionLocalProvider(LocalOverScrollConfiguration provides null) {
+            CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(
