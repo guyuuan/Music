@@ -56,7 +56,8 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.asProvider().get()
+//        kotlinCompilerExtensionVersion = libs.versions.compose.asProvider().get()
+        kotlinCompilerExtensionVersion = "1.2.0"
     }
     packagingOptions {
         resources.excludes += "META-INF/AL2.0"
@@ -117,7 +118,7 @@ dependencies {
     implementation(libs.dagger.android)
     kapt(libs.dagger.compiler)
     kapt(libs.hilt.compiler)
-    implementation(libs.hilt.viewmodel)
+//    implementation(libs.hilt.viewmodel)
     implementation(libs.hilt.navigation.compose)
 
     //Paging3

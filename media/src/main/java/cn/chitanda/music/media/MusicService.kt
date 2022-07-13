@@ -142,21 +142,15 @@ class MusicService : MediaBrowserServiceCompat() {
     }
 
     private inner class ExoPlayerEventListener : Player.Listener {
-        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+
+        override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+
+        }
+        override fun onPlaybackStateChanged( playbackState: Int) {
             when (playbackState) {
                 Player.STATE_BUFFERING,
                 Player.STATE_READY -> {
                     notificationManager.showNotification(exoPlayer)
-                    if (playbackState == Player.STATE_READY) {
-                        if (!playWhenReady) {
-                            // If playback is paused we remove the foreground state which allows the
-                            // notification to be dismissed. An alternative would be to provide a
-                            // "close" button in the notification which stops playback and clears
-                            // the notification.
-                            stopForeground(false)
-                            isForegroundService = false
-                        }
-                    }
                 }
                 else -> {
                     notificationManager.hideNotification()

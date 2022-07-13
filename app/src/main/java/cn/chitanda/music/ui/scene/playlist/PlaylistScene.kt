@@ -94,7 +94,6 @@ import coil.transform.BlurTransformation
  **/
 private const val TAG = "PlaylistScene"
 
-@OptIn(ExperimentalCoilApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun PlaylistScene(navController: NavController = LocalNavController.current, playlist: String?) {
