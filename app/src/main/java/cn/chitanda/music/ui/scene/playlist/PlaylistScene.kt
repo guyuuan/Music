@@ -54,11 +54,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -82,10 +83,9 @@ import cn.chitanda.music.ui.scene.PageState
 import cn.chitanda.music.ui.scene.isLoading
 import cn.chitanda.music.ui.theme.DownArcShape
 import cn.chitanda.music.ui.theme.Shapes
-import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.utils.toUnitString
 import coil.annotation.ExperimentalCoilApi
-import coil.transform.BlurTransformation
+import coil.compose.AsyncImage
 
 /**
  * @author: Chen
@@ -101,11 +101,6 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
         navController.navigateUp()
         return
     }
-//    DisposableEffect(key1 = Unit) {
-//        onDispose {
-//            MainActivity.statsHolder?.state?.removeState(TAG)
-//        }
-//    }
     val musicViewModel = LocalMusicViewModel.current
     val viewModel = hiltViewModel<PlaylistViewModel>()
     val viewState by viewModel.viewState.collectAsState()
@@ -126,32 +121,10 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
     }
 
     Surface {
-        Column(modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .pointerInput(Unit) {
-                /*awaitPointerEventScope {
-                    while (true) {
-                        //PointerEventPass.Initial - 本控件优先处理手势，处理后再交给子组件
-                        val event = awaitPointerEvent(PointerEventPass.Initial)
-                        //获取到第一根按下的手指
-                        val dragEvent = event.changes.firstOrNull()
-                        when {
-                            //当前移动手势是否已被消费
-                            dragEvent!!.positionChangeConsumed() -> {
-                                return@awaitPointerEventScope
-                            }
-                            //是否已经按下(忽略按下手势已消费标记)
-                            dragEvent.changedToDownIgnoreConsumed() -> {
-                                MainActivity.statsHolder?.state?.addState("Drag", "用户正在拖动中")
-                            }
-                            //是否已经抬起(忽略按下手势已消费标记)
-                            dragEvent.changedToUpIgnoreConsumed() -> {
-                                MainActivity.statsHolder?.state?.removeState("Drag")
-                            }
-                        }
-                    }
-                }*/
-            }) {
+        Column(
+            modifier = Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+        ) {
             FoldableTopAppBar(
                 scrollBehavior = scrollBehavior, viewState = viewState
             )
@@ -167,12 +140,6 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
                 }
                 val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
                 val lazyState = rememberLazyListState()
-           /*     LaunchedEffect(key1 = lazyState.isScrollInProgress) {
-                    if (lazyState.isScrollInProgress) MainActivity.statsHolder?.state?.addState(
-                        stateName = TAG,
-                        state = "LazyColumn 滚动中"
-                    )
-                }*/
                 LazyColumn(
                     state = lazyState,
                     modifier = Modifier
@@ -261,7 +228,7 @@ private fun FoldableTopAppBar(
             AppbarBackground(
                 modifier = Modifier
                     .padding(bottom = 16.dp * (fraction))
-                    .fillMaxSize()
+                    .matchParentSize()
                     .clip(
                         shape = DownArcShape(8.dp * (fraction))
                     ), url = viewState.playlist?.coverUrl
@@ -331,10 +298,10 @@ fun PlaylistInfo(modifier: Modifier, playlist: PlaylistViewState.PlaylistDetail)
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        CoilImage(
-            url = playlist.coverUrl,
-            modifier = Modifier.aspectRatio(1f, true),
-            shape = Shapes.small
+        AsyncImage(
+            model = playlist.coverUrl,
+            modifier = Modifier.aspectRatio(1f, true).clip(Shapes.small),
+            contentDescription =  null
         )
         Column(
             verticalArrangement = Arrangement.SpaceAround,
@@ -350,10 +317,10 @@ fun PlaylistInfo(modifier: Modifier, playlist: PlaylistViewState.PlaylistDetail)
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                CoilImage(
-                    url = playlist.creator?.avatarUrl,
-                    modifier = Modifier.size(24.dp),
-                    shape = CircleShape
+                AsyncImage(
+                    model = playlist.creator?.avatarUrl,
+                    modifier = Modifier.size(24.dp).clip(CircleShape),
+                    contentDescription = null
                 )
                 Text(
                     text = "${playlist.creator?.nickname ?: ""} >",
@@ -384,29 +351,19 @@ fun PlaylistInfo(modifier: Modifier, playlist: PlaylistViewState.PlaylistDetail)
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 private inline fun AppbarBackground(
     modifier: Modifier,
     url: String?,
     crossinline sideEffect: () -> Unit
 ) {
-    val cxt = LocalContext.current
-    CoilImage(
-        modifier = modifier,
-        url = url,
-        onLoading = {},
+    AsyncImage(
+        modifier = modifier.blur(radius = 50.dp),
+        model = url,
+        contentScale = ContentScale.Crop,
+        contentDescription = null,
         onSuccess = {
             sideEffect()
-        },
-        builder = {
-            transformations(
-                BlurTransformation(
-                    context = cxt,
-                    radius = 25f,
-                    sampling = 10f
-                )
-            )
         })
 }
 

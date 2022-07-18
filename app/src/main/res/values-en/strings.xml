@@ -17,4 +17,5 @@
     <string name="label_playlist">Playlist details</string>
     <string name="notification_channel_description">Shows what music is currently playing</string>
     <string name="notification_channel">Now playing</string>
+    <string name="label_play_detail">Play details</string>
 </resources>

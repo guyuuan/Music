@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.chitanda.music.media.connect.MusicServiceConnection
 import cn.chitanda.music.media.extensions.currentPlayBackPosition
+import cn.chitanda.music.media.extensions.duration
 import cn.chitanda.music.media.extensions.id
 import cn.chitanda.music.media.extensions.isPlayEnabled
 import cn.chitanda.music.media.extensions.isPlaying
@@ -19,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.roundToLong
 
 /**
  * @author: Chen
@@ -103,10 +105,24 @@ class MusicViewModel @Inject constructor(
         musicServiceConnection.transportControls.play()
     }
 
+    fun seekTo(percent: Float) {
+        val nowPlaying = nowPlaying.value?.let { music ->
+            musicServiceConnection.transportControls.seekTo((percent * music.duration).roundToLong())
+        }
+    }
+
+    fun toNext(){
+        musicServiceConnection.transportControls.skipToNext()
+    }
+
+    fun toPrevious(){
+        musicServiceConnection.transportControls.skipToPrevious()
+    }
+
     init {
         viewModelScope.launch(Dispatchers.Default) {
             while (true) {
-                val currPosition = playbackState.value?.currentPlayBackPosition?: continue
+                val currPosition = playbackState.value?.currentPlayBackPosition ?: continue
                 if (_currentPosition.value != currPosition)
                     _currentPosition.postValue(currPosition)
                 delay(UPDATE_CURRENT_MUSIC_PLAY_POSITION)

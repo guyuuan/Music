@@ -35,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -51,10 +52,10 @@ import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.scene.LocaleUserViewModel
 import cn.chitanda.music.ui.theme.Shapes
-import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.widget.nestedscroll.rememberNestedScrollAppBarConnection
 import cn.chitanda.music.ui.widget.nestedscroll.rememberNestedScrollAppBarState
 import coil.annotation.ExperimentalCoilApi
+import coil.compose.AsyncImage
 
 /**
  *@author: Chen
@@ -110,8 +111,9 @@ private fun NestedScrollBody(user: UserProfile) {
                 .fillMaxWidth()
                 .height(with(LocalDensity.current) { appBarState.height.toDp() })
         ) {
-            CoilImage(
-                url = user.data?.backgroundUrl
+            AsyncImage(
+                model = user.data?.backgroundUrl,
+                contentDescription = null
             )
             val appBarColor by animateColorAsState(targetValue = if (appBarState.height > appBarState.minHeight) Color.Transparent else MaterialTheme.colorScheme.primary)
             Box(
@@ -154,12 +156,12 @@ private fun NestedScrollBody(user: UserProfile) {
                             .padding(16.dp)
                     )
                     {
-                        CoilImage(
-                            url = user.data?.avatarUrl,
-                            shape = CircleShape,
+                        AsyncImage(
+                            model = user.data?.avatarUrl,
                             modifier = Modifier
                                 .fillMaxHeight()
-                                .aspectRatio(1f, false),
+                                .aspectRatio(1f, false).clip(CircleShape),
+                            contentDescription = null
                         )
 
                         Column(

@@ -75,11 +75,11 @@ import cn.chitanda.music.ui.LocalNavController
 import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.scene.PageState
 import cn.chitanda.music.ui.theme.Shapes
-import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.widget.banner.Banner
 import cn.chitanda.music.utils.collectPartAsState
 import cn.chitanda.music.utils.toUnitString
 import coil.annotation.ExperimentalCoilApi
+import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -234,11 +234,11 @@ private fun HomeBanners(
                     .clip(RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.BottomEnd
             ) {
-                CoilImage(
-                    url = item.pic,
+                AsyncImage(
+                    model = item.pic,
                     modifier = Modifier
-                        .fillMaxSize(),
-                    shape = RoundedCornerShape(8.dp),
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(8.dp)),
                     contentDescription = null
                 )
                 Surface(
@@ -274,8 +274,8 @@ fun HomeRoundIconList(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CoilImage(
-                    url = item.iconUrl,
+                AsyncImage(
+                    model = item.iconUrl,
                     modifier = Modifier
                         .size(45.dp)
                         .background(
@@ -284,7 +284,7 @@ fun HomeRoundIconList(
                         ),
                     contentDescription = item.name,
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
-                ) {}
+                )
                 Spacer(modifier = Modifier.size(4.dp))
                 Text(text = item.name, style = MaterialTheme.typography.labelSmall)
             }
@@ -319,11 +319,10 @@ fun RecommendPlayList(
                             .fillMaxWidth()
                             .aspectRatio(1f)
                     ) {
-                        CoilImage(
-                            url = resource.uiElement?.image?.imageUrl,
+                        AsyncImage(
+                            model= resource.uiElement?.image?.imageUrl,
                             contentDescription = resource.resourceType,
-                            modifier = Modifier.fillMaxSize(),
-                            shape = RoundedCornerShape(8.dp)
+                            modifier = Modifier.fillMaxSize().clip( RoundedCornerShape(8.dp)),
                         )
                         PlayCount(
                             modifier = Modifier
@@ -467,10 +466,10 @@ fun MLogItem(
                 .fillMaxWidth()
                 .aspectRatio(0.75f)
         ) {
-            CoilImage(
-                url = data.mlogBaseData?.coverUrl,
+            AsyncImage(
+                model = data.mlogBaseData?.coverUrl,
                 modifier = Modifier.fillMaxSize(),
-                shape = Shapes.small
+                contentDescription = null
             )
             PlayCount(
                 modifier = Modifier
@@ -502,8 +501,8 @@ fun SongItem(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CoilImage(
-                url = song.uiElement?.image?.imageUrl,
+            AsyncImage(
+                model = song.uiElement?.image?.imageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .size(50.dp)

@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -23,8 +24,8 @@ import cn.chitanda.music.ui.LocalUserViewModel
 import cn.chitanda.music.ui.Scene
 import cn.chitanda.music.ui.scene.LocaleUserViewModel
 import cn.chitanda.music.ui.theme.Shapes
-import cn.chitanda.music.ui.widget.CoilImage
 import coil.annotation.ExperimentalCoilApi
+import coil.compose.AsyncImage
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
@@ -162,10 +163,10 @@ fun UserInfo(data: UserProfile, modifier: Modifier = Modifier, avatarSize: Dp = 
                 }
             }
         }
-        CoilImage(
-            url = data.data?.avatarUrl,
-            modifier = Modifier.size(avatarSize),
-            shape = CircleShape
+        AsyncImage(
+            model = data.data?.avatarUrl,
+            modifier = Modifier.size(avatarSize).clip(CircleShape),
+            contentDescription = null
         )
     }
 }
@@ -184,10 +185,10 @@ fun MyFavoritePlaylist(modifier: Modifier = Modifier, playlist: PlaylistJson.Pla
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CoilImage(
-                url = playlist.coverImgUrl,
-                modifier = Modifier.size(45.dp),
-                shape = Shapes.small
+            AsyncImage(
+                model = playlist.coverImgUrl,
+                modifier = Modifier.size(45.dp).clip(CircleShape),
+                contentDescription = null
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column(
@@ -251,10 +252,10 @@ fun SubscribedPlayList(
                         },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    CoilImage(
-                        url = item.coverImgUrl,
-                        modifier = Modifier.size(45.dp),
-                        shape = Shapes.small
+                    AsyncImage(
+                        model = item.coverImgUrl,
+                        modifier = Modifier.size(45.dp).clip(Shapes.small),
+                        contentDescription = null
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Column(

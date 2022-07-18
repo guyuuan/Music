@@ -1,8 +1,6 @@
 package cn.chitanda.music.ui.scene.main
 
 import android.os.Bundle
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContentScope
@@ -14,33 +12,16 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalAbsoluteTonalElevation
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -61,17 +42,13 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import cn.chitanda.music.MusicViewModel
 import cn.chitanda.music.R
 import cn.chitanda.music.media.connect.NOTHING_PLAYING
-import cn.chitanda.music.media.extensions.displayIconUri
-import cn.chitanda.music.media.extensions.displaySubtitle
-import cn.chitanda.music.media.extensions.displayTitle
-import cn.chitanda.music.media.extensions.duration
-import cn.chitanda.music.media.extensions.isPlaying
 import cn.chitanda.music.ui.LocalMusicControllerBarHeight
 import cn.chitanda.music.ui.LocalMusicViewModel
+import cn.chitanda.music.ui.LocalNavController
+import cn.chitanda.music.ui.Scene
 import cn.chitanda.music.ui.scene.home.HomeScene
 import cn.chitanda.music.ui.scene.message.MessageScene
 import cn.chitanda.music.ui.scene.mine.MineScene
-import cn.chitanda.music.ui.widget.CoilImage
 import cn.chitanda.music.ui.widget.navbar.BottomNavigationBar
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -92,18 +69,21 @@ private const val TAG = "HomeScene"
 @ExperimentalAnimationApi
 @ExperimentalCoilApi
 @Composable
-fun MainScene() {
+fun MainScene(
+    musicViewModel: MusicViewModel = LocalMusicViewModel.current,
+    navController: NavController = LocalNavController.current
+) {
     val homeNavController = rememberAnimatedNavController()
     var currentDestination by remember { mutableStateOf(homeNavController.currentDestination) }
     var musicControllerBarHeight by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
-    val musicViewModel = LocalMusicViewModel.current
     val playbackState by musicViewModel.playbackState.observeAsState()
     val nowPlaying by musicViewModel.nowPlaying.observeAsState()
-    val currentPosition by musicViewModel.currentPosition.observeAsState(0)
     var currentIndex by rememberSaveable {
         mutableStateOf(0)
     }
+    val currentPosition by musicViewModel.currentPosition.observeAsState(0)
+
     CompositionLocalProvider(LocalMusicControllerBarHeight provides musicControllerBarHeight) {
         Scaffold(
             bottomBar = {
@@ -153,20 +133,22 @@ fun MainScene() {
                         .align(Alignment.BottomCenter),
                     visible = currentDestination?.route != MainPageItem.Message.route && nowPlaying != null && nowPlaying != NOTHING_PLAYING
                 ) {
-                    Surface(
-                        modifier = Modifier
-                            .padding(vertical = 8.dp, horizontal = 6.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        tonalElevation = 3.dp
-                    ) {
-                        if (nowPlaying != null && playbackState != null) {
-                            MusicControlBar(
-                                musicViewModel,
-                                nowPlaying!!,
-                                playbackState!!,
-                                currentPosition
-                            )
-                        }
+                    if (nowPlaying != null && playbackState != null) {
+                        MusicControlBar(
+                            modifier = Modifier
+                                .padding(vertical = 8.dp, horizontal = 6.dp),
+                            onClick = {
+                                navController.navigate(route = Scene.PlayDetail.id)
+                            },
+                            nowPlaying = nowPlaying!!,
+                            playbackState = playbackState!!,
+                            currentPosition = currentPosition,
+                            onPause = musicViewModel::pause,
+                            onResume = musicViewModel::resume,
+                            seekTo = musicViewModel::seekTo,
+                            toNext = musicViewModel::toNext,
+                            toPrevious = musicViewModel::toPrevious,
+                        )
                     }
                 }
             }
@@ -181,83 +163,6 @@ fun MainScene() {
         homeNavController.addOnDestinationChangedListener(listener)
         onDispose {
             homeNavController.removeOnDestinationChangedListener(listener)
-        }
-    }
-}
-
-@OptIn(ExperimentalCoilApi::class)
-@Composable
-fun MusicControlBar(
-    musicViewModel: MusicViewModel,
-    nowPlaying: MediaMetadataCompat,
-    playbackState: PlaybackStateCompat,
-    currentPosition: Long
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(60.dp), contentAlignment = Alignment.CenterStart
-    ) {
-        val percent by derivedStateOf {
-            currentPosition.toFloat() / nowPlaying.duration
-        }
-        Box(
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                        LocalAbsoluteTonalElevation.current + 30.dp
-                    )
-                )
-                .fillMaxHeight()
-                .fillMaxWidth(
-                    percent
-                )
-                .align(Alignment.CenterStart)
-        )
-        Row(
-            modifier = Modifier.padding(
-                horizontal = 16.dp,
-                vertical = 8.dp
-            ),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            CoilImage(
-                url = nowPlaying.displayIconUri,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .aspectRatio(1f, true),
-                shape = CircleShape
-            )
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(
-                    text = "${nowPlaying.displayTitle}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text(
-                    text = "${nowPlaying.displaySubtitle}",
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = {
-                    if (playbackState.isPlaying) {
-                        musicViewModel.pause()
-                    } else {
-                        musicViewModel.resume()
-                    }
-                }, modifier = Modifier
-            ) {
-                Icon(
-                    painter = painterResource(id = if (playbackState?.isPlaying == true) R.drawable.ic_pause else R.drawable.ic_play_arrow),
-                    contentDescription = null
-                )
-            }
-
-
         }
     }
 }

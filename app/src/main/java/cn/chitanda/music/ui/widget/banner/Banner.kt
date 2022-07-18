@@ -66,7 +66,7 @@ fun <T> Banner(
                             val dragEvent = event.changes.firstOrNull()
                             when {
                                 //当前移动手势是否已被消费
-                                dragEvent!!.positionChangeConsumed() -> {
+                                dragEvent!!.isConsumed -> {
                                     return@awaitPointerEventScope
                                 }
                                 //是否已经按下(忽略按下手势已消费标记)

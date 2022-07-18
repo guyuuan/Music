@@ -16,6 +16,7 @@ import cn.chitanda.music.R
 import cn.chitanda.music.ui.scene.login.LoginScene
 import cn.chitanda.music.ui.scene.main.MainScene
 import cn.chitanda.music.ui.scene.other.ThemeScene
+import cn.chitanda.music.ui.scene.play_detail.PlayDetailScene
 import cn.chitanda.music.ui.scene.playlist.PlaylistScene
 import cn.chitanda.music.ui.scene.splash.SplashScene
 import coil.annotation.ExperimentalCoilApi
@@ -35,6 +36,7 @@ sealed class Scene(val id: String, @StringRes val label: Int? = null) {
     object Login : Scene(id = "login", label = R.string.label_login)
     object Theme : Scene(id = "theme", label = R.string.text_theme)
     object Playlist : Scene(id = "playlist/{id}", label = R.string.label_playlist)
+    object  PlayDetail:Scene(id = "play_detail", label = R.string.label_login)
 
     fun replaceId(vararg kv: Pair<String, String>): String {
         var result = id
@@ -104,5 +106,9 @@ private fun NavGraphBuilder.route() {
         arguments = listOf(navArgument("id") { defaultValue = "" })
     ) { backStackEntry ->
         PlaylistScene(playlist = backStackEntry.arguments?.getString("id"))
+    }
+
+    composable(Scene.PlayDetail.id){
+        PlayDetailScene()
     }
 }
