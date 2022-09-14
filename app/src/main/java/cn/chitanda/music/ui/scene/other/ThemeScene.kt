@@ -22,6 +22,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
@@ -102,7 +103,7 @@ fun ThemePreview(modifier: Modifier = Modifier, color: MonetColor?) {
                 var currentPage by remember {
                     mutableStateOf<MainPageItem>(MainPageItem.Find)
                 }
-                BottomNavigationBar {
+                NavigationBar {
                     list.forEach { scene ->
                         NavigationBarItem(selected = currentPage == scene, onClick = {
                             currentPage = scene

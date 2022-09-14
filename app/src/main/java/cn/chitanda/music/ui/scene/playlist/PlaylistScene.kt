@@ -21,9 +21,9 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,12 +37,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberTopAppBarScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -84,7 +82,6 @@ import cn.chitanda.music.ui.scene.isLoading
 import cn.chitanda.music.ui.theme.DownArcShape
 import cn.chitanda.music.ui.theme.Shapes
 import cn.chitanda.music.utils.toUnitString
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
 
 /**
@@ -105,13 +102,9 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
     val viewModel = hiltViewModel<PlaylistViewModel>()
     val viewState by viewModel.viewState.collectAsState()
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
-    val topAppBarScrollState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember(decayAnimationSpec) {
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            decayAnimationSpec,
-            topAppBarScrollState
-        )
-    }
+//    val topAppBarScrollState = rememberTopAppBarState()
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val cxt = LocalContext.current
     LaunchedEffect(key1 = viewState) {
         if (viewState.state is PageState.Error) {
@@ -205,6 +198,7 @@ fun PlaylistScene(navController: NavController = LocalNavController.current, pla
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FoldableTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior,
@@ -217,7 +211,7 @@ private fun FoldableTopAppBar(
     val appBarSize =
         WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + FoldableTopAppBarHeight
     val height = remember { 200.dp }
-    val fraction = 1f - scrollBehavior.scrollFraction
+    val fraction = 1f - scrollBehavior.state.collapsedFraction
     val contentAlpha =
         if (fraction > 0.5f) 1f else (fraction) / 0.5f
     CompositionLocalProvider(LocalContentColor provides color) {
@@ -261,36 +255,31 @@ private fun FoldableTopAppBar(
                 }
             }
 
-            SmallTopAppBar(
+            Row(
                 modifier = Modifier
-                    .background(color = Color.Transparent)
-                    .statusBarsPadding(),
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color.Transparent,
-                    scrolledContainerColor = Color.Transparent,
-                    titleContentColor = color,
-                    actionIconContentColor = color,
-                    navigationIconContentColor = color
-                ),
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navController.navigateUp()
-                    }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back")
-                    }
-                },
-                title = {
-                    Text(text = "歌单")
-                })
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .height(54.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                IconButton(onClick = {
+                    navController.navigateUp()
+                }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back")
+                }
+                Text(text = "歌单", style = MaterialTheme.typography.titleLarge)
+            }
+
         }
     }
     val offsetLimit = with(LocalDensity.current) { -appBarSize.toPx() }
     SideEffect {
-        if (scrollBehavior.state.offsetLimit != offsetLimit) scrollBehavior.state.offsetLimit = offsetLimit
+        if (scrollBehavior.state.heightOffsetLimit != offsetLimit) scrollBehavior.state.heightOffsetLimit =
+            offsetLimit
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun PlaylistInfo(modifier: Modifier, playlist: PlaylistViewState.PlaylistDetail) {
     val color = LocalContentColor.current
@@ -300,8 +289,10 @@ fun PlaylistInfo(modifier: Modifier, playlist: PlaylistViewState.PlaylistDetail)
     ) {
         AsyncImage(
             model = playlist.coverUrl,
-            modifier = Modifier.aspectRatio(1f, true).clip(Shapes.small),
-            contentDescription =  null
+            modifier = Modifier
+                .aspectRatio(1f, true)
+                .clip(Shapes.small),
+            contentDescription = null
         )
         Column(
             verticalArrangement = Arrangement.SpaceAround,
@@ -319,7 +310,9 @@ fun PlaylistInfo(modifier: Modifier, playlist: PlaylistViewState.PlaylistDetail)
             ) {
                 AsyncImage(
                     model = playlist.creator?.avatarUrl,
-                    modifier = Modifier.size(24.dp).clip(CircleShape),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape),
                     contentDescription = null
                 )
                 Text(

@@ -25,6 +25,7 @@ android {
         ndk {
             abiFilters += "armeabi-v7a"
             abiFilters += "arm64-v8a"
+            abiFilters += "x86_64"
         }
     }
 
@@ -56,8 +57,7 @@ android {
         compose = true
     }
     composeOptions {
-//        kotlinCompilerExtensionVersion = libs.versions.compose.asProvider().get()
-        kotlinCompilerExtensionVersion = "1.2.0"
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
     packagingOptions {
         resources.excludes += "META-INF/AL2.0"

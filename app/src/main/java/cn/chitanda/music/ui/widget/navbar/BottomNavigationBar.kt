@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun BottomNavigationBar(
     modifier: Modifier = Modifier,
-    fitSystemBar: Boolean = true,
     containerColor: Color = MaterialTheme.colorScheme.surface,
     tonalElevation: Dp = 4.dp,
     content: @Composable RowScope.() -> Unit
@@ -33,7 +32,7 @@ fun BottomNavigationBar(
                 containerColor = containerColor,
                 content = content, tonalElevation = 0.dp
             )
-            if (fitSystemBar) Spacer(modifier = Modifier.navigationBarsPadding())
+            Spacer(modifier = Modifier.navigationBarsPadding())
         }
     }
 

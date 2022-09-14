@@ -42,15 +42,16 @@ private const val TAG = "MineScene"
 @Composable
 fun MineScene(
     navController: NavController = LocalNavController.current,
-    viewModel: LocaleUserViewModel = LocalUserViewModel.current
+    viewModel: LocaleUserViewModel = LocalUserViewModel.current,
+    padding: PaddingValues
 ) {
     val playlist by viewModel.playlist.collectAsState()
     val user by viewModel.user.collectAsState()
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
-    Scaffold { padding ->
+//    Scaffold { padding ->
         SwipeRefresh(
             state = swipeRefreshState,
-            modifier = Modifier.padding(padding),
+            modifier = Modifier.padding(bottom = padding.calculateBottomPadding()),
             onRefresh = { viewModel.getUserPlayList() }) {
             LazyColumn(
                 modifier = Modifier
@@ -114,7 +115,7 @@ fun MineScene(
                 }
             }
         }
-    }
+//    }
     LaunchedEffect(key1 = playlist) {
         if (playlist.status == DataState.STATE_CREATE) {
             viewModel.getUserPlayList()

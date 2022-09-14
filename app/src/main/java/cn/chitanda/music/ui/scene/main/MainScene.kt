@@ -1,5 +1,6 @@
 package cn.chitanda.music.ui.scene.main
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -13,9 +14,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -49,7 +53,6 @@ import cn.chitanda.music.ui.Scene
 import cn.chitanda.music.ui.scene.home.HomeScene
 import cn.chitanda.music.ui.scene.message.MessageScene
 import cn.chitanda.music.ui.scene.mine.MineScene
-import cn.chitanda.music.ui.widget.navbar.BottomNavigationBar
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -63,6 +66,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
  **/
 private const val TAG = "HomeScene"
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
 @ExperimentalFoundationApi
 @ExperimentalPagerApi
@@ -86,6 +90,12 @@ fun MainScene(
 
     CompositionLocalProvider(LocalMusicControllerBarHeight provides musicControllerBarHeight) {
         Scaffold(
+            contentWindowInsets = WindowInsets(
+                left = 0.dp,
+                top = 0.dp,
+                right = 0.dp,
+                bottom = 0.dp
+            ),
             bottomBar = {
                 BottomBar(currentIndex, onItemClick = { index ->
                     currentIndex = index
@@ -97,32 +107,32 @@ fun MainScene(
                         restoreState = true
                     }
                 })
-            }) {
-            Box(modifier = Modifier.padding(it)) {
+            }) {  scaffoldPadding ->
+            Box {
                 AnimatedNavHost(
                     navController = homeNavController,
-                    startDestination = MainPageItem.Find.route
+                    startDestination = MainPageItem.Find.route,
                 ) {
                     composable(
                         MainPageItem.Find.route,
                         enterTransition = enterTransition,
                         exitTransition = exitTransition
                     ) {
-                        HomeScene()
+                        HomeScene(padding = scaffoldPadding)
                     }
                     composable(
                         MainPageItem.Message.route,
                         enterTransition = enterTransition,
                         exitTransition = exitTransition
                     ) {
-                        MessageScene()
+                        MessageScene(padding = scaffoldPadding)
                     }
                     composable(
                         MainPageItem.Mine.route,
                         enterTransition = enterTransition,
                         exitTransition = exitTransition
                     ) {
-                        MineScene()
+                        MineScene(padding =  scaffoldPadding)
                     }
                 }
                 AnimatedVisibility(
@@ -195,7 +205,7 @@ private fun BottomBar(
     onItemClick: (Int) -> Unit
 ) {
     val currentPage = pages[currentIndex]
-    BottomNavigationBar {
+    NavigationBar(windowInsets = WindowInsets.navigationBars) {
         pages.forEachIndexed { i, scene ->
             NavigationBarItem(selected = currentPage == scene, onClick = {
                 onItemClick(i)

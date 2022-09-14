@@ -36,11 +36,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -97,7 +96,7 @@ private const val TAG = "HomeScene"
 @ExperimentalCoilApi
 @ExperimentalPagerApi
 @Composable
-fun HomeScene(navController: NavController = LocalNavController.current) {
+fun HomeScene(navController: NavController = LocalNavController.current, padding: PaddingValues) {
     val viewModel: HomeSceneViewModel = hiltViewModel()
     val user by LocalUserViewModel.current.user.collectAsState()
 //    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
@@ -107,8 +106,7 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
 //        TopAppBarDefaults.pinnedScrollBehavior()
 //    }
     val viewState by viewModel.viewState.collectPartAsState(part = HomeViewState::state)
-    val appBarColors = TopAppBarDefaults.smallTopAppBarColors()
-    val statusBarPadding = WindowInsets.statusBars.asPaddingValues()
+//    val appBarColors = TopAppBarDefaults.smallTopAppBarColors()
     val swiperRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     val banners by viewModel.viewState.collectPartAsState(part = HomeViewState::banner)
     val icons by viewModel.viewState.collectPartAsState(part = HomeViewState::icons)
@@ -119,19 +117,13 @@ fun HomeScene(navController: NavController = LocalNavController.current) {
     Scaffold(
 //        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            SmallTopAppBar(
-                modifier = Modifier
-                    .background(color = appBarColors.containerColor(0f).value)
-                    .padding(statusBarPadding),
-//                    .background(color = appBarColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
-//                    .padding(top = statusBarPadding.calculateTopPadding() * (1f - scrollBehavior.scrollFraction)),
-//                scrollBehavior = scrollBehavior,
-                colors = appBarColors,
+            TopAppBar(
                 title = { Text("${stringResource(R.string.text_home_welcome_title)}${user.json?.data?.nickname}") },
+//                scrollBehavior = scrollBehavior,
             )
         },
     ) {
-        SwipeRefresh(modifier = Modifier.padding(it), state = swiperRefreshState, onRefresh = {
+        SwipeRefresh(modifier = Modifier.padding(it).padding(bottom = padding.calculateBottomPadding()), state = swiperRefreshState, onRefresh = {
             viewModel.loadHomeData()
         }) {
             CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
@@ -320,9 +312,11 @@ fun RecommendPlayList(
                             .aspectRatio(1f)
                     ) {
                         AsyncImage(
-                            model= resource.uiElement?.image?.imageUrl,
+                            model = resource.uiElement?.image?.imageUrl,
                             contentDescription = resource.resourceType,
-                            modifier = Modifier.fillMaxSize().clip( RoundedCornerShape(8.dp)),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp)),
                         )
                         PlayCount(
                             modifier = Modifier
